@@ -1,1 +1,8 @@
 julia 0.4
+Images
+Colors 0.6
+ColorVectorSpace 0.1
+FixedPointNumbers 0.1
+FileIO
+Compat 0.7.15
+StatsBase
