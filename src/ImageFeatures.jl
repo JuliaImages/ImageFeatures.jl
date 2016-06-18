@@ -7,6 +7,7 @@ include("core.jl")
 include("lbp.jl")
 include("glcm.jl")
 include("corner.jl")
+include("brief.jl")
 
 export Keypoint, Keypoints
 
@@ -19,9 +20,8 @@ export
 	lbp_uniform,
 	lbp_rotation_invariant,
 	multi_block_lbp,
-	create_descriptor,
 
-	#Gray Level Co Occurence Matrix
+	#GLCM
 	glcm,
 	glcm_symmetric,
 	glcm_norm,
@@ -41,6 +41,9 @@ export
 	glcm_var_neighbour,
 
 	#Corners
-	corner_orientations
+	corner_orientations,
+
+	#Core
+	create_descriptor
 
 end # module
