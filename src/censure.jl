@@ -1,9 +1,14 @@
 abstract BiFilter
 
 type BoxFilter <: BiFilter
-	
-	filter :: Array{Float64, 2}
-	scale :: UInt8
+
+	scale :: Integer
+	in_length :: Integer
+	out_length :: Integer
+	in_area :: Float64
+	out_area :: Float64
+	in_weight :: Float64
+	out_weight :: Float64
 
 end
 
@@ -22,7 +27,7 @@ type CENSURE <: Detector
 	smallest :: Integer
 	largest :: Integer
 	filter_type :: Type
-	filter_stack :: Array{BiFilter}
+	filter_stack :: Array
 	responseThreshold :: Number
 	lineThreshold :: Number
 
@@ -53,12 +58,8 @@ function createFilter(OF::OctagonFilter)
 
 end
 
-function createFilter(BF::BoxFilter)
-	
-end
-
 OctagonFilter(mo, mi, no, ni) = (OF = OctagonFilter(ones(Float64, mo + 2 * no, mo + 2 * no), mo, mi, no, ni); createFilter(OF); OF)
-BoxFilter(s) = (BF = BoxFilter(ones(Float64, 4 * s + 1, 4 * s + 1), s); createFilter(BF); BF)
+BoxFilter(s) = (BF = BoxFilter(s, 2 * s + 1, 4 * s + 1, (2 * s + 1) ^ 2, (4 * s + 1) ^ 2, 0.0, 0.0); BF.in_weight = 1.0 / BF.in_area; BF.out_weight = 1.0 / (BF.out_area - BF.in_area); BF; )
 
 OctagonFilter_Kernels = [
 						[5, 3, 2, 0],
@@ -79,8 +80,78 @@ function getFilterStack(filter_type::Type, smallest::Integer, largest::Integer)
 	filter_stack = map(f -> filter_type(f...), k[smallest : largest])
 end
 
-CENSURE(; smallest::Integer = 1, largest::Integer = 7, filter::Type = OctagonFilter, responseThreshold::Number = 0.15, lineThreshold::Number = 10) = CENSURE(smallest, largest, filter, getFilterStack(filter, smallest, largest), responseThreshold, lineThreshold)
+function filterResponse{T}(int_img::AbstractArray{T, 2}, filter::BoxFilter)
+	margin = filter.scale * 2
+	n = filter.scale
+	img_shape = size(int_img)
+	response = zeros(img_shape)
+	R = CartesianRange(CartesianIndex((margin + 1, margin + 1)), CartesianIndex((img_shape[1] - margin, img_shape[2] - margin))) 
+    in_sum = 0.0
+    out_sum = 0.0
+    for I in R
+    	topleft = I + CartesianIndex(- n - 1, - n - 1)
+    	topright = I + CartesianIndex(n, - n - 1)
+    	bottomleft = I + CartesianIndex(- n - 1, n)
+    	bottomright = I + CartesianIndex(n, n)
+    	A = topleft >= CartesianIndex(1, 1) ? int_img[topleft] : 0.0
+    	B = topright >= CartesianIndex(1, 1) ? int_img[topright] : 0.0
+    	C = bottomleft >= CartesianIndex(1, 1) ? int_img[bottomleft] : 0.0
+    	D = bottomright >= CartesianIndex(1, 1) ? int_img[bottomright] : 0.0
+    	in_sum = A + D - B - C
+
+    	topleft = I + CartesianIndex(- 2 * n - 1, - 2 * n - 1)
+    	topright = I + CartesianIndex(2 * n, - 2 * n - 1)
+    	bottomleft = I + CartesianIndex(- 2 * n - 1, 2 * n)
+    	bottomright = I + CartesianIndex(2 * n, 2 * n)
+    	A = topleft >= CartesianIndex(1, 1) ? int_img[topleft] : 0.0
+    	B = topright >= CartesianIndex(1, 1) ? int_img[topright] : 0.0
+    	C = bottomleft >= CartesianIndex(1, 1) ? int_img[bottomleft] : 0.0
+    	D = bottomright >= CartesianIndex(1, 1) ? int_img[bottomright] : 0.0
+    	out_sum = A + D - B - C - in_sum
+
+    	response[I] = in_sum * filter.in_weight - out_sum * filer.out_weight
+    end
+
+    response
+end
+
+function filterResponse(int_imgs::Tuple, filter::OctagonFilter)
+	int_img = int_imgs[1]
+	rs_img = int_imgs[2]
+	ls_img = int_imgs[3]
+end
+
+getIntegralImage(img, filter_type::BoxFilter) = integral_image(img)
+
+function getIntegralImage(img, filter_type::OctagonFilter)
+	img_shape = size(img)
+	int_img = zeros(img_shape)
+	right_slant_img = zeros(img_shape)
+	left_slant_img = zeros(img_shape)
+
+	int_img[1, :] = cumsum(img[1, :])
+	right_slant_img[1, :] = int_img[1, :]
+	left_slant_img[1, :] = int_img[1, :]
+
+	for i in 2:img_shape[1]
+		sum = 0.0
+		for j in 1:img_shape[2]
+			sum += img[i, j]
+			int_img[i, j] = sum + int_img[i - 1, j]
+			left_slant_img[i, j] = sum
+			right_slant_img[i, j] = sum
+
+			if j > 1 left_slant_img[i, j] += left_slant_img[i - 1, j - 1] end
+			right_slant_img[i, j] += j < img_shape[2] ? right_slant_img[i - 1, j + 1] : right_slant_img[i - 1, j]
+		end
+	end
+	int_img, right_slant_img, left_slant_img
+end
+
+CENSURE(; smallest::Integer = 1, largest::Integer = 7, filter::Type = BoxFilter, responseThreshold::Number = 0.15, lineThreshold::Number = 10) = CENSURE(smallest, largest, filter, getFilterStack(filter, smallest, largest), responseThreshold, lineThreshold)
 
 function censure{T}(img::AbstractArray{T, 2}, params::CENSURE)
-	
+	int_img = getIntegralImage(img, params.filter_stack[1])
+	responses = map(f -> filterResponse(int_img, f), params.filter_stack)
+	responses
 end
