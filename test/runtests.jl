@@ -56,6 +56,7 @@ tests = [
     "freak.jl",
     "brisk.jl",
     "houghtransform.jl",
+    "censure.jl"
 ]
 
 for t in tests
