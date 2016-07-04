@@ -214,10 +214,23 @@ function filterResponse(int_imgs::Tuple, OF::OctagonFilter)
 	
 end
 
+function checkFeature()
+end
+
 CENSURE(; smallest::Integer = 1, largest::Integer = 7, filter::Type = BoxFilter, responseThreshold::Number = 0.15, lineThreshold::Number = 10) = CENSURE(smallest, largest, filter, getFilterStack(filter, smallest, largest), responseThreshold, lineThreshold)
 
 function censure{T}(img::AbstractArray{T, 2}, params::CENSURE)
 	int_img = getIntegralImage(img, params.filter_stack[1])
 	responses = map(f -> filterResponse(int_img, f), params.filter_stack)
-	responses
+	# minima, maxima = extrema_filter(padarray(responses, [1, 1, 1], [1, 1, 1], "replicate"), Array(3, 3, 3))
+ #    features = map(i -> (minima[i] == responses[i] || maxima[i] == responses[i]) && ( responses[i] > params.responseThreshold ), CartesianRange(size(responses)))
+    features = map(i -> checkFeature(), responses)
+    keypoints = Array{Keypoints}([])
+    scales = Array{Integer}([])
+    for scale in 1:(params.largest - params.smallest + 1)
+        rows, cols, _ = findnz(features[:, :, scale])
+        append!(keypoints, map((r, c) -> Keypoint(r, c), rows, cols)
+        append!(scales, ones(length(rows)) * scale)
+    end
+    keypoints, scales
 end
