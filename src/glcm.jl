@@ -70,50 +70,85 @@ function glcm_norm(img::AbstractArray, distances, angles, mat_size)
 	co_oc_matrices_norm
 end
 
-function properties(glcm::Array{}, window, property::Function)
+function glcm_prop{T<:Real}(gmat::Array{T, 2}, window_height::Integer, window_width::Integer, property::Function)
+	k_h = Int(floor(window_height / 2))
+	k_w = Int(floor(window_width / 2))
+	glcm_size = size(gmat)
+	R = CartesianRange(glcm_size)
+	prop_mat = zeros(Float64, glcm_size)
+    for I in R
+    	prop_mat[I] = property(gmat[max(1, I[1] - k_h) : min(glcm_size[1], I[1] + k_h), max(1, I[2] - k_w) : min(glcm_size[2], I[2] + k_w)])
+	end
+	prop_mat
 end
 
-function homogeneity()
+glcm_prop{T<:Real}(gmat::Array{T, 2}, window_size::Integer, property::Function) = glcm_prop(gmat, window_size, window_size, property)
+
+function glcm_prop{T<:Real}(gmat::Array{T, 2}, property::Function)
+	property(gmat)
 end
 
-function contrast()
+function contrast{T<:Real}(glcm_window::Array{T, 2})
+	sum([(id[1] - id[2]) ^ 2 * glcm_window[id] for id in CartesianRange(size(glcm_window))])
 end
 
-function dissimilarity()
+function dissimilarity{T<:Real}(glcm_window::Array{T, 2})
+	sum([glcm_window[id] * abs(id[1] - id[2]) for id in CartesianRange(size(glcm_window))])
 end
 
-function entropy()
+function entropy{T<:Real}(glcm_window::Array{T, 2})
+	-sum(map(i -> i * log(i), glcm_window))
 end
 
-function correlation()
+function ASM{T<:Real}(glcm_window::Array{T, 2})
+	sum(map(i -> i ^ 2, glcm_window))	
 end
 
-function ASM()
+function IDM{T<:Real}(glcm_window::Array{T, 2})
+	sum([glcm_window[id] / (1 + (id[1] - id[2]) ^ 2) for id in CartesianRange(size(glcm_window))])
 end
 
-function IDM()
+function glcm_mean_ref{T<:Real}(glcm_window::Array{T, 2})
+	sumref = mapslices(sum, glcm_window, 2)
+	meanref = sum([id * sumref[id] for id = 1:size(glcm_window)[1]])
+	meanref
 end
 
-function inertia()
+function glcm_mean_neighbour{T<:Real}(glcm_window::Array{T, 2})
+	sumneighbour = mapslices(sum, glcm_window, 1)
+	meanneighbour = sum([id * sumneighbour[id] for id = 1:size(glcm_window)[2]])
+	meanneighbour
 end
 
-function glcm_mean()
+function glcm_var_ref{T<:Real}(glcm_window::Array{T, 2})
+	mean_ref = glcm_mean_ref(glcm_window)
+	sumref = mapslices(sum, glcm_window, 2)
+	var_ref = sum([(id - mean_ref) ^ 2 * sumref[id] for id = 1:size(glcm_window)[1]])
+	var_ref ^ 0.5
 end
 
-function glcm_var()
+function glcm_var_neighbour{T<:Real}(glcm_window::Array{T, 2})
+	mean_neighbour = glcm_mean_neighbour(glcm_window)
+	sumneighbour = mapslices(sum, glcm_window, 1)
+	var_neighbour = sum([(id - mean_neighbour) ^ 2 * sumneighbour[id] for id = 1:size(glcm_window)[2]])
+	var_neighbour ^ 0.5
 end
 
-function sum_entropy()
+function correlation{T<:Real}(glcm_window::Array{T, 2})
+	mean_ref = glcm_mean_ref(glcm_window)
+	var_ref = glcm_var_ref(glcm_window)
+	mean_neighbour = glcm_mean_neighbour(glcm_window)
+	var_neighbour = glcm_var_neighbour(glcm_window)
+	if var_ref == 0 || var_neighbour == 0
+		return 1
+	end
+	sum([glcm_window[i, j] * (i - mean_ref) * (j - mean_neighbour) for i = 1:size(glcm_window)[1], j = 1:size(glcm_window)[2]]) / (var_ref * var_neighbour)
 end
 
-function difference_entropy()
+function max_prob{T<:Real}(glcm_window::Array{T, 2})
+	max(glcm_window)
 end
 
-function shade()
-end
-
-function prominence()
-end
-
-function energy()
+function energy{T<:Real}(glcm_window::Array{T, 2})
+	ASM(glcm_window) ^ 0.5
 end
