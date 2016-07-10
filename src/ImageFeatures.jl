@@ -1,6 +1,15 @@
 module ImageFeatures
 
 # package code goes here
+using Images, ColorTypes
+
+include("lbp.jl")
+
+import ColorTypes: U8, U16, Gray
+
+export 
+	lbp
+
 
 using Images, ColorTypes, FixedPointNumbers
 
