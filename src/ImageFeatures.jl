@@ -8,7 +8,9 @@ include("lbp.jl")
 import ColorTypes: U8, U16, Gray
 
 export 
-	lbp
+	lbp,
+	lbp_original,
+	lbp_uniform
 
 
 using Images, ColorTypes, FixedPointNumbers
