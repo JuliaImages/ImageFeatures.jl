@@ -85,8 +85,11 @@ modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original)
 
 modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _modified_lbp(img, points, circular_offsets(), method)
 
-function dlbp{T<:Gray}(img::AbstractArray{T, 2})
+function _dlbp{T}(img::AbstractArray{T, 2}, offsets::Array)
+	
 end
+
+dlbp{T<:Gray}(img::AbstractArray{T, 2}) = _dlbp(img, original_offsets())
 
 function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2})
 end
