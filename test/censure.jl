@@ -104,6 +104,7 @@ facts("CENSURE") do
 		@fact all(response[:, 6:6] .== 0) --> true 
 		@fact all(response[6:7, :] .== 0) --> true 
 
+
 	end
 
 end
