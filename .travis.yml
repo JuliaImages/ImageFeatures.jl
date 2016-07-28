@@ -1,20 +1,19 @@
-# Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
 os:
-  - linux
-  - osx
+    - linux
+    - osx
 julia:
-  - nightly
+    - nightly
 notifications:
-  email: false
+    email: false
 script:
-	- if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-	- julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")
-	- julia -e 'Pkg.test("ImageFeatures", coverage=true)'
+    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+    - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
+    - julia -e 'Pkg.test("ImageFeatures", coverage=true)'
 after_success:
     - if [ $TRAVIS_JULIA_VERSION = "0.4" ] && [ $TRAVIS_OS_NAME = "linux" ]; then
          julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
       fi
-    # - julia -e 'Pkg.clone("https://github.com/MichaelHatherly/Documenter.jl")'
-    # - julia -e 'cd(Pkg.dir("ImageFeatures")); include(joinpath("docs", "make.jl"))'
+#   - julia -e 'Pkg.clone("https://github.com/MichaelHatherly/Documenter.jl")'
+#   - julia -e 'cd(Pkg.dir("ImageFeatures")); include(joinpath("docs", "make.jl"))'
 
