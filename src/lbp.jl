@@ -53,19 +53,16 @@ function _lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array
 
 end
 
-function original_offsets()
-
-	return [[- 1, - 1], [- 1, 0], [- 1, 1], [0, 1], [1, 1], [1, 0], [1, - 1], [0, - 1]]
-end
+const original_offsets = [[- 1, - 1], [- 1, 0], [- 1, 1], [0, 1], [1, 1], [1, 0], [1, - 1], [0, - 1]]
 
 function circular_offsets(points::Integer, radius::Number)
 
 	return [(round(- radius * sin(2 * pi * i / points), 5), round(radius * cos(2 * pi * i / points), 5)) for i = 0:points - 1]
 end
 
-lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _lbp(img, 8, original_offsets(), method)
+lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _lbp(img, 8, original_offsets, method)
 
-lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _lbp(img, points, circular_offsets(), method)
+lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _lbp(img, points, circular_offsets(points, radius), method)
 
 function _modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
 
@@ -81,15 +78,31 @@ function _modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offse
 
 end
 
-modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _modified_lbp(img, 8, original_offsets(), method)
+modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _modified_lbp(img, 8, original_offsets, method)
 
-modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _modified_lbp(img, points, circular_offsets(), method)
+modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _modified_lbp(img, points, circular_offsets(points, radius), method)
 
 function _dlbp{T}(img::AbstractArray{T, 2}, offsets::Array)
 	
 end
 
-dlbp{T<:Gray}(img::AbstractArray{T, 2}) = _dlbp(img, original_offsets())
+dlbp{T<:Gray}(img::AbstractArray{T, 2}) = _dlbp(img, original_offsets)
 
-function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2})
+function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2}, tl_y::Integer, tl_x::Integer, height::Integer, width::Integer)
+	int_img = integral_image(img)
+	h, w = size(img)
+
+	@assert (tl_y + 3 * height - 1 <= h) && (tl_x + 3 * width -1 <= w) "Rectangle Grid exceeds image dimensions."
+
+	center = [tl_y + height, tl_x + width]
+	central_sum = integral_window_sum(int_img, tl_y + height, tl_x + width, tl_y + 2 * height - 1, tl_x + 2 * width - 1)
+	lbp_code = 0
+
+	for (i, o) in enumerate(original_offsets)
+		cur_tl_y = center[1] + o[1] * height
+		cur_tl_x = center[2] + o[2] * width
+		cur_window_sum = integral_window_sum(int_img, cur_tl_y, cur_tl_x, cur_tl_y + height - 1, cur_tl_x + height - 1)
+		lbp_code += (cur_window_sum > central_sum ? 1 : 0) * 2 ^ (8 - i)
+	end
+	lbp_code
 end
