@@ -1,8 +1,9 @@
 module ImageFeatures
 
 # package code goes here
-using Images, ColorTypes
+using Images, ColorTypes, FixedPointNumbers
 
+include("core.jl")
 include("lbp.jl")
 
 import ColorTypes: U8, U16, Gray
@@ -14,7 +15,8 @@ export
 	lbp_original,
 	lbp_uniform,
 	lbp_rotation_invariant,
-	multi_block_lbp
+	multi_block_lbp,
+	create_descriptor
 
 using Images, ColorTypes, FixedPointNumbers
 
