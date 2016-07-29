@@ -1,5 +1,8 @@
-using ImageFeatures
-using Base.Test
+module ImageFeatureTests
 
-# write your own tests here
-@test 1 == 1
+using FactCheck, ImageFeatures, Base.Test
+
+
+isinteractive() || FactCheck.exitstatus()
+
+end
