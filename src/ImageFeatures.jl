@@ -10,6 +10,7 @@ import ColorTypes: U8, U16, Gray
 export 
 	lbp,
 	modified_lbp,
+	direction_coded_lbp,
 	lbp_original,
 	lbp_uniform,
 	lbp_rotation_invariant,

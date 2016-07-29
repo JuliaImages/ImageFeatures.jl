@@ -7,7 +7,6 @@ UNIFORM_PATTERN_COUNT = 0
 NON_UNIFORM_PATTERN = Array{Bool, 1}()
 
 function init_uniform_lbp_params(points::Integer)
-
 	global UNIFORM_LBP_TABLE, NON_UNIFORM_PATTERN, UNIFORM_PATTERN_COUNT
 	
 	UNIFORM_PATTERN_COUNT = 0
@@ -15,11 +14,9 @@ function init_uniform_lbp_params(points::Integer)
 	NON_UNIFORM_PATTERN = zeros(Bool, points)
 	NON_UNIFORM_PATTERN[1:2:points] = true
 	UNIFORM_LBP_TABLE[NON_UNIFORM_PATTERN] = points * (points - 1) + 2
-
 end
 
 function lbp_uniform(bit_pattern::Array{Bool, 1})
-	
 	global UNIFORM_LBP_TABLE, NON_UNIFORM_PATTERN, UNIFORM_PATTERN_COUNT
 	variations = sum([bit_pattern[i] != bit_pattern[i + 1] for i in 1:length(bit_pattern) - 1])
 	if variations <= 2
@@ -33,7 +30,6 @@ function lbp_uniform(bit_pattern::Array{Bool, 1})
 	else
 		return UNIFORM_LBP_TABLE[NON_UNIFORM_PATTERN]	
 	end
-
 end
 
 function lbp_rotation_invariant(bit_pattern::Array{Bool, 1})
@@ -45,7 +41,6 @@ function lbp_rotation_invariant(bit_pattern::Array{Bool, 1})
 end
 
 function _lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
-
 	init_uniform_lbp_params(points)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
@@ -54,7 +49,6 @@ function _lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array
 		lbp_image[I] = method(bit_pattern)
 	end
 	lbp_image
-
 end
 
 const original_offsets = [[- 1, - 1], [- 1, 0], [- 1, 1], [0, 1], [1, 1], [1, 0], [1, - 1], [0, - 1]]
@@ -69,7 +63,6 @@ lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _lbp(i
 lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _lbp(img, points, circular_offsets(points, radius), method)
 
 function _modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
-
 	init_uniform_lbp_params(points)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
@@ -79,18 +72,30 @@ function _modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offse
 		lbp_image[I] = method(bit_pattern)
 	end
 	lbp_image
-
 end
 
 modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _modified_lbp(img, 8, original_offsets, method)
 
 modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _modified_lbp(img, points, circular_offsets(points, radius), method)
-
-function _dlbp{T}(img::AbstractArray{T, 2}, offsets::Array)
 	
+function _direction_coded_lbp{T}(img::AbstractArray{T, 2}, offsets::Array)
+	lbp_image = zeros(UInt, size(img))
+	R = CartesianRange(size(img))
+	p = length(offsets) / 2
+	for I in R
+		neighbours = [bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) for o in offsets]
+		lbp_image[I] = sum([(neighbours[j] > img[j] && neighbours[j + p] > img[j]) * 2 ^ (2 * p - 2 * j + 1) + 
+							(neighbours[j] - img[j] > neighbours[j + p] - img[j]) * 2 ^ (2 * p - 2 * j) for j in 1:p])
+	end
+	lbp_image
 end
 
-dlbp{T<:Gray}(img::AbstractArray{T, 2}) = _dlbp(img, original_offsets)
+direction_coded_lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _direction_coded_lbp(img, 8, original_offsets, method)
+
+function direction_coded_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original)
+	@assert points % 2 == 0 "For Direction Coded LBP, the number of points must be an even number."
+	_direction_coded_lbp(img, points, circular_offsets(points, radius), method)
+end
 
 function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2}, tl_y::Integer, tl_x::Integer, height::Integer, width::Integer)
 	int_img = integral_image(img)
