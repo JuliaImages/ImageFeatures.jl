@@ -9,9 +9,11 @@ import ColorTypes: U8, U16, Gray
 
 export 
 	lbp,
+	modified_lbp,
 	lbp_original,
-	lbp_uniform
-
+	lbp_uniform,
+	lbp_rotation_invariant,
+	multi_block_lbp
 
 using Images, ColorTypes, FixedPointNumbers
 

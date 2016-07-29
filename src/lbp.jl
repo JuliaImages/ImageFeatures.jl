@@ -1,5 +1,5 @@
 function lbp_original(bit_pattern::Array{Bool, 1})
-	sum([b * 2 ^ (i - 1) for (i, b) in enumerate(bit_pattern)])
+	sum([b * 2 ^ (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)])
 end
 
 UNIFORM_LBP_TABLE = Dict{Array{Bool, 1}, Int}()
@@ -37,7 +37,11 @@ function lbp_uniform(bit_pattern::Array{Bool, 1})
 end
 
 function lbp_rotation_invariant(bit_pattern::Array{Bool, 1})
-
+	mini = lbp_original(bit_pattern)
+	for i in 2:length(bit_pattern)
+   	   mini = min(mini, lbp_original(vcat(bit_pattern[i:end], bit_pattern[1:i-1])))
+    end
+    mini
 end
 
 function _lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
