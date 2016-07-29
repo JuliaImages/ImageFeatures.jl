@@ -115,3 +115,27 @@ function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2}, tl_y::Integer, tl_x:
 	end
 	lbp_code
 end
+
+function _create_lbp_descriptor{T<:Gray}(img::AbstractArray{T, 2}, yblocks::Integer = 4, xblocks = 4, , lbp_type::Function = lbp, args...)
+	h, w = size(img)
+    block_h = ceil(Int, h / (yblocks))
+    block_w = ceil(Int, w / (xblocks))
+    descriptor = Array{Int64}[]
+    for i in 1:xblocks
+    	for j in 1:yblocks
+    		lbp_image = lbp_type(img[j : j + blockh - 1, i : i + blockw - 1], args...)
+    		_, hist = imhist(lbp_image, 100)
+    		push!(descriptor, hist)
+    	end
+    end
+    descriptor
+end
+
+function create_lbp_descriptor{T<:Gray}(img::AbstractArray{T, 2}, yblocks::Integer = 4, xblocks = 4, lbp_type::Function = lbp, args...)
+    h, w = size(img)
+    y_padded = ceil(Int, h / (yblocks)) * yblocks
+    x_padded = ceil(Int, w / (xblocks)) * xblocks
+
+    img_padded = imresize(img, (y_padded, x_padded))
+    _create_lbp_descriptor(img_padded, yblocks, xblocks, args...)
+end
