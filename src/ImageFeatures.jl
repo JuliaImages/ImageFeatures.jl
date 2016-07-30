@@ -17,7 +17,7 @@ export
 	contrast,
 	ASM,
 	IDM,
-	entropy,
+	glcm_entropy,
 	energy,
 	contrast,
 	dissimilarity,

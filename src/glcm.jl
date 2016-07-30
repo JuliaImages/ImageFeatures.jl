@@ -92,7 +92,7 @@ function dissimilarity{T<:Real}(glcm_window::Array{T, 2})
     sum([glcm_window[id] * abs(id[1] - id[2]) for id in CartesianRange(size(glcm_window))])
 end
 
-function entropy{T<:Real}(glcm_window::Array{T, 2})
+function glcm_entropy{T<:Real}(glcm_window::Array{T, 2})
     -sum(map(i -> i * log(i), glcm_window))
 end
 
