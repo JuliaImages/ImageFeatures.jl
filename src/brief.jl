@@ -1,9 +1,13 @@
-type BRIEF <: DescriptorParams
+type BRIEF{F} <: DescriptorParams
 	size::Int
 	window::Int
 	sigma::Float64
-	sampling_type::Function
+	sampling_type::F
 	seed::Int
+end
+
+function BRIEF(; size::Integer = 128, window::Integer = 9, sigma::Float64 = 2 ^ 0.5, sampling_type::Function = gaussian, seed::Int = 123)
+	BRIEF(size, window, sigma, sampling_type, seed)
 end
 
 function random_uniform(size::Int, window::Int, seed::Int)
@@ -13,14 +17,14 @@ function random_uniform(size::Int, window::Int, seed::Int)
 	while true
 		x_gen = floor(Int, window * rand() / 2)
 		y_gen = floor(Int, window * rand() / 2)
-		x_gen > -window / 2 || y_gen > -window / 2 || x_gen < (window - 1) / 2 || y_gen < (window - 1) / 2 || continue
+		(x_gen > -window / 2 && x_gen < (window - 1) / 2) && (y_gen > -window / 2 && y_gen < (window - 1) / 2) || continue
 		x_gen_2 = floor(Int, window * rand() / 2)
 		y_gen_2 = floor(Int, window * rand() / 2)
-		x_gen_2 > -window / 2 || y_gen_2 > -window / 2 || x_gen_2 < (window - 1) / 2 || y_gen_2 < (window - 1) / 2 || continue
+		(x_gen_2 > -window / 2 && x_gen_2 < (window - 1) / 2) && (y_gen_2 > -window / 2 && y_gen_2 < (window - 1) / 2) || continue
 		count += 1
-		push!(sample_one, CartesianIndex{2}(y_gen, x_gen))
-		push!(sample_two, CartesianIndex{2}(y_gen_2, x_gen_2))
-		count == size || break
+		push!(sample_one, CartesianIndex(y_gen, x_gen))
+		push!(sample_two, CartesianIndex(y_gen_2, x_gen_2))
+		count != size || break
 	end
 	sample_one, sample_two
 end
@@ -31,8 +35,8 @@ function random_coarse(size::Int, window::Int, seed::Int)
 	sample_one = CartesianIndex{2}[]
 	sample_two = CartesianIndex{2}[]
 	for i in 1:size
-		push!(sample_one, CartesianIndex{2}(gen[i], gen[2 * i]))
-		push!(sample_two, CartesianIndex{2}(gen[3 * i], gen[4 * i]))
+		push!(sample_one, CartesianIndex(gen[i], gen[2 * i]))
+		push!(sample_two, CartesianIndex(gen[3 * i], gen[4 * i]))
 	end
 	sample_one, sample_two
 end
@@ -48,10 +52,10 @@ function _gaussian(size::Int, window::Int)
 	sample = CartesianIndex{2}[]
 	while true
 		x_gen , y_gen = rand(set, 2)
-		x_gen > -window / 2 || y_gen > -window / 2 || x_gen < (window - 1) / 2 || y_gen < (window - 1) / 2 || continue
+		(x_gen > -window / 2 && x_gen < (window - 1) / 2) && (y_gen > -window / 2 && y_gen < (window - 1) / 2) || continue
 		count += 1
-		push!(sample, CartesianIndex{2}(floor(Int, y_gen), floor(Int, x_gen)))
-		count == size || break
+		push!(sample, CartesianIndex(floor(Int, y_gen), floor(Int, x_gen)))
+		count != size || break
 	end
 	sample
 end
@@ -69,40 +73,37 @@ function _gaussian_local(size::Int, window::Int)
 		x_gen = floor(Int, rand(x_set))
 		y_set = Normal(x_gen, (window ^ 2) / 100)
 		y_gen = floor(Int, rand(y_set))
-		x_gen > -window / 2 || y_gen > -window / 2 || x_gen < (window - 1) / 2 || y_gen < (window - 1) / 2 || continue
+		(x_gen > -window / 2 && x_gen < (window - 1) / 2) && (y_gen > -window / 2 && y_gen < (window - 1) / 2) || continue
 		count += 1
-		push!(sample, CartesianIndex{2}(y_gen, x_gen))
-		count == size || break
+		push!(sample, CartesianIndex(y_gen, x_gen))
+		count != size || break
 	end
 	sample
 end
 
-function centred(size::Int, window::Int, seed::Int)
+function centered(size::Int, window::Int, seed::Int)
 	srand(seed)
 	count = 0
 	sample = CartesianIndex{2}[]
 	while true
 		x_gen = floor(Int, window * rand() / 2)
 		y_gen = floor(Int, window * rand() / 2)
-		x_gen > -window / 2 || y_gen > -window / 2 || x_gen < (window - 1) / 2 || y_gen < (window - 1) / 2 || continue
+		(x_gen > -window / 2 && x_gen < (window - 1) / 2) && (y_gen > -window / 2 && y_gen < (window - 1) / 2) || continue
 		count += 1
-		push!(sample, CartesianIndex{2}(y_gen, x_gen))
-		count == size || break
+		push!(sample, CartesianIndex(y_gen, x_gen))
+		count != size || break
 	end
 	zeros(CartesianIndex{2}, size), sample
 end
 
-function BRIEF(; size::Integer = 128, window::Integer = 9, sigma::Float64 = 2 ^ 0.5, sampling_type::Function = gaussian, seed::Int = 123)
-	BRIEF(size, window, gamma, sampling_type, seed)
-end
-
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Array{Keypoint}, params::BRIEF)
-	img_smoothed = imfilter_gaussian(img, params.sigma)
+	img_smoothed = imfilter_gaussian(img, [params.sigma, params.sigma])
 	sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
-	descriptors = Array{Bool}[]	
+	descriptors = Array{Bool}[]
+	h, w = size(img_smoothed)
 	for k in keypoints
-		checkbounds(Bool, img, k + s1) || checkbounds(Bool, img, k + s2) || continue
-		push!(descriptors, map((s1, s2) -> img[k + s1] < img[k + s2], sample_one, sample_two))
+		(k[1] > params.window / 2 && k[1] < h - (params.window - 1) / 2) && (k[2] > params.window / 2 && k[2] < w - (params.window - 1) / 2) || continue
+		push!(descriptors, map((s1, s2) -> img_smoothed[k + s1] < img_smoothed[k + s2], sample_one, sample_two))
 	end
 	descriptors
 end
