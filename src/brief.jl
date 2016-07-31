@@ -18,11 +18,36 @@ end
 
 function gaussian(size::Int, window::Int, seed::Int)
 	srand(seed)
+	_gaussian(size, window), _gaussian(size, window)
+end
+
+function _gaussian(size::Int, window::Int)
 	set = Normal(0, (window ^ 2) / 25)
 	count = 0
 	sample = CartesianIndex{2}[]
 	while true
 		x_gen , y_gen = rand(set, 2)
+		x_gen < window / 2 || y_gen < window / 2 || continue
+		count += 1
+		push!(sample, CartesianIndex{2}(floor(Int, y_gen), floor(Int, x_gen)))
+		count == size || break
+	end
+	sample
+end
+
+function gaussian_local(size::Int, window::Int, seed::Int)
+	srand(seed)
+	_gaussian_local(size, window), _gaussian_local(size, window)
+end
+
+function _gaussian_local(size::Int, window::Int)
+	x_set = Normal(0, (window ^ 2) / 25)
+	count = 0
+	sample = CartesianIndex{2}[]
+	while true
+		x_gen = floor(Int, rand(x_set))
+		y_set = Normal(x_gen, (window ^ 2) / 100)
+		y_gen = floor(Int, rand(y_set))
 		x_gen < window / 2 || y_gen < window / 2 || continue
 		count += 1
 		push!(sample, CartesianIndex{2}(y_gen, x_gen))
@@ -31,21 +56,15 @@ function gaussian(size::Int, window::Int, seed::Int)
 	sample
 end
 
-function gaussian_local(size::Int, window::Int, seed::Int)
+function centred(size::Int, window::Int, seed::Int)
 	srand(seed)
-	x_set = Normal(0, (window ^ 2) / 25)
-	count = 0
 	sample = CartesianIndex{2}[]
-	while true
-		x_gen = rand(x_set)
-		y_set = Normal(x_gen, (window ^ 2) / 100)
-		y_gen = rand(y_set)
-		x_gen < window / 2 || y_gen < window / 2 || continue
-		count += 1
+	for i in 1:size
+		x_gen = floor(Int, window * rand())
+		y_gen = floor(Int, window * rand())
 		push!(sample, CartesianIndex{2}(y_gen, x_gen))
-		count == size || break
 	end
-	sample
+	zeros(CartesianIndex{2}, size), sample
 end
 
 function BRIEF(; size::Integer = 128, window::Integer = 9, sigma::Float64 = 2 ^ 0.5, sampling_type::Function = gaussian, seed::Int = 123)
@@ -54,8 +73,7 @@ end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Array{Keypoint}, params::BRIEF)
 	img_smoothed = imfilter_gaussian(img, params.sigma)
-	sample_one = params.sampling_type(params.size, params.window, params.seed)
-	sample_two = params.sampling_type(params.size, params.window, params.seed)
+	sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
 	descriptors = Array{Bool}[]	
 	for k in keypoints
 		checkbounds(Bool, img, k + s1) || checkbounds(Bool, img, k + s2) || continue
