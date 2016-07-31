@@ -47,7 +47,8 @@ export
 	create_descriptor,
 
 	#BRIEF
-	uniform,
+	random_uniform,
+	random_coarse,
 	gaussian,
 	gaussian_local,
 	centred
