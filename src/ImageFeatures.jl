@@ -1,7 +1,7 @@
 module ImageFeatures
 
 # package code goes here
-using Images, ColorTypes, FixedPointNumbers
+using Images, ColorTypes, FixedPointNumbers, Distributions
 
 include("core.jl")
 include("lbp.jl")
@@ -9,7 +9,7 @@ include("glcm.jl")
 include("corner.jl")
 include("brief.jl")
 
-export Keypoint, Keypoints
+export Keypoint, Keypoints, BRIEF, DescriptorParams
 
 export 
 	#Local Binary Patterns
@@ -44,6 +44,12 @@ export
 	corner_orientations,
 
 	#Core
-	create_descriptor
+	create_descriptor,
 
-end # module
+	#BRIEF
+	uniform,
+	gaussian,
+	gaussian_local,
+	centred
+
+end
