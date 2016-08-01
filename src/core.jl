@@ -1,9 +1,6 @@
 abstract Detector
 
-type Keypoint
-	x::Integer
-	y::Integer
-end
+typealias Keypoint CartesianIndex{2}
 
 function createDetector(method::Type = CENSURE; args...)
 	method(; args...)

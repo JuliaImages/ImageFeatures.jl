@@ -19,10 +19,10 @@ facts("Local Binary Patterns") do
 	@fact ImageFeatures.circular_offsets(8, 1) --> [ (-0.0,1.0), (-0.70711,0.70711), (-1.0,0.0), (-0.70711,-0.70711), (-0.0,-1.0), (0.70711,-0.70711), (1.0,-0.0), (0.70711,0.70711)]
 
 	context("Original") do
-		@fact lbp_original([false]) --> 0
-		@fact lbp_original([false, true]) --> 1
-		@fact lbp_original([true, false, true]) --> 5
-		@fact lbp_original([true, false, true, true, false]) --> 22
+		@fact lbp_original(BitArray([false])) --> 0
+		@fact lbp_original(BitArray([false, true])) --> 1
+		@fact lbp_original(BitArray([true, false, true])) --> 5
+		@fact lbp_original(BitArray([true, false, true, true, false])) --> 22
 
 		img = zeros(Gray{U8}, 10, 10)
 
@@ -64,10 +64,10 @@ facts("Local Binary Patterns") do
 
 	context("Uniform") do
 		ImageFeatures.init_uniform_lbp_params(4)
-		@fact ImageFeatures.UNIFORM_LBP_TABLE[[true, false, true, false]] --> 14
-		@fact lbp_uniform([false, false, false, false]) --> 1
-		@fact lbp_uniform([false, true, false, false]) --> 2
-		@fact lbp_uniform([false, false, true, false]) --> 3
+		@fact ImageFeatures.UNIFORM_LBP_TABLE[BitArray([true, false, true, false])] --> 14
+		@fact lbp_uniform(BitArray([false, false, false, false])) --> 1
+		@fact lbp_uniform(BitArray([false, true, false, false])) --> 2
+		@fact lbp_uniform(BitArray([false, false, true, false])) --> 3
 
 		ImageFeatures.init_uniform_lbp_params(8)
 		@fact ImageFeatures.UNIFORM_LBP_TABLE[[true, false, true, false, true, false, true, false]] --> 58
@@ -142,11 +142,11 @@ facts("Local Binary Patterns") do
 	end
 	
 	context("Rotation Invariant") do
-		@fact lbp_rotation_invariant([false]) --> 0
-		@fact lbp_rotation_invariant([false, true]) --> 1
-		@fact lbp_rotation_invariant([true, false, true]) --> 3
-		@fact lbp_rotation_invariant([true, false, true, true, false]) --> 11
-		@fact lbp_rotation_invariant([false, true, true, true, false, true, true, false]) --> 59
+		@fact lbp_rotation_invariant(BitArray([false])) --> 0
+		@fact lbp_rotation_invariant(BitArray([false, true])) --> 1
+		@fact lbp_rotation_invariant(BitArray([true, false, true])) --> 3
+		@fact lbp_rotation_invariant(BitArray([true, false, true, true, false])) --> 11
+		@fact lbp_rotation_invariant(BitArray([false, true, true, true, false, true, true, false])) --> 59
 
 		img = zeros(Gray{U8}, 10, 10)
 		lbp_image = lbp(img)

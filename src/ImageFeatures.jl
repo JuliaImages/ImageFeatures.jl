@@ -6,8 +6,6 @@ using Images, ColorTypes, FixedPointNumbers
 include("core.jl")
 include("lbp.jl")
 
-import ColorTypes: U8, U16, Gray
-
 export 
 	lbp,
 	modified_lbp,
