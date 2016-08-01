@@ -1,50 +1,49 @@
-function lbp_original(bit_pattern::BitArray{1})
-	sum(b * 1 << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern))
+type UNIFORM_PARAMS
+	table::Dict{BitArray{1}, Int}
+	count::Int
+	non_uniform_pattern::BitArray{1}
 end
 
-UNIFORM_LBP_TABLE = Dict{BitArray{1}, Int}()
-UNIFORM_PATTERN_COUNT = 0
-NON_UNIFORM_PATTERN = BitArray{1}()
-
-function init_uniform_lbp_params(points::Integer)
-	global UNIFORM_LBP_TABLE, NON_UNIFORM_PATTERN, UNIFORM_PATTERN_COUNT
-	
-	UNIFORM_PATTERN_COUNT::Int = 0
-	empty!(UNIFORM_LBP_TABLE)
-	NON_UNIFORM_PATTERN = zeros(Bool, points)
-	NON_UNIFORM_PATTERN[1:2:points] = true
-	UNIFORM_LBP_TABLE[NON_UNIFORM_PATTERN] = points * (points - 1) + 2
+function UNIFORM_PARAMS(points::Integer)
+	temp_pattern = zeros(Bool, points)
+	temp_pattern[1:2:points] = true
+	table = Dict{BitArray{1}, Int}()
+	table[temp_pattern] = points * (points - 1) + 2
+	UNIFORM_PARAMS(table, 0, temp_pattern)
 end
 
-function lbp_uniform(bit_pattern::BitArray{1})
-	global UNIFORM_LBP_TABLE, NON_UNIFORM_PATTERN, UNIFORM_PATTERN_COUNT
+function lbp_original(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
+	sum(b * 1 << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)), uniform_params
+end
+
+function lbp_uniform(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
 	variations = sum(bit_pattern[i] != bit_pattern[i + 1] for i in 1:length(bit_pattern) - 1)
 	if variations <= 2
-		haskey(UNIFORM_LBP_TABLE, bit_pattern) && return UNIFORM_LBP_TABLE[bit_pattern]
-		UNIFORM_PATTERN_COUNT::Int += 1
-		UNIFORM_LBP_TABLE[copy(bit_pattern)] = UNIFORM_PATTERN_COUNT::Int
-		return UNIFORM_PATTERN_COUNT::Int 
+		haskey(uniform_params.table, bit_pattern) && return uniform_params.table[bit_pattern], uniform_params
+		uniform_params.count += 1
+		uniform_params.table[copy(bit_pattern)] = uniform_params.count
+		return uniform_params.count, uniform_params
 	else
-		return UNIFORM_LBP_TABLE[NON_UNIFORM_PATTERN]	
+		return uniform_params.table[uniform_params.non_uniform_pattern], uniform_params
 	end
 end
 
-function lbp_rotation_invariant(bit_pattern::BitArray{1})
-	mini = lbp_original(bit_pattern)
+function lbp_rotation_invariant(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
+	mini, _ = lbp_original(bit_pattern, uniform_params)
 	for i in 2:length(bit_pattern)
-   	   mini = min(mini, lbp_original(vcat(bit_pattern[i:end], bit_pattern[1:i-1])))
+   	   mini = min(mini, lbp_original(vcat(bit_pattern[i:end], bit_pattern[1:i-1]), uniform_params)[1])
     end
-    mini
+    mini, uniform_params
 end
 
 function _lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
-	init_uniform_lbp_params(points)
+	uniform_params = UNIFORM_PARAMS(points)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
 	bit_pattern = falses(length(offsets))
 	for I in R
 		for (i, o) in enumerate(offsets) bit_pattern[i] = img[I] >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
-		lbp_image[I] = method(bit_pattern)
+		lbp_image[I], uniform_params = method(bit_pattern, uniform_params)
 	end
 	lbp_image
 end
@@ -61,14 +60,14 @@ lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _lbp(i
 lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _lbp(img, points, circular_offsets(points, radius), method)
 
 function _modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
-	init_uniform_lbp_params(points)
+	uniform_params = UNIFORM_PARAMS(points)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
 	bit_pattern = falses(length(offsets))
 	for I in R
 		avg = (sum(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) for o in offsets) + img[I]) / (points + 1)
 		for (i, o) in enumerate(offsets) bit_pattern[i] = avg >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
-		lbp_image[I] = method(bit_pattern)
+		lbp_image[I], uniform_params = method(bit_pattern, uniform_params)
 	end
 	lbp_image
 end
@@ -105,13 +104,13 @@ function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2}, tl_y::Integer, tl_x:
 	@assert (tl_y + 3 * height - 1 <= h) && (tl_x + 3 * width -1 <= w) "Rectangle Grid exceeds image dimensions."
 
 	center = [tl_y + height, tl_x + width]
-	central_sum = integral_window_sum(int_img, tl_y + height, tl_x + width, tl_y + 2 * height - 1, tl_x + 2 * width - 1)
+	central_sum = boxdiff(int_img, tl_y + height : tl_y + 2 * height - 1, tl_x + width : tl_x + 2 * width - 1)
 	lbp_code = 0
 
 	for (i, o) in enumerate(original_offsets)
 		cur_tl_y = center[1] + o[1] * height
 		cur_tl_x = center[2] + o[2] * width
-		cur_window_sum = integral_window_sum(int_img, cur_tl_y, cur_tl_x, cur_tl_y + height - 1, cur_tl_x + height - 1)
+		cur_window_sum = boxdiff(int_img, cur_tl_y : cur_tl_y + height - 1, cur_tl_x : cur_tl_x + height - 1)
 		lbp_code += (cur_window_sum > central_sum ? 1 : 0) * 2 ^ (8 - i)
 	end
 	lbp_code

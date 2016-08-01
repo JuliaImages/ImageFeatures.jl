@@ -13,11 +13,3 @@ end
 
 function getDescriptor()
 end
-
-function integral_window_sum{T}(int_img::AbstractArray{T}, tl_y::Integer, tl_x::Integer, br_y::Integer, br_x::Integer)
-    sum = int_img[br_y, br_x]
-    sum -= tl_x > 1 ? int_img[br_y, tl_x - 1] : zero(T)
-    sum -= tl_y > 1 ? int_img[tl_y - 1, br_x] : zero(T)
-    sum += tl_y > 1 && tl_x > 1 ? int_img[tl_y - 1, tl_x - 1] : zero(T)
-    sum
-end
