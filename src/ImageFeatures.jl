@@ -6,8 +6,6 @@ using Images, ColorTypes, FixedPointNumbers
 
 include("glcm.jl")
 
-import ColorTypes: U8, U16, Gray
-
 export 
 	glcm,
 	glcm_symmetric,

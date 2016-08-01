@@ -26,17 +26,21 @@ glcm{T<:Union{Colorant, Real}, A<:Real}(img::AbstractArray{T, 2}, distances::Int
 glcm{T<:Union{Colorant, Real}}(img::AbstractArray{T, 2}, distances::Array{Int, 1}, angles::Real, mat_size::Integer = 16) = glcm(img, distances, [angles], mat_size)
 
 function _glcm{T}(img::AbstractArray{T, 2}, distance::Integer, angle::Number, mat_size::Integer)
-    co_oc_matrix = zeros(Integer, mat_size, mat_size)
-    for j = 1:size(img, 1), i = 1:size(img, 2)
-        int_one = img[j, i]
-        j_off = j + Int(round(sin(angle) * distance))
-        i_off = i + Int(round(cos(angle) * distance))
+    co_oc_matrix = zeros(Int, mat_size, mat_size)
+    sin_angle = sin(angle)
+    cos_angle = cos(angle)
+    for j = 1:size(img, 1)
+        j_off = j + Int(round(sin_angle * distance))
+        checkbounds(Bool, img, j_off, 1) || continue
+        for i = 1:size(img, 2)
+            int_one = img[j, i]
+            i_off = i + Int(round(cos_angle * distance))
 
-        if checkbounds(Bool, img, j_off, i_off) 
-            int_two = img[j_off, i_off]
-            co_oc_matrix[int_one, int_two] += 1
+            if checkbounds(Bool, img, j_off, i_off) 
+                int_two = img[j_off, i_off]
+                co_oc_matrix[int_one, int_two] += 1
+            end
         end
-
     end
     co_oc_matrix
 end
@@ -105,27 +109,27 @@ function IDM{T<:Real}(glcm_window::Array{T, 2})
 end
 
 function glcm_mean_ref{T<:Real}(glcm_window::Array{T, 2})
-    sumref = mapslices(sum, glcm_window, 2)
+    sumref = sum(glcm_window, 2)
     meanref = sum([id * sumref[id] for id = 1:size(glcm_window)[1]])
     meanref
 end
 
 function glcm_mean_neighbour{T<:Real}(glcm_window::Array{T, 2})
-    sumneighbour = mapslices(sum, glcm_window, 1)
+    sumneighbour = sum(glcm_window, 1)
     meanneighbour = sum([id * sumneighbour[id] for id = 1:size(glcm_window)[2]])
     meanneighbour
 end
 
 function glcm_var_ref{T<:Real}(glcm_window::Array{T, 2})
     mean_ref = glcm_mean_ref(glcm_window)
-    sumref = mapslices(sum, glcm_window, 2)
+    sumref = sum(glcm_window, 2)
     var_ref = sum([(id - mean_ref) ^ 2 * sumref[id] for id = 1:size(glcm_window)[1]])
     var_ref ^ 0.5
 end
 
 function glcm_var_neighbour{T<:Real}(glcm_window::Array{T, 2})
     mean_neighbour = glcm_mean_neighbour(glcm_window)
-    sumneighbour = mapslices(sum, glcm_window, 1)
+    sumneighbour = sum(glcm_window, 1)
     var_neighbour = sum([(id - mean_neighbour) ^ 2 * sumneighbour[id] for id = 1:size(glcm_window)[2]])
     var_neighbour ^ 0.5
 end
