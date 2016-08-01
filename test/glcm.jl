@@ -1,4 +1,4 @@
-using FactCheck, Base.Test, Images, ImageFeatures
+using FactCheck, Base.Test, Images, ImageFeatures, ColorTypes
 
 facts("Gray Level Co Occurence Matrix") do 
 
@@ -7,12 +7,15 @@ facts("Gray Level Co Occurence Matrix") do
                 0 0 1 1
                 0 2 2 2
                 2 2 3 3 ]
+        img_gray = convert(Array{Gray}, img / 3)
 
         glcm_mat = glcm(img, 1, 0, 4)
         expected_1 = [ 2 2 1 0
                     0 2 0 0
                     0 0 3 1
                     0 0 0 1 ]
+        @fact all(expected_1 .== glcm_mat) --> true
+        glcm_mat = glcm(img_gray, 1, 0, 4)
         @fact all(expected_1 .== glcm_mat) --> true
         glcm_mat = glcm_norm(img, 1, 0, 4)
         @fact all(expected_1 / sum(expected_1) .== glcm_mat) --> true
@@ -27,6 +30,12 @@ facts("Gray Level Co Occurence Matrix") do
         @fact all(expected_2 .== glcm_mat) --> true
 
         glcm_mats = glcm(img, [1, 1], [0, pi/2], 4)     
+        @fact all(glcm_mats[1, 1] .== expected_1) --> true
+        @fact all(glcm_mats[1, 2] .== expected_2) --> true 
+        @fact all(glcm_mats[2, 1] .== expected_1) --> true
+        @fact all(glcm_mats[2, 2] .== expected_2) --> true
+
+        glcm_mats = glcm(img_gray, [1, 1], [0, pi/2], 4)     
         @fact all(glcm_mats[1, 1] .== expected_1) --> true
         @fact all(glcm_mats[1, 2] .== expected_2) --> true 
         @fact all(glcm_mats[2, 1] .== expected_1) --> true
@@ -115,6 +124,14 @@ facts("Gray Level Co Occurence Matrix") do
                      10.0  15.0  20.0  25.0  30.0  30.0
                      10.0  15.0  20.0  25.0  30.0  30.0 ]
         @fact all(glcm_props .== expected) --> true
+
+        # Test Correlation when Variance is Zero
+
+        glcm_mat = [ 1 0 0 0
+                     0 0 0 0
+                     0 0 0 0
+                     0 0 0 0 ]
+        @fact glcm_prop(glcm_mat, correlation) --> 1
 
     end
 

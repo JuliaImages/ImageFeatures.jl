@@ -123,14 +123,14 @@ end
 function glcm_var_ref{T<:Real}(glcm_window::Array{T, 2})
     mean_ref = glcm_mean_ref(glcm_window)
     sumref = sum(glcm_window, 2)
-    var_ref = sum([(id - mean_ref) ^ 2 * sumref[id] for id = 1:size(glcm_window)[1]])
+    var_ref = sum([((id - mean_ref) ^ 2) * sumref[id] for id = 1:size(glcm_window)[1]])
     var_ref ^ 0.5
 end
 
 function glcm_var_neighbour{T<:Real}(glcm_window::Array{T, 2})
     mean_neighbour = glcm_mean_neighbour(glcm_window)
     sumneighbour = sum(glcm_window, 1)
-    var_neighbour = sum([(id - mean_neighbour) ^ 2 * sumneighbour[id] for id = 1:size(glcm_window)[2]])
+    var_neighbour = sum([((id - mean_neighbour) ^ 2) * sumneighbour[id] for id = 1:size(glcm_window)[2]])
     var_neighbour ^ 0.5
 end
 
