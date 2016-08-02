@@ -1,6 +1,20 @@
 module ImageFeatures
 
 # package code goes here
+using Images, ColorTypes, FixedPointNumbers
+
+include("core.jl")
+include("lbp.jl")
+
+export 
+	lbp,
+	modified_lbp,
+	direction_coded_lbp,
+	lbp_original,
+	lbp_uniform,
+	lbp_rotation_invariant,
+	multi_block_lbp,
+	create_descriptor
 
 using Images, ColorTypes, FixedPointNumbers
 
