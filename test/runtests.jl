@@ -1,11 +1,12 @@
 module ImageFeatureTests
 
-using FactCheck, ImageFeatures, Base.Test, Images
+using FactCheck, ImageFeatures, Base.Test, TestImages, Distributions, ColorTypes, Images
 
-include("corner.jl")
+include("core.jl")
+include("brief.jl")
 include("glcm.jl")
 include("lbp.jl")
-include("brief.jl")
+include("corner.jl")
 
 isinteractive() || FactCheck.exitstatus()
 
