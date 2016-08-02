@@ -9,7 +9,7 @@ include("glcm.jl")
 include("corner.jl")
 include("brief.jl")
 
-export Keypoint, Keypoints, BRIEF, DescriptorParams
+export Keypoint, Keypoints, BRIEF, DescriptorParams, Keypoint, Keypoints
 
 export 
 	#Local Binary Patterns
