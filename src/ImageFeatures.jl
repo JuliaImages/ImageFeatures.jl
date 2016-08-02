@@ -45,6 +45,8 @@ export
 
 	#Core
 	create_descriptor,
+	hamming_distance,
+	match_keypoints,
 
 	#BRIEF
 	random_uniform,
