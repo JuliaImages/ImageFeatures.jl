@@ -19,7 +19,7 @@ facts("Local Binary Patterns") do
 	@fact ImageFeatures.circular_offsets(8, 1) --> [ (-0.0,1.0), (-0.70711,0.70711), (-1.0,0.0), (-0.70711,-0.70711), (-0.0,-1.0), (0.70711,-0.70711), (1.0,-0.0), (0.70711,0.70711)]
 
 	context("Original") do
-		uniform_params = ImageFeatures.UNIFORM_PARAMS(1)
+		uniform_params = ImageFeatures.PatternCache(1)
 		@fact lbp_original(BitArray([false]), uniform_params)[1] --> 0
 		@fact lbp_original(BitArray([false, true]), uniform_params)[1] --> 1
 		@fact lbp_original(BitArray([true, false, true]), uniform_params)[1] --> 5
@@ -64,7 +64,7 @@ facts("Local Binary Patterns") do
 	end
 
 	context("Uniform") do
-		uniform_params = ImageFeatures.UNIFORM_PARAMS(4)
+		uniform_params = ImageFeatures.PatternCache(4)
 		@fact uniform_params.table[BitArray([true, false, true, false])] --> 14
 		ret, uniform_params = lbp_uniform(BitArray([false, false, false, false]), uniform_params)
 		@fact ret --> 1
@@ -73,7 +73,7 @@ facts("Local Binary Patterns") do
 		ret, uniform_params = lbp_uniform(BitArray([false, false, true, false]), uniform_params)
 		@fact ret --> 3
 
-		uniform_params = ImageFeatures.UNIFORM_PARAMS(8)
+		uniform_params = ImageFeatures.PatternCache(8)
 		@fact uniform_params.table[[true, false, true, false, true, false, true, false]] --> 58
 
 		lbp_image = lbp(img_gray, lbp_uniform)
@@ -146,7 +146,7 @@ facts("Local Binary Patterns") do
 	end
 	
 	context("Rotation Invariant") do
-		uniform_params = ImageFeatures.UNIFORM_PARAMS(1)
+		uniform_params = ImageFeatures.PatternCache(1)
 		@fact lbp_rotation_invariant(BitArray([false]), uniform_params)[1] --> 0
 		@fact lbp_rotation_invariant(BitArray([false, true]), uniform_params)[1] --> 1
 		@fact lbp_rotation_invariant(BitArray([true, false, true]), uniform_params)[1] --> 3

@@ -1,22 +1,22 @@
-type UNIFORM_PARAMS
+type PatternCache
 	table::Dict{BitArray{1}, Int}
 	count::Int
 	non_uniform_pattern::BitArray{1}
 end
 
-function UNIFORM_PARAMS(points::Integer)
+function PatternCache(points::Integer)
 	temp_pattern = zeros(Bool, points)
 	temp_pattern[1:2:points] = true
 	table = Dict{BitArray{1}, Int}()
 	table[temp_pattern] = points * (points - 1) + 2
-	UNIFORM_PARAMS(table, 0, temp_pattern)
+	PatternCache(table, 0, temp_pattern)
 end
 
-function lbp_original(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
+function lbp_original(bit_pattern::BitArray{1}, uniform_params::PatternCache)
 	sum(b * 1 << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)), uniform_params
 end
 
-function lbp_uniform(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
+function lbp_uniform(bit_pattern::BitArray{1}, uniform_params::PatternCache)
 	variations = sum(bit_pattern[i] != bit_pattern[i + 1] for i in 1:length(bit_pattern) - 1)
 	if variations <= 2
 		haskey(uniform_params.table, bit_pattern) && return uniform_params.table[bit_pattern], uniform_params
@@ -28,7 +28,7 @@ function lbp_uniform(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
 	end
 end
 
-function lbp_rotation_invariant(bit_pattern::BitArray{1}, uniform_params::UNIFORM_PARAMS)
+function lbp_rotation_invariant(bit_pattern::BitArray{1}, uniform_params::PatternCache)
 	mini, _ = lbp_original(bit_pattern, uniform_params)
 	for i in 2:length(bit_pattern)
    	   mini = min(mini, lbp_original(vcat(bit_pattern[i:end], bit_pattern[1:i-1]), uniform_params)[1])
@@ -37,7 +37,7 @@ function lbp_rotation_invariant(bit_pattern::BitArray{1}, uniform_params::UNIFOR
 end
 
 function _lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
-	uniform_params = UNIFORM_PARAMS(points)
+	uniform_params = PatternCache(points)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
 	bit_pattern = falses(length(offsets))
@@ -60,7 +60,7 @@ lbp{T<:Gray}(img::AbstractArray{T, 2}, method::Function = lbp_original) = _lbp(i
 lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) = _lbp(img, points, circular_offsets(points, radius), method)
 
 function _modified_lbp{T<:Gray}(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original)
-	uniform_params = UNIFORM_PARAMS(points)
+	uniform_params = PatternCache(points)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
 	bit_pattern = falses(length(offsets))
