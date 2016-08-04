@@ -2,7 +2,6 @@ module ImageFeatureTests
 
 using FactCheck, ImageFeatures, Base.Test, TestImages, Distributions, ColorTypes, Images
 
-
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true
     check_bool = check_bool && length(sample_one) == size
@@ -47,6 +46,7 @@ include("brief.jl")
 include("glcm.jl")
 include("lbp.jl")
 include("corner.jl")
+include("orb.jl")
 
 isinteractive() || FactCheck.exitstatus()
 
