@@ -4,6 +4,7 @@ module ImageFeatures
 using Images, ColorTypes, FixedPointNumbers, Distributions
 
 include("core.jl")
+include("corner.jl")
 include("lbp.jl")
 include("glcm.jl")
 include("corner.jl")
@@ -15,6 +16,11 @@ export Keypoint, Keypoints, BRIEF, DescriptorParams, Keypoint, Keypoints
 export 
 	#Core
 	create_descriptor,
+	hamming_distance,
+	match_keypoints,
+
+	#TEMP
+	gaussian_pyramid,
 
     #Local Binary Patterns
 	lbp,

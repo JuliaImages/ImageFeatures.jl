@@ -35,3 +35,21 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     matches
 end
 
+# TEMP
+
+function gaussian_pyramid{T}(img::AbstractArray{T, 2}, levels::Int, downsample::Real, sigma::Real)
+    prev = img
+    pyramid = typeof(img)[]
+    push!(pyramid, img)
+    prev_h, prev_w = size(img)
+    for i in 1:n_scales
+        next_h = ceil(Int, prev_h / downsample)
+        next_w = ceil(Int, prev_w / downsample)
+        img_smoothed = imfilter_gaussian(prev, [sigma, sigma])
+        img_scaled = imresize(img_smoothed, (next_h, next_w))
+        push!(pyramid, img_scaled)
+        prev = img_scaled
+        prev_h, prev_w = size(img_scaled)
+    end
+    pyramid
+end
