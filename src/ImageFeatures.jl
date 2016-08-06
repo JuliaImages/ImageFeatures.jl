@@ -11,7 +11,7 @@ include("corner.jl")
 include("brief.jl")
 include("orb.jl")
 
-export Keypoint, Keypoints, BRIEF, DescriptorParams, Keypoint, Keypoints
+export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB
 
 export 
 	#Core

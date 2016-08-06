@@ -7,7 +7,7 @@ type ORB <: DescriptorParams
     levels::Int
 end
 
-function ORB(; num_keypoints::Int = 256, nfast::Int = 9, threshold::Float64 = 0.15, harris_factor::Float64 = , downsample::Real = 1.3, levels::Int = 8)
+function ORB(; num_keypoints::Int = 500, nfast::Int = 9, threshold::Float64 = 0.15, harris_factor::Float64 = , downsample::Real = 1.3, levels::Int = 8)
     ORB(num_keypoints, nfast, threshold, harris_factor, downsample, levels)
 end
 
@@ -19,16 +19,28 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
     harris_response_stack = map(image -> harris(image, k = params.harris_factor), pyramid)
     harris_keypoints = map((hr, keypoints) -> hr[keypoints], harris_response_stack, keypoints_stack)
     descriptor_stack = map((image, keypoints, orientations) -> create_descriptor(img, keypoints, orientations, params), pyramid, keypoints_stack, orientations_stack)
+
+    all_descriptors = vcat(descriptor_stack)
+    all_responses = vcat(harris_keypoints)
+    first_n_indices = selectperm(all_responses, 1:params.num_keypoints)
+    all_descriptors[first_n_indices]
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, orientations::Array{Float64}, params::ORB)
-    descriptor = falses(length(keypoints))
+    descriptors = Array{Bool}[]
     for (i, k) in enumerate(keypoints)
         orientation = orientations[i]
         sin_angle = sin(orientation)
         cos_angle = cos(orientation)
+        descriptor = Bool[]
+        for (y0, x0, y1, x1) in sampling_pattern
+            pixel0 = CartesianIndex(sin_angle * y0 + cos_angle * x0, cos_angle * y0 - sin_angle * x0)
+            pixel1 = CartesianIndex(sin_angle * y1 + cos_angle * x1, cos_angle * y1 - sin_angle * x1)
+            push!(descriptor, img[k + pixel0] < img[k + pixel1])
+        end
+        push!(descriptors, descriptor)
     end
-
+    descriptors
 end
 
 const sampling_pattern = [[8, -3, 9, 5], [4, 2, 7, -12], [-11, 9, -8, 2], [7, -12, 12, -13], [2, -13, 2, 12], [1, -7, 1, 6], 
