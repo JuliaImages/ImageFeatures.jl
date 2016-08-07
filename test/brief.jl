@@ -1,17 +1,6 @@
-using FactCheck, Images, ImageFeatures, TestImages, Distributions, ColorTypes
+using FactCheck, Images, ImageFeatures, TestImages, Distributions, ColorTypes, TestImages
 
 facts("BRIEF") do 
-
-    function check_samples(sample_one, sample_two, size::Int, window::Int)
-        check_bool = true
-        check_bool = check_bool && length(sample_one) == size
-        check_bool = check_bool && length(sample_two) == size
-        for s1 in sample_one, s2 in sample_two
-            check_bool = check_bool && (s1[1] >= ceil(-window / 2) && s1[1] <= floor((window - 1) / 2)) && (s1[2] >= ceil(-window / 2) && s1[2] <= floor((window - 1) / 2))
-            check_bool = check_bool && (s2[1] >= ceil(-window / 2) && s2[1] <= floor((window - 1) / 2)) && (s2[2] >= ceil(-window / 2) && s2[2] <= floor((window - 1) / 2))
-        end
-        return check_bool 
-    end
     
     brief_params = BRIEF(size = 8, window = 3, seed = 123)
     @fact brief_params.size --> 8
@@ -142,6 +131,10 @@ facts("BRIEF") do
                             [CartesianIndex{2}((8,13)),CartesianIndex{2}((3,4))],
                             [CartesianIndex{2}((13,13)),CartesianIndex{2}((7,4))]]
         @fact all(matches .== expected_matches) --> true
+
+    end
+
+    context("Testing with Images") do
 
     end
 
