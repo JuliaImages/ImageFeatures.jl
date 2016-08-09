@@ -12,7 +12,6 @@ include("brief.jl")
 export Keypoint, Keypoints, BRIEF, DescriptorParams, Keypoint, Keypoints
 
 export 
-<<<<<<< HEAD
 	#Local Binary Patterns
 	lbp,
 	modified_lbp,

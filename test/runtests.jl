@@ -40,7 +40,7 @@ function _warp(img, angle)
 	end
     res = shareproperties(img, res)
 	res
-end
+end	
 
 include("core.jl")
 include("brief.jl")
