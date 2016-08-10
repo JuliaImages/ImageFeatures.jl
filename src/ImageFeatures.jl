@@ -4,6 +4,7 @@ module ImageFeatures
 using Images, ColorTypes, FixedPointNumbers, Distributions
 
 include("core.jl")
+include("const.jl")
 include("corner.jl")
 include("lbp.jl")
 include("glcm.jl")
