@@ -41,6 +41,12 @@ function _warp(img, angle)
 	res
 end	
 
+function _reverserotate(p, angle, center)
+	cos_angle = cos(angle)
+	sin_angle = sin(angle)
+	return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
+end
+
 include("core.jl")
 include("brief.jl")
 include("glcm.jl")
