@@ -2,7 +2,6 @@ module ImageFeatureTests
 
 using FactCheck, ImageFeatures, Base.Test, TestImages, Distributions, ColorTypes, Images
 
-
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true
     check_bool = check_bool && length(sample_one) == size
@@ -42,11 +41,18 @@ function _warp(img, angle)
 	res
 end	
 
+function _reverserotate(p, angle, center)
+	cos_angle = cos(angle)
+	sin_angle = sin(angle)
+	return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
+end
+
 include("core.jl")
 include("brief.jl")
 include("glcm.jl")
 include("lbp.jl")
 include("corner.jl")
+include("orb.jl")
 
 isinteractive() || FactCheck.exitstatus()
 

@@ -4,15 +4,26 @@ module ImageFeatures
 using Images, ColorTypes, FixedPointNumbers, Distributions
 
 include("core.jl")
+include("const.jl")
+include("corner.jl")
 include("lbp.jl")
 include("glcm.jl")
 include("corner.jl")
 include("brief.jl")
+include("orb.jl")
 
-export Keypoint, Keypoints, BRIEF, DescriptorParams, Keypoint, Keypoints
+export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB
 
 export 
-	#Local Binary Patterns
+	#Core
+	create_descriptor,
+	hamming_distance,
+	match_keypoints,
+
+	#TEMP
+	gaussian_pyramid,
+
+    #Local Binary Patterns
 	lbp,
 	modified_lbp,
 	direction_coded_lbp,
@@ -21,7 +32,7 @@ export
 	lbp_rotation_invariant,
 	multi_block_lbp,
 
-	#GLCM
+    #Gray Level Co Occurence Matrix
 	glcm,
 	glcm_symmetric,
 	glcm_norm,
