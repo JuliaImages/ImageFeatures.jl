@@ -37,19 +37,20 @@ end
 
 # TEMP
 
-function gaussian_pyramid{T}(img::AbstractArray{T, 2}, levels::Int, downsample::Real, sigma::Real)
+function gaussian_pyramid{T}(img::AbstractArray{T, 2}, n_scales::Int, downsample::Real, sigma::Real)
     prev = img
-    pyramid = typeof(img)[]
-    push!(pyramid, img)
+    pyramid = Image[]
+    img_smoothed_main = imfilter_gaussian(prev, [sigma, sigma])
+    push!(pyramid, img_smoothed_main)
     prev_h, prev_w = size(img)
     for i in 1:n_scales
         next_h = ceil(Int, prev_h / downsample)
         next_w = ceil(Int, prev_w / downsample)
         img_smoothed = imfilter_gaussian(prev, [sigma, sigma])
-        img_scaled = imresize(img_smoothed, (next_h, next_w))
+        img_scaled = Images.imresize(img_smoothed, (next_h, next_w))
         push!(pyramid, img_scaled)
         prev = img_scaled
         prev_h, prev_w = size(img_scaled)
     end
     pyramid
-end
+end 

@@ -12,24 +12,6 @@ function ORB(; num_keypoints::Int = 500, n_fast::Int = 12, threshold::Float64 = 
     ORB(num_keypoints, n_fast, threshold, harris_factor, downsample, levels, sigma)
 end
 
-function gaussian_pyramid{T}(img::AbstractArray{T, 2}, n_scales::Int, downsample::Real, sigma::Real)
-    prev = img
-    pyramid = Image[]
-    img_smoothed_main = imfilter_gaussian(prev, [sigma, sigma])
-    push!(pyramid, img_smoothed_main)
-    prev_h, prev_w = size(img)
-    for i in 1:n_scales
-        next_h = ceil(Int, prev_h / downsample)
-        next_w = ceil(Int, prev_w / downsample)
-        img_smoothed = imfilter_gaussian(prev, [sigma, sigma])
-        img_scaled = Images.imresize(img_smoothed, (next_h, next_w))
-        push!(pyramid, img_scaled)
-        prev = img_scaled
-        prev_h, prev_w = size(img_scaled)
-    end
-    pyramid
-end 
-
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
     pyramid = gaussian_pyramid(img, params.levels, params.downsample, params.sigma)
     keypoints_stack = map(image -> Keypoints(fastcorners(image, params.n_fast, params.threshold)), pyramid)
