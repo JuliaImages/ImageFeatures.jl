@@ -8,7 +8,7 @@ function Keypoints(img::AbstractArray)
     map((ri, ci) -> Keypoint(ri, ci), r, c)
 end
 
-hamming_distance(desc_1, desc_2) = mean(desc_1 .!= desc_2)
+hamming_distance(desc_1, desc_2) = mean(desc_1 $ desc_2)
 
 function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1, desc_2, threshold::Float64 = 0.1)
     smaller = desc_1
@@ -27,8 +27,9 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     matches = Keypoints[]
     for i in 1:length(smaller)
         if any(hamming_distances[i, :] .< threshold)
-            push!(matches, order ? [l_key[indmin(hamming_distances[i, :])], s_key[i]] : [s_key[i], l_key[indmin(hamming_distances[i, :])]])
-            hamming_distances[:, indmin(hamming_distances[i, :])] = 1.0
+            id_min = indmin(hamming_distances[i, :])
+            push!(matches, order ? [l_key[id_min], s_key[i]] : [s_key[i], l_key[id_min]])
+            hamming_distances[:, id_min] = 1.0
         end
     end
     matches

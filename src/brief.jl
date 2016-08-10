@@ -100,11 +100,15 @@ end
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::BRIEF)
     img_smoothed = imfilter_gaussian(img, [params.sigma, params.sigma])
     sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
-    descriptors = Array{Bool}[]
+    descriptors = BitArray[]
     h, w = size(img_smoothed)
     for k in keypoints
         (k[1] > floor(params.window / 2) && k[1] <= h - floor((params.window - 1) / 2)) && (k[2] > floor(params.window / 2) && k[2] <= w - floor((params.window - 1) / 2)) || continue
-        push!(descriptors, map((s1, s2) -> img_smoothed[k + s1] < img_smoothed[k + s2], sample_one, sample_two))
+        temp = BitArray([])
+        for (s1, s2) in zip(sample_one, sample_two)
+            push!(temp, img_smoothed[k + s1] < img_smoothed[k + s2])
+        end
+        push!(descriptors, temp)
     end
     descriptors
-end
+end 
