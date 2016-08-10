@@ -1,14 +1,15 @@
 module ImageFeatures
 
 # package code goes here
-using Images, ColorTypes, FixedPointNumbers
+using Images, ColorTypes, FixedPointNumbers, Distributions
 
 include("core.jl")
 include("lbp.jl")
 include("glcm.jl")
 include("corner.jl")
+include("brief.jl")
 
-export Keypoint, Keypoints
+export Keypoint, Keypoints, BRIEF, DescriptorParams, Keypoint, Keypoints
 
 export 
 	#Local Binary Patterns
@@ -19,9 +20,8 @@ export
 	lbp_uniform,
 	lbp_rotation_invariant,
 	multi_block_lbp,
-	create_descriptor,
 
-	#Gray Level Co Occurence Matrix
+	#GLCM
 	glcm,
 	glcm_symmetric,
 	glcm_norm,
@@ -41,6 +41,17 @@ export
 	glcm_var_neighbour,
 
 	#Corners
-	corner_orientations
+	corner_orientations,
 
-end # module
+	#Core
+	create_descriptor,
+	hamming_distance,
+	match_keypoints,
+
+	#BRIEF
+	random_uniform,
+	random_coarse,
+	gaussian,
+	gaussian_local,
+	centered
+end
