@@ -7,23 +7,43 @@ type ORB <: DescriptorParams
     levels::Int
 end
 
-function ORB(; num_keypoints::Int = 500, nfast::Int = 9, threshold::Float64 = 0.15, harris_factor::Float64 = , downsample::Real = 1.3, levels::Int = 8)
-    ORB(num_keypoints, nfast, threshold, harris_factor, downsample, levels)
+function ORB(; num_keypoints::Int = 500, n_fast::Int = 9, threshold::Float64 = 0.15, harris_factor::Float64 = 0.04, downsample::Real = 1.3, levels::Int = 8)
+    ORB(num_keypoints, n_fast, threshold, harris_factor, downsample, levels)
 end
+
+function gaussian_pyramid{T}(img::AbstractArray{T, 2}, n_scales::Int, downsample::Real, sigma::Real = 1.4)
+    prev = img
+    pyramid = Image[]
+    push!(pyramid, img)
+    prev_h, prev_w = size(img)
+    for i in 1:n_scales
+        next_h = ceil(Int, prev_h / downsample)
+        next_w = ceil(Int, prev_w / downsample)
+        img_smoothed = imfilter_gaussian(prev, [sigma, sigma])
+        img_scaled = Images.imresize(img_smoothed, (next_h, next_w))
+        push!(pyramid, img_scaled)
+        prev = img_scaled
+        prev_h, prev_w = size(img_scaled)
+    end
+    pyramid
+end 
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
     pyramid = gaussian_pyramid(img, params.levels, params.downsample)
-    keypoints_stack = map(image -> Keypoints(fastcorners(image, params.nfast, params.threshold)), pyramid)
+    keypoints_stack = map(image -> Keypoints(fastcorners(image, params.n_fast, params.threshold)), pyramid)
     patch = ones(31, 31)
     orientations_stack = map((image, keypoints) -> corner_orientations(image, keypoints, patch), pyramid, keypoints_stack)
     harris_response_stack = map(image -> harris(image, k = params.harris_factor), pyramid)
     harris_keypoints = map((hr, keypoints) -> hr[keypoints], harris_response_stack, keypoints_stack)
     descriptor_stack = map((image, keypoints, orientations) -> create_descriptor(img, keypoints, orientations, params), pyramid, keypoints_stack, orientations_stack)
 
-    all_descriptors = vcat(descriptor_stack)
-    all_responses = vcat(harris_keypoints)
-    first_n_indices = selectperm(all_responses, 1:params.num_keypoints)
-    all_descriptors[first_n_indices]
+    all_descriptors = vcat(descriptor_stack...)
+    all_responses = vcat(harris_keypoints...)
+    if params.num_keypoints < length(all_descriptors)
+        first_n_indices = selectperm(all_responses, 1:params.num_keypoints, rev = true)
+        return all_descriptors[first_n_indices]
+    end
+    all_descriptors
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, orientations::Array{Float64}, params::ORB)
@@ -34,9 +54,9 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
         cos_angle = cos(orientation)
         descriptor = Bool[]
         for (y0, x0, y1, x1) in sampling_pattern
-            pixel0 = CartesianIndex(sin_angle * y0 + cos_angle * x0, cos_angle * y0 - sin_angle * x0)
-            pixel1 = CartesianIndex(sin_angle * y1 + cos_angle * x1, cos_angle * y1 - sin_angle * x1)
-            push!(descriptor, img[k + pixel0] < img[k + pixel1])
+            pixel0 = CartesianIndex(floor(Int, sin_angle * y0 + cos_angle * x0), floor(Int, cos_angle * y0 - sin_angle * x0))
+            pixel1 = CartesianIndex(floor(Int, sin_angle * y1 + cos_angle * x1), floor(Int, cos_angle * y1 - sin_angle * x1))
+            if checkbounds(Bool, img, k+pixel0)&&checkbounds(Bool, img, k+pixel1) push!(descriptor, img[k + pixel0] < img[k + pixel1])end
         end
         push!(descriptors, descriptor)
     end
