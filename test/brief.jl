@@ -134,7 +134,7 @@ facts("BRIEF") do
 
     end
 
-    context("Testing with Standard Images - Lighthouse") do
+    context("Testing with Standard Images - Lighthouse (Translation (100, 200))") do
         img = testimage("lighthouse")
         img_array_1 = convert(Array{Gray}, img)
         img_array_2 = _warp(img_array_1, 100, 200)
@@ -150,7 +150,7 @@ facts("BRIEF") do
         @fact all(m[1] + CartesianIndex(100, 200) == m[2] for m in matches) --> true
     end
 
-    context("Testing with Standard Images - Lena") do
+    context("Testing with Standard Images - Lena (Translation (10, 20))") do
         img = testimage("lena_gray_512")
         img_array_1 = convert(Array{Gray}, img)
         img_array_2 = _warp(img_array_1, 10, 20)
