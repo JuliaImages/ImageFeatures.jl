@@ -47,9 +47,9 @@ facts("BRIEF") do
 
         brief_params = BRIEF(size = 8, window = 3, seed = 123)
 
-        desc_1 = create_descriptor(img_1, keypoints_1, brief_params)
-        desc_2 = create_descriptor(img_2, keypoints_2, brief_params)
-        matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2)
+        desc_1, ret_keypoints_1 = create_descriptor(img_1, keypoints_1, brief_params)
+        desc_2, ret_keypoints_2 = create_descriptor(img_2, keypoints_2, brief_params)
+        matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2)
         expected_matches = [[CartesianIndex((2,3)),CartesianIndex((2,3))],
                             [CartesianIndex((5,3)),CartesianIndex((7,3))]]
         @fact all(matches .== expected_matches) --> true
@@ -76,9 +76,9 @@ facts("BRIEF") do
 
         brief_params = BRIEF(size = 8, window = 3, seed = 123)
 
-        desc_1 = create_descriptor(img_1, keypoints_1, brief_params)
-        desc_2 = create_descriptor(img_2, keypoints_2, brief_params)
-        matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2)
+        desc_1, ret_keypoints_1 = create_descriptor(img_1, keypoints_1, brief_params)
+        desc_2, ret_keypoints_2 = create_descriptor(img_2, keypoints_2, brief_params)
+        matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2)
         expected_matches = [[CartesianIndex((2,3)),CartesianIndex((2,3))],
                             [CartesianIndex((5,3)),CartesianIndex((7,3))],
                             [CartesianIndex((2,6)),CartesianIndex((2,8))],
@@ -121,9 +121,9 @@ facts("BRIEF") do
 
         brief_params = BRIEF(size = 128, window = 5, seed = 123)
 
-        desc_1 = create_descriptor(img_1, keypoints_1, brief_params)
-        desc_2 = create_descriptor(img_2, keypoints_2, brief_params)
-        matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, 0.2)
+        desc_1, ret_keypoints_1 = create_descriptor(img_1, keypoints_1, brief_params)
+        desc_2, ret_keypoints_2 = create_descriptor(img_2, keypoints_2, brief_params)
+        matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
         expected_matches = [[CartesianIndex{2}((3,3)),CartesianIndex{2}((9,10))],
                             [CartesianIndex{2}((6,3)),CartesianIndex{2}((13,10))],
                             [CartesianIndex{2}((3,7)),CartesianIndex{2}((9,15))],
@@ -144,9 +144,9 @@ facts("BRIEF") do
 
         brief_params = BRIEF(size = 256, window = 10, seed = 123)
 
-        desc_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
-        desc_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
-        matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, 0.1)
+        desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
+        desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
+        matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
         @fact all(m[1] + CartesianIndex(100, 200) == m[2] for m in matches) --> true
     end
 
@@ -160,9 +160,9 @@ facts("BRIEF") do
 
         brief_params = BRIEF(size = 256, window = 10, seed = 123)
 
-        desc_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
-        desc_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
-        matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, 0.1)
+        desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
+        desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
+        matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
         @fact all(m[1] + CartesianIndex(10, 20) == m[2] for m in matches) --> true
     end
 end

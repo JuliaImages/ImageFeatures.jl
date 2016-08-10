@@ -102,6 +102,7 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
     sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
     descriptors = BitArray[]
     h, w = size(img_smoothed)
+    ret_keypoints = Keypoint[]
     for k in keypoints
         (k[1] > floor(params.window / 2) && k[1] <= h - floor((params.window - 1) / 2)) && (k[2] > floor(params.window / 2) && k[2] <= w - floor((params.window - 1) / 2)) || continue
         temp = BitArray([])
@@ -109,6 +110,7 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
             push!(temp, img_smoothed[k + s1] < img_smoothed[k + s2])
         end
         push!(descriptors, temp)
+        push!(ret_keypoints, k)
     end
-    descriptors
+    descriptors, ret_keypoints
 end 
