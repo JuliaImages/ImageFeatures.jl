@@ -1,7 +1,7 @@
 abstract Detector
 abstract DescriptorParams
 typealias Keypoint CartesianIndex{2}
-typealias Keypoints Array{CartesianIndex{2}}
+typealias Keypoints Vector{CartesianIndex{2}}
 
 function Keypoints(img::AbstractArray)
     r, c, _ = findnz(img)
