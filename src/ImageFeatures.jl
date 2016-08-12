@@ -10,6 +10,7 @@ include("lbp.jl")
 include("glcm.jl")
 include("brief.jl")
 include("orb.jl")
+include("freak.jl")
 
 export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB
 
