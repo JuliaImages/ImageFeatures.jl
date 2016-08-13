@@ -19,9 +19,6 @@ export
 	hamming_distance,
 	match_keypoints,
 
-	#TEMP
-	gaussian_pyramid,
-
     #Local Binary Patterns
 	lbp,
 	modified_lbp,
