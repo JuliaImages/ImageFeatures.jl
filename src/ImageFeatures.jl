@@ -8,7 +8,6 @@ include("const.jl")
 include("corner.jl")
 include("lbp.jl")
 include("glcm.jl")
-include("corner.jl")
 include("brief.jl")
 include("orb.jl")
 
@@ -53,11 +52,6 @@ export
 
 	#Corners
 	corner_orientations,
-
-	#Core
-	create_descriptor,
-	hamming_distance,
-	match_keypoints,
 
 	#BRIEF
 	random_uniform,
