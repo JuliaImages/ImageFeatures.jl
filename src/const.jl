@@ -75,7 +75,7 @@ const freak_sampling_pattern = [[29, 27], [30, 26], [41, 39], [33, 16], [20, 11]
                                 [13, 3], [15, 12], [15, 14], [12, 4], [28, 11], [24, 23], [21, 20], [38, 32], [35, 22], [27, 14], [40, 2], [35, 29], [27, 1], 
                                 [30, 3], [22, 20], [9, 1], [26, 5], [21, 2], [20, 19], [16, 6], [17, 7], [32, 22], [22, 2], [34, 20], [34, 6], [13, 5], [22, 6], 
                                 [38, 5], [23, 19], [10, 1], [35, 21], [29, 12], [36, 11], [27, 7], [33, 23], [31, 8], [42, 3]]
-                                
+
 const freak_orientation_sampling_pattern = [[ 0,  3], [ 1,  4], [ 2,  5], [ 0,  2], [ 1,  3], [ 2,  4], [ 3,  5], [ 4,  0], [ 5,  1], [ 6,  9], [ 7, 10], 
                                             [ 8, 11], [ 6,  8], [ 7,  9], [ 8, 10], [ 9, 11], [10,  6], [11,  7], [12, 15], [13, 16], [14, 17], [12, 14], 
                                             [13, 15], [14, 16], [15, 17], [16, 12], [17, 13], [18, 21], [19, 22], [20, 23], [18, 20], [19, 21], [20, 22], 
@@ -93,3 +93,5 @@ const freak_circular_spacing = (freak_largest_radius - freak_smallest_radius) / 
 const freak_radii = [freak_largest_radius, freak_largest_radius - 6 * freak_circular_spacing, freak_largest_radius - 11 * freak_circular_spacing, 
                      freak_largest_radius - 15 * freak_circular_spacing, freak_largest_radius - 18 * freak_circular_spacing, 
                      freak_largest_radius - 20 * freak_circular_spacing, freak_smallest_radius, 0]
+
+const freak_num_scales = 64
