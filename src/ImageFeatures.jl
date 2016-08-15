@@ -12,7 +12,7 @@ include("brief.jl")
 include("orb.jl")
 include("freak.jl")
 
-export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB
+export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB, FREAK
 
 export 
 	#Core

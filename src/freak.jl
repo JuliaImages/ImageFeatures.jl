@@ -5,7 +5,7 @@ end
 
 typealias SamplePair Vector{Float64}
 
-function FREAK(; pattern_scale::Float64 = 22, octaves::Int = 4)
+function FREAK(; pattern_scale::Float64 = 22.0, octaves::Int = 4)
     FREAK(pattern_scale, octaves)
 end
 
@@ -40,10 +40,10 @@ function _freak_tables(pattern_scale::Float64, scale_step::Float64)
         push!(smoothing_table, sigmas)
         push!(window_sizes, largest_window)
     end
-    pattern_table, smoothing_table
+    pattern_table, smoothing_table, window_sizes
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK)
     scale_step = 2 ^ (params.octaves / freak_num_scales)
-    pattern_table, smoothing_table = _freak_tables(params.pattern_scale, scale_step)
+    pattern_table, smoothing_table, window_sizes = _freak_tables(params.pattern_scale, scale_step)
 end
