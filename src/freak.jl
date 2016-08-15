@@ -9,7 +9,21 @@ function FREAK(; pattern_scale::Float64 = 22.0, octaves::Int = 4)
     FREAK(pattern_scale, octaves)
 end
 
-function _freak_orientation()
+function _freak_orientation{T<:Gray}(img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair})
+    direction_sum_y = 0.0
+    direction_sum_x = 0.0
+    for o in freak_orientation_sampling_pattern
+        offset_1 = round(Int, pattern[o[1]])
+        offset_2 = round(Int, pattern[o[2]])
+        point_1 = keypoint + CartesianIndex(offset_1[1], offset_1[2])
+        point_2 = keypoint + CartesianIndex(offset_2[1], offset_2[2])
+        intensity_diff = img[point_1] - img[point_2]
+        dy, dx = offset_1 - offset_2
+        norm = (dx ^ 2 + dy ^ 2) ^ 0.5
+        direction_sum_y += dy * intensity_diff / norm
+        direction_sum_x += dx * intensity_diff / norm
+    end
+    atan2(direction_sum_y, direction_sum_x)
 end
 
 function _freak_mean_intensity()
@@ -29,8 +43,8 @@ function _freak_tables(pattern_scale::Float64, scale_step::Float64)
                 alt_offset = (pi / n) * ((i - 1) % 2)
                 angle = (circle_number * 2 * pi / n) + alt_offset
 
-                push!(pattern, SamplePair([freak_radii[i] * cos(angle) * scale_factor * pattern_scale, 
-                                            freak_radii[i] * sin(angle) * scale_factor * pattern_scale]))
+                push!(pattern, SamplePair([freak_radii[i] * sin(angle) * scale_factor * pattern_scale, 
+                                            freak_radii[i] * cos(angle) * scale_factor * pattern_scale]))
                 push!(sigmas, freak_sigma[i] * scale_factor * pattern_scale)
 
                 largest_window = max(ceil(Int, (freak_radii[i] + freak_sigma[i]) * scale_factor * pattern_scale) + 1, largest_window)
