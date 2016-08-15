@@ -95,3 +95,5 @@ const freak_radii = [freak_largest_radius, freak_largest_radius - 6 * freak_circ
                      freak_largest_radius - 20 * freak_circular_spacing, freak_smallest_radius, 0]
 
 const freak_num_scales = 64
+
+const freak_sigma = freak_radii / 2
