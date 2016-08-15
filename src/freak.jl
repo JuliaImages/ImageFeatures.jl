@@ -9,7 +9,7 @@ function FREAK(; pattern_scale::Float64 = 22.0, octaves::Int = 4)
     FREAK(pattern_scale, octaves)
 end
 
-function _freak_orientation{T<:Gray}(img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair})
+function _freak_orientation{T<:Gray}(img::AbstractArray{T, 2}, int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair})
     direction_sum_y = 0.0
     direction_sum_x = 0.0
     for o in freak_orientation_sampling_pattern
@@ -26,7 +26,7 @@ function _freak_orientation{T<:Gray}(img::AbstractArray{T, 2}, keypoint::Keypoin
     atan2(direction_sum_y, direction_sum_x)
 end
 
-function _freak_mean_intensity()
+function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, )
 end
 
 function _freak_tables(pattern_scale::Float64, scale_step::Float64)
@@ -60,4 +60,21 @@ end
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK)
     scale_step = 2 ^ (params.octaves / freak_num_scales)
     pattern_table, smoothing_table, window_sizes = _freak_tables(params.pattern_scale, scale_step)
+    int_img = integral_image(img)
+    descriptors = BitArray[]
+    for k in keypoints
+        orientation = _freak_orientation(img, int_img, k, pattern_table[TEMP])
+        sin_angle = sin(orientation)
+        cos_angle = cos(orientation)
+        sampled_intensities = T[]
+        
+        descriptor = falses(512)
+        for (i, f) in enumerate(freak_sampling_pattern)
+            point_1 = sampled_intensities[f[1]]
+            point_2 = sampled_intensities[f[2]]
+            descriptor[i] = point_1 < point_2
+        end
+        push!(descriptors, descriptor)
+    end
+    descriptors
 end
