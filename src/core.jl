@@ -1,5 +1,4 @@
-abstract Detector
-abstract DescriptorParams
+abstract Params
 
 """
 ```
