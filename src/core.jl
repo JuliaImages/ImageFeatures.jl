@@ -2,19 +2,53 @@ abstract Params
 
 """
 ```
-keypoint = Keypoint(y, x)
+feature = Feature(keypoint, orientation = 0.0, scale = 0.0)
 ```
 
-The `Keypoint` type.
+The `Feature` type has the keypoint, its orientation and its scale.
+"""
+immutable Feature
+    keypoint::Keypoint
+    orientation::Float64
+    scale::Float64
+end
+
+Feature(k::Keypoint) = Feature(k, 0.0, 0.0)
+
+Feature(k::Keypoint, ori::Float64) = Feature(k, ori, 0.0)
+
+"""
+```
+features = Features(boolean_img)
+features = Features(keypoints)
+```
+
+Returns a `Vector{Feature}` of features generated from the `true` values in a boolean image or from a 
+list of keypoints.
+"""
+typealias Features Vector{Feature}
+
+Features(keypoints::Keypoints) = map(k -> Feature(k), keypoints)
+
+Features(img::AbstractArray) = Features(Keypoints(img))
+
+"""
+```
+keypoint = Keypoint(y, x)
+keypoint = Keypoint(feature)
+```
+
+A `Keypoint` may be created by passing the coordinates of the point or from a feature.
 """
 typealias Keypoint CartesianIndex{2}
 
 """
 ```
 keypoints = Keypoints(boolean_img)
+keypoints = Keypoints(features)
 ```
 
-Creates a `Vector{Keypoint}` of the true values in the `boolean_img`.
+Creates a `Vector{Keypoint}` of the `true` values in a boolean image or from a list of features.
 """
 typealias Keypoints Vector{CartesianIndex{2}}
 
@@ -22,6 +56,10 @@ function Keypoints(img::AbstractArray)
     r, c, _ = findnz(img)
     map((ri, ci) -> Keypoint(ri, ci), r, c)
 end
+
+Keypoints(features::Features) = map(f -> f.keypoint, features)        
+
+Keypoint(feature::Feature) = feature.keypoint
 
 """
 ```
