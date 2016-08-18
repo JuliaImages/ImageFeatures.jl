@@ -8,7 +8,7 @@ notifications:
     email: false
 script:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-    - julia -e 'Pkg.clone(pwd()); Pkg.checkout("Images"); Pkg.build("ImageFeatures")'
+    - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
     - julia -e 'Pkg.test("ImageFeatures", coverage=true)'
 after_success:
     - if [ $TRAVIS_OS_NAME = "linux" ]; then
