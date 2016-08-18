@@ -1,8 +1,8 @@
-type FREAK{S, T, O, N} <: DescriptorParams
+type FREAK{S, T, O} <: DescriptorParams
     pattern_scale::Float64
-    pattern_table::Array{S, N}
-    smoothing_table::Array{T, N}
-    orientation_weights::Array{O}
+    pattern_table::Array{Array{S, 1}, 1}
+    smoothing_table::Array{T, 1}
+    orientation_weights::Array{O, 1}
 end
 
 typealias OrientationPair Vector{Int}
@@ -56,8 +56,8 @@ function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Key
 end
 
 function _freak_tables(pattern_scale::Float64)
-    pattern_table = Array{SamplePair}[]
-    smoothing_table = Array{Float64}[]
+    pattern_table = Vector{SamplePair}[]
+    smoothing_table = Vector{Float64}[]
     for ori in 0:freak_orientation_steps - 1
         theta = ori * 2 * pi / freak_orientation_steps 
         pattern = SamplePair[]
@@ -80,7 +80,7 @@ end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK)
     int_img = integral_image(img)
-    descriptors = BitArray[]
+    descriptors = BitArray{1}[]
     ret_keypoints = Keypoint[]
     window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.patternScale) + 1
     tl_lim = CartesianIndex(-window_size, -window_size)
