@@ -16,6 +16,17 @@ facts("ORB") do
         img_array_1 = convert(Array{Gray}, img)
         img_array_2 = _warp(img_array_1, pi / 4)
 
+        #Test Number of Keypoints returned
+        orb_params = ORB(num_keypoints = 1000, threshold = 0.1)
+        desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
+        @fact length(desc_1) --> 1000
+        orb_params = ORB(num_keypoints = 500, threshold = 0.1)
+        desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
+        @fact length(desc_1) --> 500
+        orb_params = ORB(num_keypoints = 300, threshold = 0.1)
+        desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
+        @fact length(desc_1) --> 300
+
         orb_params = ORB(num_keypoints = 1000)
 
         desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
