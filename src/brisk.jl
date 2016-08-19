@@ -52,11 +52,11 @@ function _brisk_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::
     intensity / ((xst - xs) * (yst - ys))
 end
 
-function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair}, 
-                                        orientation_weights::Array{OrientationPair}, sigmas::Array{Float64})
+function _brisk_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair}, 
+                                        orientation_weights::Array{OrientationPair}, sigmas::Array{Float64}, long_pairs::Array{OrientationPair})
     direction_sum_y = 0.0
     direction_sum_x = 0.0
-    for (i, o) in enumerate(freak_orientation_sampling_pattern)
+    for (i, o) in enumerate(long_pairs)
         offset_1 = pattern[o[1]]
         offset_2 = pattern[o[2]]
         intensity_diff = _freak_mean_intensity(int_img, k, offset_1, sigmas[o[1]]) - _freak_mean_intensity(int_img, k, offset_2, sigmas[o[2]])
@@ -64,7 +64,7 @@ function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Key
         direction_sum_x += orientation_weights[i] * intensity_diff / 4096
     end
     angle = atan2(direction_sum_y, direction_sum_x)
-    scaled_angle = round(Int, (angle + pi) * freak_orientation_steps / (2 * pi))
+    scaled_angle = round(Int, (angle + pi) * brisk_orientation_steps / (2 * pi))
     scaled_angle
 end
 
@@ -90,32 +90,6 @@ function _brisk_tables(pattern_scale::Float64)
     pattern_table, smoothing_table
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK)
-    int_img = integral_image(img)
-    descriptors = BitArray[]
-    ret_keypoints = Keypoint[]
-    window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.patternScale) + 1
-    tl_lim = CartesianIndex(-window_size, -window_size)
-    br_lim = CartesianIndex(window_size, window_size)
-    for k in keypoints
-        checkbounds(Bool, img, k + tl_lim) && checkbounds(Bool, img, k + br_lim) || continue
-        orientation = _freak_orientation(int_img, k, pattern_table[1], params.orientation_weights, smoothing_table[1])
-        sampled_intensities = T[]
-        for (i, p) in enumerate(pattern_table[orientation])
-            push!(sampled_intensities, _freak_mean_intensity(int_img, k, p[i], smoothing_table[orientation][i]))
-        end
-        descriptor = falses(512)
-        for (i, f) in enumerate(freak_sampling_pattern)
-            point_1 = sampled_intensities[f[1]]
-            point_2 = sampled_intensities[f[2]]
-            descriptor[i] = point_1 < point_2
-        end
-        push!(descriptors, descriptor)
-        push!(ret_keypoints, k)
-    end
-    descriptors, ret_keypoints
-end
-
 function extract_features{T<:Gray}(img::AbstractArray{T, 2}, params::BRISK)
 	
 end
@@ -126,5 +100,27 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::BRISK)
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, features::Array{Feature}, params::BRISK)
-	
+    int_img = integral_image(img)
+    descriptors = BitArray[]
+    ret_keypoints = Keypoint[]
+    window_size = ceil(Int, (brisk_radii[1] + brisk_sigma[1]) * params.patternScale) + 1
+    tl_lim = CartesianIndex(-window_size, -window_size)
+    br_lim = CartesianIndex(window_size, window_size)
+    for k in keypoints
+        checkbounds(Bool, img, k + tl_lim) && checkbounds(Bool, img, k + br_lim) || continue
+        orientation = _brisk_orientation(int_img, k, pattern_table[1], params.orientation_weights, smoothing_table[1], params.long_pairs)
+        sampled_intensities = T[]
+        for (i, p) in enumerate(pattern_table[orientation])
+            push!(sampled_intensities, _brisk_mean_intensity(int_img, k, p[i], smoothing_table[orientation][i]))
+        end
+        descriptor = falses(size(params.short_pairs, 1))
+        for (i, f) in enumerate(params.short_pairs)
+            point_1 = sampled_intensities[f[1]]
+            point_2 = sampled_intensities[f[2]]
+            descriptor[i] = point_1 < point_2
+        end
+        push!(descriptors, descriptor)
+        push!(ret_keypoints, k)
+    end
+    descriptors, ret_keypoints	
 end
