@@ -1,10 +1,12 @@
-type BRISK{S, T, O, N} <: Params
+type BRISK{S, T, O} <: Params
 	threshold::Float64
 	octaves::Int
 	pattern_scale::Float64
-    pattern_table::Array{S, N}
-    smoothing_table::Array{T, N}
+    pattern_table::Array{Array{S}, 1}
+    smoothing_table::Array{T, 1}
     orientation_weights::Array{O, 1}
+    short_pairs::Array{O}
+    long_pairs::Array{O}
 end
 
 typealias OrientationPair Vector{Int}
@@ -13,17 +15,26 @@ typealias SamplePair Vector{Float64}
 function BRISK(; threshold::Float64 = 0.25, octaves::Int = 4, pattern_scale = 1.0)
     pattern_table, smoothing_table = _brisk_tables(pattern_scale)
     orientation_weights = OrientationPair[]
-    for o in freak_orientation_sampling_pattern
-        offset_1 = pattern_table[1][o[1]]
-        offset_2 = pattern_table[1][o[2]]
-        dy, dx = offset_1 - offset_2
-        norm = (dx ^ 2 + dy ^ 2)
-        push!(orientation_weights, OrientationPair([round(Int, dy * 4096 / norm), round(Int, dx * 4096 / norm)]))
+    short_pairs = SamplePair[]
+    long_pairs = SamplePair[]
+    dminsq = (brisk_dmin ^ 2) * pattern_scale
+    dmaxsq = (brisk_dmax ^ 2) * pattern_scale
+    for i in 2:brisk_points
+        for j in 1:i - 1
+            dy, dx = pattern_table[1][j] - pattern_table[1][i]
+            norm = dy ^ 2 + dx ^ 2
+            if norm > dminsq
+                push!(long_pairs, OrientationPair(j, i))
+                push!(orientation_weights, OrientationPair([round(Int, dy * 4096 / norm), round(Int, dx * 4096 / norm)]))
+            elseif norm < dmaxsq
+                push!(short_pairs, OrientationPair(j, i))
+            end
+        end
     end
-    BRISK(threshold, octaves, pattern_scale, pattern_table, smoothing_table, orientation_weights)
+    BRISK(threshold, octaves, pattern_scale, pattern_table, smoothing_table, orientation_weights, short_pairs, long_pairs)
 end
 
-function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float64)
+function _brisk_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float64)
     y = k[1] + offset[1]
     x = k[2] + offset[2]
     if sigma < 0.5
