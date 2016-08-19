@@ -22,21 +22,17 @@ function FREAK(; pattern_scale::Float64 = 22.0)
 end
 
 function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float64)
-    y = k[1] + offset[1]
-    x = k[2] + offset[2]
+    y = keypoint[1] + offset[1]
+    x = keypoint[2] + offset[2]
     if sigma < 0.5
-        tl = bilinear_interpolation(int_img, y - sigma, x - sigma)
-        tr = bilinear_interpolation(int_img, y - sigma, x + sigma)
-        bl = bilinear_interpolation(int_img, y + sigma, x)
-        br = bilinear_interpolation(int_img, y + sigma, x + sigma)
-        return (br + tl - tr - bl) / (4 * (sigma ^ 2))
+        sigma = 1.0
     end
     xs = round(Int, x - sigma)
     ys = round(Int, y - sigma)
     xst = round(Int, x + sigma)
     yst = round(Int, y + sigma)
     intensity = boxdiff(int_img, ys:yst, xs:xst)
-    intensity / ((xst - xs) * (yst - ys))
+    intensity / ((xst - xs + 1) * (yst - ys + 1))
 end
 
 function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair}, 
@@ -46,12 +42,12 @@ function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Key
     for (i, o) in enumerate(freak_orientation_sampling_pattern)
         offset_1 = pattern[o[1]]
         offset_2 = pattern[o[2]]
-        intensity_diff = _freak_mean_intensity(int_img, k, offset_1, sigmas[o[1]]) - _freak_mean_intensity(int_img, k, offset_2, sigmas[o[2]])
-        direction_sum_y += orientation_weights[i] * intensity_diff / 4096
-        direction_sum_x += orientation_weights[i] * intensity_diff / 4096
+        intensity_diff = _freak_mean_intensity(int_img, keypoint, offset_1, sigmas[o[1]]) - _freak_mean_intensity(int_img, keypoint, offset_2, sigmas[o[2]])
+        direction_sum_y += orientation_weights[i][1] * intensity_diff / 4096
+        direction_sum_x += orientation_weights[i][2] * intensity_diff / 4096
     end
     angle = atan2(direction_sum_y, direction_sum_x)
-    scaled_angle = round(Int, (angle + pi) * freak_orientation_steps / (2 * pi))
+    scaled_angle = ceil(Int, (angle + pi) * freak_orientation_steps / (2 * pi))
     scaled_angle
 end
 
@@ -82,15 +78,15 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
     int_img = integral_image(img)
     descriptors = BitArray{1}[]
     ret_keypoints = Keypoint[]
-    window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.patternScale) + 1
+    window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.pattern_scale) + 1
     tl_lim = CartesianIndex(-window_size, -window_size)
     br_lim = CartesianIndex(window_size, window_size)
     for k in keypoints
         checkbounds(Bool, img, k + tl_lim) && checkbounds(Bool, img, k + br_lim) || continue
-        orientation = _freak_orientation(int_img, k, pattern_table[1], params.orientation_weights, smoothing_table[1])
+        orientation = _freak_orientation(int_img, k, params.pattern_table[1], params.orientation_weights, params.smoothing_table[1])
         sampled_intensities = T[]
-        for (i, p) in enumerate(pattern_table[orientation])
-            push!(sampled_intensities, _freak_mean_intensity(int_img, k, p[i], smoothing_table[orientation][i]))
+        for (i, p) in enumerate(params.pattern_table[orientation])
+            push!(sampled_intensities,  _freak_mean_intensity(int_img, k, p, params.smoothing_table[orientation][i]))
         end
         descriptor = falses(512)
         for (i, f) in enumerate(freak_sampling_pattern)
