@@ -53,6 +53,7 @@ include("glcm.jl")
 include("lbp.jl")
 include("corner.jl")
 include("orb.jl")
+include("freak.jl")
 
 isinteractive() || FactCheck.exitstatus()
 
