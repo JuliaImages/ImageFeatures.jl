@@ -1,0 +1,32 @@
+site_name: ImageFeatures.jl
+site_description: Feature Extraction and Description for JuliaImages
+site_author: Anchit Navelkar
+repo_url: https://github.com/JuliaImages/ImageFeatures.jl.git
+repo_name: GitHub
+use_directory_urls: true
+
+theme: material
+extra:
+  palette:
+    primary: 'indigo'
+    accent: 'light blue'
+  font:
+    text: 'Source Pro'
+    code: 'Source Code Pro'
+
+extra_css:
+  - assets/Documenter.css
+
+extra_javascript:
+  - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+  - assets/mathjaxhelper.js
+
+markdown_extensions:
+  - extra
+  - tables
+  - fenced_code
+
+docs_dir: build
+
+pages:
+- Function Reference: function_reference.md
