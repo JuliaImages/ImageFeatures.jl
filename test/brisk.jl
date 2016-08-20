@@ -19,6 +19,7 @@ facts("BRISK") do
 
         desc_1, ret_features_1 = create_descriptor(img_array_1, features_1, brisk_params)
         desc_2, ret_features_2 = create_descriptor(img_array_2, features_2, brisk_params)
+        
         matches = match_keypoints(Keypoints(ret_features_1), Keypoints(ret_features_2), desc_1, desc_2, 0.1)
         reverse_keypoints_1 = [_reverserotate(m[1], pi / 4, (256, 384)) for m in matches]
         @fact all(isapprox(rk[1], m[2][1], atol = 4) && isapprox(rk[2], m[2][2], atol = 4) for (rk, m) in zip(reverse_keypoints_1, matches)) --> true
