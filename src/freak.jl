@@ -7,7 +7,7 @@ freak_params = FREAK([pattern_scale = 22.0])
 |----------|------|-------------|
 | **pattern_scale** | Float64 | Scaling factor for the sampling window | 
 """
-type FREAK{S, T, O} <: DescriptorParams
+type FREAK{S, T, O} <: Params
     pattern_scale::Float64
     pattern_table::Array{Array{S, 1}, 1}
     smoothing_table::Array{T, 1}
