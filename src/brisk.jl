@@ -1,7 +1,7 @@
 type BRISK{S, T, O} <: Params
-	threshold::Float64
-	octaves::Int
-	pattern_scale::Float64
+    threshold::Float64
+    octaves::Int
+    pattern_scale::Float64
     pattern_table::Vector{Vector{S}}
     smoothing_table::Vector{T}
     orientation_weights::Vector{O}
@@ -94,7 +94,7 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, features::Array{Fe
             descriptor[i] = point_1 < point_2
         end
         push!(descriptors, descriptor)
-        push!(ret_features, feature)
+        push!(ret_features, Feature(keypoint, orientation))
     end
-    descriptors, ret_features	
+    descriptors, ret_features   
 end
