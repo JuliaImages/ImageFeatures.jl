@@ -5,7 +5,7 @@ repo_url: https://github.com/JuliaImages/ImageFeatures.jl.git
 repo_name: GitHub
 use_directory_urls: true
 
-# theme: material
+theme: material
 extra:
   palette:
     primary: 'indigo'
@@ -29,4 +29,20 @@ markdown_extensions:
 docs_dir: 'build'
 
 pages:
-- Function Reference: function_reference.md
+  - Home: index.md
+  - Tutorials:
+    - Edges: tutorials/edges.md
+    - Corners: tutorials/corners.md
+    - Gray Level Co-occurence Matrix: tutorial/glcm.md
+    - Local Binary Patterns: tutorial/lbp.md
+    - Feature Matching: tutorials/feature_matching.md
+    - BRIEF: tutorials/brief.md
+    - ORB: tutorials/orb.md
+    - CENSURE: tutorials/censure.md
+    - BRISK: tutorials/brisk.md
+    - FREAK: tutorials/freak.md
+  - Function Reference: function_reference.md
+  - Contributing: CONTRIBUTING.md
+  - About:
+    - Release Notes: about/release_notes.md
+    - License: about/LICENSE.md
