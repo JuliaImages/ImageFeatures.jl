@@ -42,7 +42,7 @@
         }, 
         {
             "location": "/tutorials/brief/", 
-            "text": "BRIEF\n (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the \nSxS\n patch.\n\n\nTo build a BRIEF descriptor of length \nn\n, we need to determine \nn\n pairs \n(Xi,Yi)\n. Denote by \nX\n and \nY\n the vectors of point \nXi\n and \nYi\n, respectively.\n\n\nIn ImageFeatures.jl we have five methods to determine the vectors \nX\n and \nY\n : - [\nrandom_uniform\n] : \nX\n and \nY\n are randomly uniformly sampled - [\ngaussian\n] : \nX\n and \nY\n are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred - [\ngaussian_local\n] : \nX\n and \nY\n are randomly sampled using a Gaussian distribution where first \nX\n is sampled with a standard deviation of \n0.04*S^2\n and then the \nYi\u2019s\n are sampled using a Gaussian distribution \u2013 Each \nYi\n is sampled with mean \nXi\n and standard deviation of \n0.01 * S^2\n - [\nrandom_coarse\n] : \nX and\nY\nare randomly sampled from discrete location of a coarse polar grid - [\ncentered\n] : For each\ni\n,\nXi\nis\n(0, 0)\nand\nYi` takes all possible values on a coarse polar grid\n\n\nAs with all the binary descriptors, BRIEF\u2019s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.\n\n\nBRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see \nORB\n, \nBRISK\n and \nFREAK\n.", 
+            "text": "BRIEF\n (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the \nSxS\n patch.\n\n\nTo build a BRIEF descriptor of length \nn\n, we need to determine \nn\n pairs \n(Xi,Yi)\n. Denote by \nX\n and \nY\n the vectors of point \nXi\n and \nYi\n, respectively.\n\n\nIn ImageFeatures.jl we have five methods to determine the vectors \nX\n and \nY\n : - \nrandom_uniform\n : \nX\n and \nY\n are randomly uniformly sampled - \ngaussian\n : \nX\n and \nY\n are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred - \ngaussian_local\n : \nX\n and \nY\n are randomly sampled using a Gaussian distribution where first \nX\n is sampled with a standard deviation of \n0.04*S^2\n and then the \nYi\u2019s\n are sampled using a Gaussian distribution \u2013 Each \nYi\n is sampled with mean \nXi\n and standard deviation of \n0.01 * S^2\n - \nrandom_coarse\n : \nX\n and \nY\n are randomly sampled from discrete location of a coarse polar grid - \ncentered\n : For each \ni\n, \nXi\n is \n(0, 0)\n and \nYi\n takes all possible values on a coarse polar grid\n\n\nAs with all the binary descriptors, BRIEF\u2019s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.\n\n\nBRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see \nORB\n, \nBRISK\n and \nFREAK\n.", 
             "title": "BRIEF"
         }, 
         {
@@ -122,7 +122,7 @@
         }, 
         {
             "location": "/tutorials/lbp/", 
-            "text": "Local Binary Pattern (LBP)\n is a very efficient texture operator which labels the pixels of an image by thresholding the neighborhood of each pixel and considers the result as a binary number. The LBP feature vector, in its simplest form, is created in the following manner :\n\n\n\n\n\n\nDivide the examined window into cells (e.g. 16x16 pixels for each cell).\n\n\nFor each pixel in a cell, compare the pixel to each of its 8 neighbors (on its left-top, left-middle, left-bottom, right-top, etc.). Follow the pixels along a circle, i.e. clockwise or counterclockwise.\n\n\nIn the above step, the neighbours considered can be changed by varying the radius of the circle around the pixel, R and the quantisation of the angular space P.\n\n\nWhere the center pixel's value is greater than the neighbor's value, write \"0\". Otherwise, write \"1\". This gives an 8-digit binary number (which is usually converted to decimal for convenience).\n\n\nCompute the histogram, over the cell, of the frequency of each \"number\" occurring (i.e., each combination of which pixels are smaller and which are greater than the center). This histogram can be seen as a 256-dimensional feature vector.\n\n\nOptionally normalize the histogram.\n\n\nConcatenate (normalized) histograms of all cells. This gives a feature vector for the entire window.\n\n\n\n\nThe feature vector can now then be processed using some machine-learning algorithm to classify images. Such classifiers are often used for face recognition or texture analysis.\n\n\n\n\nTypes of Local Binary Patterns in ImageFeatures.jl\n\n\nImageFeatures.jl provides the following types of local binary patterns :\n\n\n\n\n[\nlbp\n]\n\n\nThe original local binary patterns \n\n\n\n\n[\nmodified_lbp\n]\n\n\n\n\n[\ndirection_coded_lbp\n]\n\n\n\n\n[\nmulti_block_lbp\n]", 
+            "text": "Local Binary Pattern (LBP)\n is a very efficient texture operator which labels the pixels of an image by thresholding the neighborhood of each pixel and considers the result as a binary number. The LBP feature vector, in its simplest form, is created in the following manner :\n\n\n\n\n\n\nDivide the examined window into cells (e.g. 16x16 pixels for each cell).\n\n\nFor each pixel in a cell, compare the pixel to each of its 8 neighbors (on its left-top, left-middle, left-bottom, right-top, etc.). Follow the pixels along a circle, i.e. clockwise or counterclockwise.\n\n\nIn the above step, the neighbours considered can be changed by varying the radius of the circle around the pixel, R and the quantisation of the angular space P.\n\n\nWhere the center pixel's value is greater than the neighbor's value, write \"0\". Otherwise, write \"1\". This gives an 8-digit binary number (which is usually converted to decimal for convenience).\n\n\nCompute the histogram, over the cell, of the frequency of each \"number\" occurring (i.e., each combination of which pixels are smaller and which are greater than the center). This histogram can be seen as a 256-dimensional feature vector.\n\n\nOptionally normalize the histogram.\n\n\nConcatenate (normalized) histograms of all cells. This gives a feature vector for the entire window.\n\n\n\n\nThe feature vector can now then be processed using some machine-learning algorithm to classify images. Such classifiers are often used for face recognition or texture analysis.\n\n\n\n\nTypes of Local Binary Patterns in ImageFeatures.jl\n\n\nImageFeatures.jl provides the following types of local binary patterns :\n\n\n\n\nlbp\n\n\nThe original local binary patterns \n\n\n\n\nmodified_lbp\n\n\n\n\ndirection_coded_lbp\n\n\n\n\nmulti_block_lbp", 
             "title": "Local Binary Patterns"
         }, 
         {
@@ -133,22 +133,22 @@
         {
             "location": "/tutorials/lbp/#lbp", 
             "text": "The original local binary patterns", 
-            "title": "[lbp]"
+            "title": "lbp"
         }, 
         {
             "location": "/tutorials/lbp/#modified_lbp", 
             "text": "", 
-            "title": "[modified_lbp]"
+            "title": "modified_lbp"
         }, 
         {
             "location": "/tutorials/lbp/#direction_coded_lbp", 
             "text": "", 
-            "title": "[direction_coded_lbp]"
+            "title": "direction_coded_lbp"
         }, 
         {
             "location": "/tutorials/lbp/#multi_block_lbp", 
             "text": "", 
-            "title": "[multi_block_lbp]"
+            "title": "multi_block_lbp"
         }, 
         {
             "location": "/function_reference/", 

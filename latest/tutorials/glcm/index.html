@@ -348,7 +348,7 @@
           
           <p><em>Gray Level Co-occurrence Matrix (GLCM)</em> is used for texture analysis. We consider two pixels at a time, called the reference and the neighbour pixel. We define a particular spatial relationship between the reference and neighbour pixel before calculating the GLCM. For eg, we may define the neighbour to be 1 pixel to the right of the current pixel, or it can be 3 pixels above, or 2 pixels diagonally (one of NE, NW, SE, SW) from the reference. </p>
 <p>Once a spatial relationship is defined, we create a GLCM of size (Range of Intensities x Range of Intensities) all initialised to <code>0</code>. For eg, a <code>8</code> bit single channel Image will have a <code>256x256</code> GLCM. We then traverse through the image and for every pair of intensities we find for the defined spatial relationship, we increment that cell of the matrix. </p>
-<p><img alt="Gray Level Co-occurence Matrix" src="../../img/glcm.png" title="= 50x50" /></p>
+<p><img alt="Gray Level Co-occurence Matrix" src="../../img/glcm.png" /></p>
 <p>Each entry of the GLCM[i,j] holds the count of the number of times that pair of intensities appears in the image with the defined spatial relationship.</p>
 <p>The matrix may be made symmetrical by adding it to its transpose and normalised to that each cell expresses the probability of that pair of intensities occurring in the image.</p>
 <p>Once the GLCM is calculated, we can find texture properties from the matrix to represent the textures in the image.</p>
