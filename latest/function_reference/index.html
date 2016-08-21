@@ -291,12 +291,6 @@
             </li>
           
             <li class="anchor">
-              <a title="Edges" href="#edges">
-                Edges
-              </a>
-            </li>
-          
-            <li class="anchor">
               <a title="Corners" href="#corners">
                 Corners
               </a>
@@ -394,8 +388,6 @@ BRISK
 FREAK
 </code></pre>
 
-<p><a id='Edges-1'></a></p>
-<h2 id="edges">Edges</h2>
 <p><a id='Corners-1'></a></p>
 <h2 id="corners">Corners</h2>
 <p><a id='ImageFeatures.corner_orientations' href='#ImageFeatures.corner_orientations'>#</a>
@@ -410,16 +402,44 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>The kernel used for the patch can be given through the <code>kernel</code> argument.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/75fe41c7ed3013073474be91f5016a7ca648e2a4/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/13c4417d5609781fbfbcd6b01abbfc4ab450914e/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
 <p><a id='BRIEF-Sampling-Patterns-1'></a></p>
 <h2 id="brief-sampling-patterns">BRIEF Sampling Patterns</h2>
-<pre><code>random_uniform
-random_coarse
-gaussian
-gaussian_local
-centered
+<p><a id='ImageFeatures.random_uniform' href='#ImageFeatures.random_uniform'>#</a>
+<strong><code>ImageFeatures.random_uniform</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>sample_one, sample_two = random_uniform(size, window, seed)
 </code></pre>
 
+<p>Builds sampling pairs using random uniform sampling.</p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/13c4417d5609781fbfbcd6b01abbfc4ab450914e/src/brief.jl#L27-L33' class='documenter-source'>source</a><br></p>
+<p><a id='ImageFeatures.random_coarse' href='#ImageFeatures.random_coarse'>#</a>
+<strong><code>ImageFeatures.random_coarse</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>sample_one, sample_two = random_coarse(size, window, seed)
+</code></pre>
+
+<p>Builds sampling pairs using random sampling over a coarse grid.</p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/13c4417d5609781fbfbcd6b01abbfc4ab450914e/src/brief.jl#L54-L60' class='documenter-source'>source</a><br></p>
+<p><a id='ImageFeatures.gaussian' href='#ImageFeatures.gaussian'>#</a>
+<strong><code>ImageFeatures.gaussian</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>sample_one, sample_two = gaussian(size, window, seed)
+</code></pre>
+
+<p>Builds sampling pairs using gaussian sampling.</p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/13c4417d5609781fbfbcd6b01abbfc4ab450914e/src/brief.jl#L73-L79' class='documenter-source'>source</a><br></p>
+<p><a id='ImageFeatures.gaussian_local' href='#ImageFeatures.gaussian_local'>#</a>
+<strong><code>ImageFeatures.gaussian_local</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>sample_one, sample_two = gaussian_local(size, window, seed)
+</code></pre>
+
+<p>Pairs <code>(Xi, Yi)</code> are randomly sampled using a Gaussian distribution where first <code>X</code> is sampled with a standard deviation of <code>0.04*S^2</code> and  then the <code>Yi’s</code> are sampled using a Gaussian distribution – Each <code>Yi</code> is sampled with mean <code>Xi</code> and standard deviation of <code>0.01 * S^2</code></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/13c4417d5609781fbfbcd6b01abbfc4ab450914e/src/brief.jl#L99-L106' class='documenter-source'>source</a><br></p>
+<p><a id='ImageFeatures.centered' href='#ImageFeatures.centered'>#</a>
+<strong><code>ImageFeatures.centered</code></strong> &mdash; <em>Function</em>.</p>
+<pre><code>sample_one, sample_two = centered(size, window, seed)
+</code></pre>
+
+<p>Builds sampling pairs <code>(Xi, Yi)</code> where <code>Xi</code> is <code>(0, 0)</code> and <code>Yi</code> is sampled uniformly from the window.</p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/13c4417d5609781fbfbcd6b01abbfc4ab450914e/src/brief.jl#L128-L134' class='documenter-source'>source</a><br></p>
 <p><a id='Feature-Extraction-1'></a></p>
 <h2 id="feature-extraction">Feature Extraction</h2>
 <p><a id='Feature-Description-1'></a></p>
