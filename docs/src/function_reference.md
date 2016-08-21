@@ -1,9 +1,93 @@
 # Function Reference
 
-Below, `[]` in an argument list means an optional argument.
+Below `[]` in an argument list means an optional argument.
 
 TEST TEST
 
 # Types
 
-Hello this is a test.
+```@docs
+Keypoint
+Keypoints
+Feature
+Features
+BRIEF
+ORB
+CENSURE
+BRISK
+FREAK
+```
+
+# Edges
+
+```@docs
+
+```
+
+# Corners
+
+```@docs
+corner_orientations
+```
+
+# Gray Level Co-occurence Matrix
+
+```@docs
+glcm
+glcm_symmetric
+glcm_norm
+glcm_prop
+max_prob
+contrast
+ASM
+IDM
+glcm_entropy
+energy
+contrast
+dissimilarity
+correlation
+glcm_mean_ref
+glcm_mean_neighbour
+glcm_var_ref
+glcm_var_neighbour
+```
+
+# Local Binary Patterns
+
+```@docs
+lbp
+modified_lbp
+direction_coded_lbp
+lbp_original
+lbp_uniform
+lbp_rotation_invariant
+multi_block_lbp
+```
+
+# BRIEF Sampling Patterns
+
+```@docs
+random_uniform
+random_coarse
+gaussian
+gaussian_local
+centered
+```
+
+# Feature Extraction
+
+```@docs
+```
+
+# Feature Description
+
+```@docs
+create_descriptor
+```
+
+# Feature Matching
+
+```@docs
+hamming_distance
+match_keypoints
+```
