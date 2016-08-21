@@ -33,8 +33,8 @@ pages:
   - Tutorials:
     - Edges: tutorials/edges.md
     - Corners: tutorials/corners.md
-    - Gray Level Co-occurence Matrix: tutorial/glcm.md
-    - Local Binary Patterns: tutorial/lbp.md
+    - Gray Level Co-occurence Matrix: tutorials/glcm.md
+    - Local Binary Patterns: tutorials/lbp.md
     - Feature Matching: tutorials/feature_matching.md
     - BRIEF: tutorials/brief.md
     - ORB: tutorials/orb.md
