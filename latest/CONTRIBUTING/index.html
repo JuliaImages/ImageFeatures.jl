@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Function Reference - ImageFeatures.jl</title>
+        <title>Contributing - ImageFeatures.jl</title>
       
       
       
@@ -96,7 +96,7 @@
             
           </span>
         
-        Function Reference
+        Contributing
       </div>
     </div>
     
@@ -274,23 +274,21 @@
           
             
   <li>
-    <a class="current" title="Function Reference" href="./">
+    <a class="" title="Function Reference" href="../function_reference/">
       Function Reference
     </a>
-    
-      
-        
-      
-      
     
   </li>
 
           
             
   <li>
-    <a class="" title="Contributing" href="../CONTRIBUTING/">
+    <a class="current" title="Contributing" href="./">
       Contributing
     </a>
+    
+      
+      
     
   </li>
 
@@ -332,93 +330,9 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='Function-Reference-1'></a></p>
-<h1 id="function-reference">Function Reference</h1>
-<p>Below <code>[]</code> in an argument list means an optional argument.</p>
-<p>TEST TEST</p>
-<p><a id='Types-1'></a></p>
-<h1 id="types">Types</h1>
-<pre><code>Keypoint
-Keypoints
-Feature
-Features
-BRIEF
-ORB
-CENSURE
-BRISK
-FREAK
-</code></pre>
-
-<p><a id='Edges-1'></a></p>
-<h1 id="edges">Edges</h1>
-<p><a id='Corners-1'></a></p>
-<h1 id="corners">Corners</h1>
-<p><a id='ImageFeatures.corner_orientations' href='#ImageFeatures.corner_orientations'>#</a>
-<strong><code>ImageFeatures.corner_orientations</code></strong> &mdash; <em>Function</em>.</p>
-<pre><code>orientations = corner_orientations(img)
-orientations = corner_orientations(img, corners)
-orientations = corner_orientations(img, corners, kernel)
-</code></pre>
-
-<p>Returns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as <code>C = (m01/m00, m10/m00)</code> where mpq is defined as -</p>
-<pre><code>mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch
-</code></pre>
-
-<p>The kernel used for the patch can be given through the <code>kernel</code> argument.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/73ac6cdb2f688b94a7a025e2a7e27c71d35e8e46/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
-<p><a id='Gray-Level-Co-occurence-Matrix-1'></a></p>
-<h1 id="gray-level-co-occurence-matrix">Gray Level Co-occurence Matrix</h1>
-<pre><code>glcm
-glcm_symmetric
-glcm_norm
-glcm_prop
-max_prob
-contrast
-ASM
-IDM
-glcm_entropy
-energy
-contrast
-dissimilarity
-correlation
-glcm_mean_ref
-glcm_mean_neighbour
-glcm_var_ref
-glcm_var_neighbour
-</code></pre>
-
-<p><a id='Local-Binary-Patterns-1'></a></p>
-<h1 id="local-binary-patterns">Local Binary Patterns</h1>
-<pre><code>lbp
-modified_lbp
-direction_coded_lbp
-lbp_original
-lbp_uniform
-lbp_rotation_invariant
-multi_block_lbp
-</code></pre>
-
-<p><a id='BRIEF-Sampling-Patterns-1'></a></p>
-<h1 id="brief-sampling-patterns">BRIEF Sampling Patterns</h1>
-<pre><code>random_uniform
-random_coarse
-gaussian
-gaussian_local
-centered
-</code></pre>
-
-<p><a id='Feature-Extraction-1'></a></p>
-<h1 id="feature-extraction">Feature Extraction</h1>
-<p><a id='Feature-Description-1'></a></p>
-<h1 id="feature-description">Feature Description</h1>
-<pre><code>create_descriptor
-</code></pre>
-
-<p><a id='Feature-Matching-1'></a></p>
-<h1 id="feature-matching">Feature Matching</h1>
-<pre><code>hamming_distance
-match_keypoints
-</code></pre>
+            <h1>Contributing</h1>
+          
+          
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -435,7 +349,7 @@ match_keypoints
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../tutorials/freak/" title="FREAK">
+        <a href="../function_reference/" title="Function Reference">
           <span class="direction">
             Previous
           </span>
@@ -445,7 +359,7 @@ match_keypoints
             </div>
             <div class="stretch">
               <div class="title">
-                FREAK
+                Function Reference
               </div>
             </div>
           </div>
@@ -454,14 +368,14 @@ match_keypoints
     </div>
     <div class="next">
       
-        <a href="../CONTRIBUTING/" title="Contributing">
+        <a href="../about/release_notes/" title="Release Notes">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Contributing
+                Release Notes
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

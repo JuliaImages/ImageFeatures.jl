@@ -3,10 +3,106 @@
 
     
     <url>
+     <loc>None/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+        
+    <url>
+     <loc>None/tutorials/edges/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/corners/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/glcm/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/lbp/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/feature_matching/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/brief/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/orb/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/censure/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/brisk/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/freak/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+    <url>
      <loc>None/function_reference/</loc>
      <lastmod>2016-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url>
+    
+
+    
+    <url>
+     <loc>None/CONTRIBUTING/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+        
+    <url>
+     <loc>None/about/release_notes/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/about/LICENSE/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
     
 
 </urlset>

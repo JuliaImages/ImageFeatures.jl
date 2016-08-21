@@ -1,19 +1,144 @@
 {
     "docs": [
         {
+            "location": "/", 
+            "text": "ImageFeatures.jl\n\n\n\n\nIntroduction\n\n\nThe ideal keypoint detector finds salient image regions such that they are repeatably detected despite change of viewpoint and more generally it is robust to all possible image transformations. Similarly, the ideal keypoint descriptor captures the most important and distinctive information content enclosed in the detected salient regions, such that the same structure can be recognized if encountered. \n\n\n\n\nInstallation\n\n\nInstalling the package is extremely easy with julia's package manager - \n\n\nPkg.clone(\nhttps://github.com/JuliaImages/ImageFeatures.jl\n)\n\n\n\n\nImageFeatures.jl requires \nImages.jl\n.", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#imagefeaturesjl", 
+            "text": "", 
+            "title": "ImageFeatures.jl"
+        }, 
+        {
+            "location": "/#introduction", 
+            "text": "The ideal keypoint detector finds salient image regions such that they are repeatably detected despite change of viewpoint and more generally it is robust to all possible image transformations. Similarly, the ideal keypoint descriptor captures the most important and distinctive information content enclosed in the detected salient regions, such that the same structure can be recognized if encountered.", 
+            "title": "Introduction"
+        }, 
+        {
+            "location": "/#installation", 
+            "text": "Installing the package is extremely easy with julia's package manager -   Pkg.clone( https://github.com/JuliaImages/ImageFeatures.jl )  ImageFeatures.jl requires  Images.jl .", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/tutorials/edges/", 
+            "text": "", 
+            "title": "Edges"
+        }, 
+        {
+            "location": "/tutorials/corners/", 
+            "text": "", 
+            "title": "Corners"
+        }, 
+        {
+            "location": "/tutorials/glcm/", 
+            "text": "", 
+            "title": "Gray Level Co-occurence Matrix"
+        }, 
+        {
+            "location": "/tutorials/lbp/", 
+            "text": "", 
+            "title": "Local Binary Patterns"
+        }, 
+        {
+            "location": "/tutorials/feature_matching/", 
+            "text": "", 
+            "title": "Feature Matching"
+        }, 
+        {
+            "location": "/tutorials/brief/", 
+            "text": "", 
+            "title": "BRIEF"
+        }, 
+        {
+            "location": "/tutorials/orb/", 
+            "text": "", 
+            "title": "ORB"
+        }, 
+        {
+            "location": "/tutorials/censure/", 
+            "text": "", 
+            "title": "CENSURE"
+        }, 
+        {
+            "location": "/tutorials/brisk/", 
+            "text": "", 
+            "title": "BRISK"
+        }, 
+        {
+            "location": "/tutorials/freak/", 
+            "text": "", 
+            "title": "FREAK"
+        }, 
+        {
             "location": "/function_reference/", 
-            "text": "Function Reference\n\n\nBelow, \n[]\n in an argument list means an optional argument.\n\n\nTEST TEST\n\n\n\n\nTypes\n\n\nHello this is a test.", 
+            "text": "Function Reference\n\n\nBelow \n[]\n in an argument list means an optional argument.\n\n\nTEST TEST\n\n\n\n\nTypes\n\n\nKeypoint\nKeypoints\nFeature\nFeatures\nBRIEF\nORB\nCENSURE\nBRISK\nFREAK\n\n\n\n\n\n\nEdges\n\n\n\n\nCorners\n\n\n#\n\n\nImageFeatures.corner_orientations\n \n \nFunction\n.\n\n\norientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)\n\n\n\n\nReturns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as \nC = (m01/m00, m10/m00)\n where mpq is defined as -\n\n\nmpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch\n\n\n\n\nThe kernel used for the patch can be given through the \nkernel\n argument.\n\n\nsource\n\n\n\n\nGray Level Co-occurence Matrix\n\n\nglcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ncontrast\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour\n\n\n\n\n\n\nLocal Binary Patterns\n\n\nlbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp\n\n\n\n\n\n\nBRIEF Sampling Patterns\n\n\nrandom_uniform\nrandom_coarse\ngaussian\ngaussian_local\ncentered\n\n\n\n\n\n\nFeature Extraction\n\n\n\n\nFeature Description\n\n\ncreate_descriptor\n\n\n\n\n\n\nFeature Matching\n\n\nhamming_distance\nmatch_keypoints", 
             "title": "Function Reference"
         }, 
         {
             "location": "/function_reference/#function-reference", 
-            "text": "Below,  []  in an argument list means an optional argument.  TEST TEST", 
+            "text": "Below  []  in an argument list means an optional argument.  TEST TEST", 
             "title": "Function Reference"
         }, 
         {
             "location": "/function_reference/#types", 
-            "text": "Hello this is a test.", 
+            "text": "Keypoint\nKeypoints\nFeature\nFeatures\nBRIEF\nORB\nCENSURE\nBRISK\nFREAK", 
             "title": "Types"
+        }, 
+        {
+            "location": "/function_reference/#edges", 
+            "text": "", 
+            "title": "Edges"
+        }, 
+        {
+            "location": "/function_reference/#corners", 
+            "text": "#  ImageFeatures.corner_orientations     Function .  orientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)  Returns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as  C = (m01/m00, m10/m00)  where mpq is defined as -  mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch  The kernel used for the patch can be given through the  kernel  argument.  source", 
+            "title": "Corners"
+        }, 
+        {
+            "location": "/function_reference/#gray-level-co-occurence-matrix", 
+            "text": "glcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ncontrast\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour", 
+            "title": "Gray Level Co-occurence Matrix"
+        }, 
+        {
+            "location": "/function_reference/#local-binary-patterns", 
+            "text": "lbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp", 
+            "title": "Local Binary Patterns"
+        }, 
+        {
+            "location": "/function_reference/#brief-sampling-patterns", 
+            "text": "random_uniform\nrandom_coarse\ngaussian\ngaussian_local\ncentered", 
+            "title": "BRIEF Sampling Patterns"
+        }, 
+        {
+            "location": "/function_reference/#feature-extraction", 
+            "text": "", 
+            "title": "Feature Extraction"
+        }, 
+        {
+            "location": "/function_reference/#feature-description", 
+            "text": "create_descriptor", 
+            "title": "Feature Description"
+        }, 
+        {
+            "location": "/function_reference/#feature-matching", 
+            "text": "hamming_distance\nmatch_keypoints", 
+            "title": "Feature Matching"
+        }, 
+        {
+            "location": "/CONTRIBUTING/", 
+            "text": "", 
+            "title": "Contributing"
+        }, 
+        {
+            "location": "/about/release_notes/", 
+            "text": "", 
+            "title": "Release Notes"
+        }, 
+        {
+            "location": "/about/LICENSE/", 
+            "text": "The ImageFeatures.jl package is licensed under the MIT \"Expat\" License:\n\n\n\n\nCopyright (c) 2016: mronian.\n\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.", 
+            "title": "License"
         }
     ]
 }
