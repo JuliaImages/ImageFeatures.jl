@@ -1,13 +1,3 @@
-type ORB <: DescriptorParams
-    num_keypoints::Int
-    n_fast::Int
-    threshold::Float64
-    harris_factor::Float64
-    downsample::Float64
-    levels::Int
-    sigma::Float64
-end
-
 """
 ```
 orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harris_factor = 0.04], [downsample = 1.3], [levels = 8], [sigma = 1.2])
@@ -23,6 +13,16 @@ orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harr
 | `levels` | `Int` | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
 | `sigma` | `Float64` | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
 """
+type ORB <: DescriptorParams
+    num_keypoints::Int
+    n_fast::Int
+    threshold::Float64
+    harris_factor::Float64
+    downsample::Float64
+    levels::Int
+    sigma::Float64
+end
+
 function ORB(; num_keypoints::Int = 500, n_fast::Int = 12, threshold::Float64 = 0.25, harris_factor::Float64 = 0.04, downsample::Real = 1.3, levels::Int = 8, sigma::Float64 = 1.2)
     ORB(num_keypoints, n_fast, threshold, harris_factor, downsample, levels, sigma)
 end

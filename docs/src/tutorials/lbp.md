@@ -1,6 +1,6 @@
 *Local Binary Pattern (LBP)* is a very efficient texture operator which labels the pixels of an image by thresholding the neighborhood of each pixel and considers the result as a binary number. The LBP feature vector, in its simplest form, is created in the following manner :
 
-![Local Binary Pattern](/img/lbp.png = 50x50)
+![Local Binary Pattern](/img/lbp.png)
 
 - Divide the examined window into cells (e.g. 16x16 pixels for each cell).
 - For each pixel in a cell, compare the pixel to each of its 8 neighbors (on its left-top, left-middle, left-bottom, right-top, etc.). Follow the pixels along a circle, i.e. clockwise or counterclockwise.
@@ -16,12 +16,12 @@ The feature vector can now then be processed using some machine-learning algorit
 
 ImageFeatures.jl provides the following types of local binary patterns :
 
-#### [`lbp`]
+#### [lbp](`lbp`)
 
 The original local binary patterns 
 
-#### [`modified_lbp`]
+#### [modified_lbp](`modified_lbp`)
 
-#### [`direction_coded_lbp`]
+#### [direction_coded_lbp](`direction_coded_lbp`)
 
-#### [`multi_block_lbp`]
+#### [multi_block_lbp](`multi_block_lbp`)
