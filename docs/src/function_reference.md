@@ -16,12 +16,6 @@ BRISK
 FREAK
 ```
 
-## Edges
-
-```@docs
-
-```
-
 ## Corners
 
 ```@docs
