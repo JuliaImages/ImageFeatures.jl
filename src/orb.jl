@@ -8,6 +8,21 @@ type ORB <: DescriptorParams
     sigma::Float64
 end
 
+"""
+```
+orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harris_factor = 0.04], [downsample = 1.3], [levels = 8], [sigma = 1.2])
+```
+
+| Argument | Type | Description |
+|----------|------|-------------|
+| `num_keypoints` | `Int` | Number of keypoints to extract and size of the descriptor calculated |
+| `n_fast` | `Int` | Number of consecutive pixels used for finding corners with FAST. See [`fastcorners`] | 
+| `threshold` | `Float64` | Threshold used to find corners in FAST. See [`fastcorners`] | 
+| `harris_factor` | `Float64` | Harris factor `k` used to rank keypoints by harris responses and extract the best ones |
+| `downsample` | `Float64` | Downsampling parameter used while building the gaussian pyramid. See [`gaussian_pyramid`] in Images.jl | 
+| `levels` | `Int` | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
+| `sigma` | `Float64` | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
+"""
 function ORB(; num_keypoints::Int = 500, n_fast::Int = 12, threshold::Float64 = 0.25, harris_factor::Float64 = 0.04, downsample::Real = 1.3, levels::Int = 8, sigma::Float64 = 1.2)
     ORB(num_keypoints, n_fast, threshold, harris_factor, downsample, levels, sigma)
 end
