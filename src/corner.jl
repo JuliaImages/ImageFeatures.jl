@@ -9,9 +9,9 @@ Returns the orientations of corner patches in an image. The orientation of a cor
 is denoted by the orientation of the vector between intensity centroid and the corner.
 The intensity centroid can be calculated as `C = (m01/m00, m10/m00)` where mpq is defined as -
 
-	mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch
+	`mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch`
 
-The kernel used for the patch can be given through the `kernel` argument.
+The kernel used for the patch can be given through the `kernel` argument. The default kernel used is a gaussian kernel of size `5x5`.
 """
 function corner_orientations{T<:Gray, K<:Real}(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2})
 	h, w = size(kernel)

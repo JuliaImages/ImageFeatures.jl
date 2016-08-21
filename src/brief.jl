@@ -1,11 +1,3 @@
-type BRIEF{F} <: DescriptorParams
-    size::Int
-    window::Int
-    sigma::Float64
-    sampling_type::F
-    seed::Int
-end
-
 """
 ```
 brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_type = gaussian], [seed = 123])
@@ -20,6 +12,14 @@ brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_ty
 | `seed` | `Int` | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. | 
 
 """
+type BRIEF{F} <: DescriptorParams
+    size::Int
+    window::Int
+    sigma::Float64
+    sampling_type::F
+    seed::Int
+end
+
 function BRIEF(; size::Integer = 128, window::Integer = 9, sigma::Float64 = 2 ^ 0.5, sampling_type::Function = gaussian, seed::Int = 123)
     BRIEF(size, window, sigma, sampling_type, seed)
 end
