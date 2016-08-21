@@ -24,13 +24,7 @@
     </url>
         
     <url>
-     <loc>None/tutorials/glcm/</loc>
-     <lastmod>2016-08-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/tutorials/lbp/</loc>
+     <loc>None/tutorials/censure/</loc>
      <lastmod>2016-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url>
@@ -54,12 +48,6 @@
     </url>
         
     <url>
-     <loc>None/tutorials/censure/</loc>
-     <lastmod>2016-08-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
      <loc>None/tutorials/brisk/</loc>
      <lastmod>2016-08-21</lastmod>
      <changefreq>daily</changefreq>
@@ -67,6 +55,18 @@
         
     <url>
      <loc>None/tutorials/freak/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/glcm/</loc>
+     <lastmod>2016-08-21</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/tutorials/lbp/</loc>
      <lastmod>2016-08-21</lastmod>
      <changefreq>daily</changefreq>
     </url>

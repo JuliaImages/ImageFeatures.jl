@@ -198,17 +198,8 @@
       
         
   <li>
-    <a class="" title="Gray Level Co-occurence Matrix" href="../tutorials/glcm/">
-      Gray Level Co-occurence Matrix
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="Local Binary Patterns" href="../tutorials/lbp/">
-      Local Binary Patterns
+    <a class="" title="CENSURE" href="../tutorials/censure/">
+      CENSURE
     </a>
     
   </li>
@@ -243,15 +234,6 @@
       
         
   <li>
-    <a class="" title="CENSURE" href="../tutorials/censure/">
-      CENSURE
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
     <a class="" title="BRISK" href="../tutorials/brisk/">
       BRISK
     </a>
@@ -263,6 +245,24 @@
   <li>
     <a class="" title="FREAK" href="../tutorials/freak/">
       FREAK
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Gray Level Co-occurence Matrix" href="../tutorials/glcm/">
+      Gray Level Co-occurence Matrix
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Local Binary Patterns" href="../tutorials/lbp/">
+      Local Binary Patterns
     </a>
     
   </li>
@@ -281,6 +281,52 @@
       
         
       
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Types" href="#types">
+                Types
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Edges" href="#edges">
+                Edges
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Corners" href="#corners">
+                Corners
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="BRIEF Sampling Patterns" href="#brief-sampling-patterns">
+                BRIEF Sampling Patterns
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Feature Extraction" href="#feature-extraction">
+                Feature Extraction
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Feature Description" href="#feature-description">
+                Feature Description
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Feature Matching" href="#feature-matching">
+                Feature Matching
+              </a>
+            </li>
+          
+        </ul>
       
     
   </li>
@@ -332,12 +378,11 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='Function-Reference-1'></a></p>
-<h1 id="function-reference">Function Reference</h1>
+          <p><a id='Feature-Extraction-and-Descriptors-1'></a></p>
+<h1 id="feature-extraction-and-descriptors">Feature Extraction and Descriptors</h1>
 <p>Below <code>[]</code> in an argument list means an optional argument.</p>
-<p>TEST TEST</p>
 <p><a id='Types-1'></a></p>
-<h1 id="types">Types</h1>
+<h2 id="types">Types</h2>
 <pre><code>Keypoint
 Keypoints
 Feature
@@ -350,9 +395,9 @@ FREAK
 </code></pre>
 
 <p><a id='Edges-1'></a></p>
-<h1 id="edges">Edges</h1>
+<h2 id="edges">Edges</h2>
 <p><a id='Corners-1'></a></p>
-<h1 id="corners">Corners</h1>
+<h2 id="corners">Corners</h2>
 <p><a id='ImageFeatures.corner_orientations' href='#ImageFeatures.corner_orientations'>#</a>
 <strong><code>ImageFeatures.corner_orientations</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>orientations = corner_orientations(img)
@@ -365,9 +410,33 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>The kernel used for the patch can be given through the <code>kernel</code> argument.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/98ddf423ed4b31534045fa2be40f543f1e5f74df/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/75fe41c7ed3013073474be91f5016a7ca648e2a4/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
+<p><a id='BRIEF-Sampling-Patterns-1'></a></p>
+<h2 id="brief-sampling-patterns">BRIEF Sampling Patterns</h2>
+<pre><code>random_uniform
+random_coarse
+gaussian
+gaussian_local
+centered
+</code></pre>
+
+<p><a id='Feature-Extraction-1'></a></p>
+<h2 id="feature-extraction">Feature Extraction</h2>
+<p><a id='Feature-Description-1'></a></p>
+<h2 id="feature-description">Feature Description</h2>
+<pre><code>create_descriptor
+</code></pre>
+
+<p><a id='Feature-Matching-1'></a></p>
+<h2 id="feature-matching">Feature Matching</h2>
+<pre><code>hamming_distance
+match_keypoints
+</code></pre>
+
+<p><a id='Texture-Matching-1'></a></p>
+<h1 id="texture-matching">Texture Matching</h1>
 <p><a id='Gray-Level-Co-occurence-Matrix-1'></a></p>
-<h1 id="gray-level-co-occurence-matrix">Gray Level Co-occurence Matrix</h1>
+<h2 id="gray-level-co-occurence-matrix">Gray Level Co-occurence Matrix</h2>
 <pre><code>glcm
 glcm_symmetric
 glcm_norm
@@ -388,7 +457,7 @@ glcm_var_neighbour
 </code></pre>
 
 <p><a id='Local-Binary-Patterns-1'></a></p>
-<h1 id="local-binary-patterns">Local Binary Patterns</h1>
+<h2 id="local-binary-patterns">Local Binary Patterns</h2>
 <pre><code>lbp
 modified_lbp
 direction_coded_lbp
@@ -396,28 +465,6 @@ lbp_original
 lbp_uniform
 lbp_rotation_invariant
 multi_block_lbp
-</code></pre>
-
-<p><a id='BRIEF-Sampling-Patterns-1'></a></p>
-<h1 id="brief-sampling-patterns">BRIEF Sampling Patterns</h1>
-<pre><code>random_uniform
-random_coarse
-gaussian
-gaussian_local
-centered
-</code></pre>
-
-<p><a id='Feature-Extraction-1'></a></p>
-<h1 id="feature-extraction">Feature Extraction</h1>
-<p><a id='Feature-Description-1'></a></p>
-<h1 id="feature-description">Feature Description</h1>
-<pre><code>create_descriptor
-</code></pre>
-
-<p><a id='Feature-Matching-1'></a></p>
-<h1 id="feature-matching">Feature Matching</h1>
-<pre><code>hamming_distance
-match_keypoints
 </code></pre>
           <aside class="copyright" role="note">
             
@@ -435,7 +482,7 @@ match_keypoints
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../tutorials/freak/" title="FREAK">
+        <a href="../tutorials/lbp/" title="Local Binary Patterns">
           <span class="direction">
             Previous
           </span>
@@ -445,7 +492,7 @@ match_keypoints
             </div>
             <div class="stretch">
               <div class="title">
-                FREAK
+                Local Binary Patterns
               </div>
             </div>
           </div>

@@ -202,17 +202,8 @@
       
         
   <li>
-    <a class="" title="Gray Level Co-occurence Matrix" href="../glcm/">
-      Gray Level Co-occurence Matrix
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="Local Binary Patterns" href="../lbp/">
-      Local Binary Patterns
+    <a class="" title="CENSURE" href="../censure/">
+      CENSURE
     </a>
     
   </li>
@@ -247,15 +238,6 @@
       
         
   <li>
-    <a class="" title="CENSURE" href="../censure/">
-      CENSURE
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
     <a class="" title="BRISK" href="../brisk/">
       BRISK
     </a>
@@ -271,6 +253,24 @@
     
       
       
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Gray Level Co-occurence Matrix" href="../glcm/">
+      Gray Level Co-occurence Matrix
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Local Binary Patterns" href="../lbp/">
+      Local Binary Patterns
+    </a>
     
   </li>
 
@@ -336,7 +336,10 @@
           
             <h1>FREAK</h1>
           
-          
+          <p><em>FREAK</em> has a defined sampling pattern like <a href="../brisk">BRISK</a>. It uses a retinal sampling grid with more density of points near the centre  with the density decreasing exponentially with distance from the centre.</p>
+<p><img alt="FREAK Sampling Pattern" src="../../img/freak_pattern.png" title="= 50x50" /></p>
+<p>FREAK’s measure of orientation is similar to <a href="../brisk">BRISK</a> but instead of using long pairs, it uses a set of predefined 45 symmetric sampling pairs. The set of sampling pairs is determined using a method similar to <a href="../orb">ORB</a>, by finding sampling pairs over keypoints in standard datasets and then extracting the most discriminative pairs. The orientation weights over these pairs are summed and the sampling window is rotated by this orientation to some canonical orientation to achieve rotation invariance.</p>
+<p>The descriptor is built using intensity comparisons of a predetermined set of 512 sampling pairs. This set is also obtained using a method similar to the one described above. For each pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.</p>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -372,14 +375,14 @@
     </div>
     <div class="next">
       
-        <a href="../../function_reference/" title="Function Reference">
+        <a href="../glcm/" title="Gray Level Co-occurence Matrix">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Function Reference
+                Gray Level Co-occurence Matrix
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

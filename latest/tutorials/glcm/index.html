@@ -202,20 +202,8 @@
       
         
   <li>
-    <a class="current" title="Gray Level Co-occurence Matrix" href="./">
-      Gray Level Co-occurence Matrix
-    </a>
-    
-      
-      
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="Local Binary Patterns" href="../lbp/">
-      Local Binary Patterns
+    <a class="" title="CENSURE" href="../censure/">
+      CENSURE
     </a>
     
   </li>
@@ -250,15 +238,6 @@
       
         
   <li>
-    <a class="" title="CENSURE" href="../censure/">
-      CENSURE
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
     <a class="" title="BRISK" href="../brisk/">
       BRISK
     </a>
@@ -270,6 +249,37 @@
   <li>
     <a class="" title="FREAK" href="../freak/">
       FREAK
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="current" title="Gray Level Co-occurence Matrix" href="./">
+      Gray Level Co-occurence Matrix
+    </a>
+    
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="GLCM Properties" href="#glcm-properties">
+                GLCM Properties
+              </a>
+            </li>
+          
+        </ul>
+      
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Local Binary Patterns" href="../lbp/">
+      Local Binary Patterns
     </a>
     
   </li>
@@ -336,7 +346,35 @@
           
             <h1>Gray Level Co-occurence Matrix</h1>
           
-          
+          <p><em>Gray Level Co-occurrence Matrix (GLCM)</em> is used for texture analysis. We consider two pixels at a time, called the reference and the neighbour pixel. We define a particular spatial relationship between the reference and neighbour pixel before calculating the GLCM. For eg, we may define the neighbour to be 1 pixel to the right of the current pixel, or it can be 3 pixels above, or 2 pixels diagonally (one of NE, NW, SE, SW) from the reference. </p>
+<p>Once a spatial relationship is defined, we create a GLCM of size (Range of Intensities x Range of Intensities) all initialised to <code>0</code>. For eg, a <code>8</code> bit single channel Image will have a <code>256x256</code> GLCM. We then traverse through the image and for every pair of intensities we find for the defined spatial relationship, we increment that cell of the matrix. </p>
+<p><img alt="Gray Level Co-occurence Matrix" src="../../img/glcm.png" title="= 50x50" /></p>
+<p>Each entry of the GLCM[i,j] holds the count of the number of times that pair of intensities appears in the image with the defined spatial relationship.</p>
+<p>The matrix may be made symmetrical by adding it to its transpose and normalised to that each cell expresses the probability of that pair of intensities occurring in the image.</p>
+<p>Once the GLCM is calculated, we can find texture properties from the matrix to represent the textures in the image.</p>
+<p><a id='GLCM-Properties-1'></a></p>
+<h2 id="glcm-properties">GLCM Properties</h2>
+<p>The properties can be calculated over the entire matrix or by considering a window which is moved along the matrix.</p>
+<p><a id='Mean-1'></a></p>
+<h4 id="mean">Mean</h4>
+<p><a id='Variance-1'></a></p>
+<h4 id="variance">Variance</h4>
+<p><a id='Correlation-1'></a></p>
+<h4 id="correlation">Correlation</h4>
+<p><a id='Contrast-1'></a></p>
+<h4 id="contrast">Contrast</h4>
+<p><a id='IDM-(Inverse-Difference-Moment)-1'></a></p>
+<h4 id="idm-inverse-difference-moment">IDM (Inverse Difference Moment)</h4>
+<p><a id='ASM-(Angular-Second-Moment)-1'></a></p>
+<h4 id="asm-angular-second-moment">ASM (Angular Second Moment)</h4>
+<p><a id='Entropy-1'></a></p>
+<h4 id="entropy">Entropy</h4>
+<p><a id='Max-Probability-1'></a></p>
+<h4 id="max-probability">Max Probability</h4>
+<p><a id='Energy-1'></a></p>
+<h4 id="energy">Energy</h4>
+<p><a id='Dissimilarity-1'></a></p>
+<h4 id="dissimilarity">Dissimilarity</h4>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -353,7 +391,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../corners/" title="Corners">
+        <a href="../freak/" title="FREAK">
           <span class="direction">
             Previous
           </span>
@@ -363,7 +401,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                Corners
+                FREAK
               </div>
             </div>
           </div>

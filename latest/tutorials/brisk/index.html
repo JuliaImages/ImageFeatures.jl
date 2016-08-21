@@ -202,17 +202,8 @@
       
         
   <li>
-    <a class="" title="Gray Level Co-occurence Matrix" href="../glcm/">
-      Gray Level Co-occurence Matrix
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="Local Binary Patterns" href="../lbp/">
-      Local Binary Patterns
+    <a class="" title="CENSURE" href="../censure/">
+      CENSURE
     </a>
     
   </li>
@@ -247,21 +238,10 @@
       
         
   <li>
-    <a class="" title="CENSURE" href="../censure/">
-      CENSURE
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
     <a class="current" title="BRISK" href="./">
       BRISK
     </a>
     
-      
-        
       
       
     
@@ -272,6 +252,24 @@
   <li>
     <a class="" title="FREAK" href="../freak/">
       FREAK
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Gray Level Co-occurence Matrix" href="../glcm/">
+      Gray Level Co-occurence Matrix
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Local Binary Patterns" href="../lbp/">
+      Local Binary Patterns
     </a>
     
   </li>
@@ -336,12 +334,12 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='BRISK-1'></a></p>
-<h1 id="brisk">BRISK</h1>
-<p>The BRISK descriptor has a predefined sampling pattern as compared to <a href="../BRIEF">BRIEF</a> or <a href="../ORB">ORB</a>. Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing. </p>
-<p><img alt="Brisk Sampling Pattern" src="../../img/brisk_pattern.png" title="= 50x50" /></p>
+            <h1>BRISK</h1>
+          
+          <p>The <em>BRISK</em> descriptor has a predefined sampling pattern as compared to <a href="../brief">BRIEF</a> or <a href="../orb">ORB</a>. Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.</p>
+<p><img alt="BRISK Sampling Pattern" src="../../img/brisk_pattern.png" title="= 50x50" /></p>
 <p>Two types of pairs are used for sampling, short and long pairs. Short pairs are those where the distance is below a set threshold distmax while the long pairs have distance above distmin. Long pairs are used for orientation and short pairs are used for calculating the descriptor by comparing intensities.</p>
-<p><img alt="Brisk Long Pairs" src="../../img/brisk_long_pairs.png" title="= 50x50" /> <img alt="Brisk Short Pairs" src="../../img/brisk_short_pairs.png" title="= 50x50" /></p>
+<p><img alt="BRISK Long Pairs" src="../../img/brisk_long_pairs.jpg" title="= 50x50" /> <img alt="BRISK Short Pairs" src="../../img/brisk_short_pairs.jpg" title="= 50x50" /></p>
 <p>BRISK achieves rotation invariance by trying the measure orientation of the keypoint and rotating the sampling pattern by that orientation. This is done by first calculating the local gradient <code>g(pi,pj)</code> between sampling pair <code>(pi,pj)</code> where <code>I(pj, pj)</code> is the smoothed intensity after applying gaussian smoothing.</p>
 <p><code>g(pi, pj) = (pi - pj) . I(pj, j) -I(pj, j)pj - pi2</code></p>
 <p>All local gradients between long pairs and then summed and the <code>arctangent(gy/gx)</code> between <code>y</code> and <code>x</code> components of the sum is taken as the angle of the keypoint. Now, we only need to rotate the short pairs by that angle to help the descriptor become more invariant to rotation.  The descriptor is built using intensity comparisons. For each short pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.</p>
@@ -361,7 +359,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../censure/" title="CENSURE">
+        <a href="../orb/" title="ORB">
           <span class="direction">
             Previous
           </span>
@@ -371,7 +369,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                CENSURE
+                ORB
               </div>
             </div>
           </div>

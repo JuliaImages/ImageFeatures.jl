@@ -31,14 +31,9 @@
             "title": "Corners"
         }, 
         {
-            "location": "/tutorials/glcm/", 
+            "location": "/tutorials/censure/", 
             "text": "", 
-            "title": "Gray Level Co-occurence Matrix"
-        }, 
-        {
-            "location": "/tutorials/lbp/", 
-            "text": "", 
-            "title": "Local Binary Patterns"
+            "title": "CENSURE"
         }, 
         {
             "location": "/tutorials/feature_matching/", 
@@ -47,53 +42,123 @@
         }, 
         {
             "location": "/tutorials/brief/", 
-            "text": "BRIEF", 
-            "title": "BRIEF"
-        }, 
-        {
-            "location": "/tutorials/brief/#brief", 
-            "text": "", 
+            "text": "BRIEF\n (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the \nSxS\n patch.\n\n\nTo build a BRIEF descriptor of length \nn\n, we need to determine \nn\n pairs \n(Xi,Yi)\n. Denote by \nX\n and \nY\n the vectors of point \nXi\n and \nYi\n, respectively.\n\n\nIn ImageFeatures.jl we have five methods to determine the vectors \nX\n and \nY\n : - [\nrandom_uniform\n] : \nX\n and \nY\n are randomly uniformly sampled - [\ngaussian\n] : \nX\n and \nY\n are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred - [\ngaussian_local\n] : \nX\n and \nY\n are randomly sampled using a Gaussian distribution where first \nX\n is sampled with a standard deviation of \n0.04*S^2\n and then the \nYi\u2019s\n are sampled using a Gaussian distribution \u2013 Each \nYi\n is sampled with mean \nXi\n and standard deviation of \n0.01 * S^2\n - [\nrandom_coarse\n] : \nX and\nY\nare randomly sampled from discrete location of a coarse polar grid - [\ncentered\n] : For each\ni\n,\nXi\nis\n(0, 0)\nand\nYi` takes all possible values on a coarse polar grid\n\n\nAs with all the binary descriptors, BRIEF\u2019s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.\n\n\nBRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see \nORB\n, \nBRISK\n and \nFREAK\n.", 
             "title": "BRIEF"
         }, 
         {
             "location": "/tutorials/orb/", 
-            "text": "ORB", 
+            "text": "The \nORB\n descriptor is a somewhat similar to \nBRIEF\n. It doesn\u2019t have an elaborate sampling pattern as \nBRISK\n or \nFREAK\n. \n\n\nHowever, there are two main differences between ORB and BRIEF: - ORB uses an orientation compensation mechanism, making it rotation invariant. - ORB learns the optimal sampling pairs, whereas BRIEF uses randomly chosen sampling pairs.\n\n\nThe ORB descriptor uses the intensity centroid as a measure of orientation. To calculate the centroid, we first need to find the moment of a patch, which is given by \nMpq = x,yxpyqI(x,y)\n. The centroid, or \u2018centre of mass' is then given by \nC=(M10M00, M01M00)\n.\n\n\nThe vector from the corner\u2019s center to the centroid gives the orientation of the patch. Now, the patch can be rotated to some predefined canonical orientation before calculating the descriptor, thus achieving rotation invariance.\n\n\nORB tries to take sampling pairs which are uncorrelated so that each new pair will bring new information to the descriptor, thus maximizing the amount of information the descriptor carries. We also want high variance among the pairs making a feature more discriminative, since it responds differently to inputs. To do this, we consider the sampling pairs over keypoints in standard datasets and then do a greedy evaluation of all the pairs in order of distance from mean till the number of desired pairs are obtained i.e. the size of the descriptor.\n\n\nThe descriptor is built using intensity comparisons of the pairs. For each pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
             "title": "ORB"
-        }, 
-        {
-            "location": "/tutorials/orb/#orb", 
-            "text": "", 
-            "title": "ORB"
-        }, 
-        {
-            "location": "/tutorials/censure/", 
-            "text": "", 
-            "title": "CENSURE"
         }, 
         {
             "location": "/tutorials/brisk/", 
-            "text": "BRISK\n\n\nThe BRISK descriptor has a predefined sampling pattern as compared to \nBRIEF\n or \nORB\n. Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing. \n\n\n\n\nTwo types of pairs are used for sampling, short and long pairs. Short pairs are those where the distance is below a set threshold distmax while the long pairs have distance above distmin. Long pairs are used for orientation and short pairs are used for calculating the descriptor by comparing intensities.\n\n\n \n\n\nBRISK achieves rotation invariance by trying the measure orientation of the keypoint and rotating the sampling pattern by that orientation. This is done by first calculating the local gradient \ng(pi,pj)\n between sampling pair \n(pi,pj)\n where \nI(pj, pj)\n is the smoothed intensity after applying gaussian smoothing.\n\n\ng(pi, pj) = (pi - pj) . I(pj, j) -I(pj, j)pj - pi2\n\n\nAll local gradients between long pairs and then summed and the \narctangent(gy/gx)\n between \ny\n and \nx\n components of the sum is taken as the angle of the keypoint. Now, we only need to rotate the short pairs by that angle to help the descriptor become more invariant to rotation.  The descriptor is built using intensity comparisons. For each short pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
-            "title": "BRISK"
-        }, 
-        {
-            "location": "/tutorials/brisk/#brisk", 
-            "text": "The BRISK descriptor has a predefined sampling pattern as compared to  BRIEF  or  ORB . Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.    Two types of pairs are used for sampling, short and long pairs. Short pairs are those where the distance is below a set threshold distmax while the long pairs have distance above distmin. Long pairs are used for orientation and short pairs are used for calculating the descriptor by comparing intensities.     BRISK achieves rotation invariance by trying the measure orientation of the keypoint and rotating the sampling pattern by that orientation. This is done by first calculating the local gradient  g(pi,pj)  between sampling pair  (pi,pj)  where  I(pj, pj)  is the smoothed intensity after applying gaussian smoothing.  g(pi, pj) = (pi - pj) . I(pj, j) -I(pj, j)pj - pi2  All local gradients between long pairs and then summed and the  arctangent(gy/gx)  between  y  and  x  components of the sum is taken as the angle of the keypoint. Now, we only need to rotate the short pairs by that angle to help the descriptor become more invariant to rotation.  The descriptor is built using intensity comparisons. For each short pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
+            "text": "The \nBRISK\n descriptor has a predefined sampling pattern as compared to \nBRIEF\n or \nORB\n. Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.\n\n\n\n\nTwo types of pairs are used for sampling, short and long pairs. Short pairs are those where the distance is below a set threshold distmax while the long pairs have distance above distmin. Long pairs are used for orientation and short pairs are used for calculating the descriptor by comparing intensities.\n\n\n \n\n\nBRISK achieves rotation invariance by trying the measure orientation of the keypoint and rotating the sampling pattern by that orientation. This is done by first calculating the local gradient \ng(pi,pj)\n between sampling pair \n(pi,pj)\n where \nI(pj, pj)\n is the smoothed intensity after applying gaussian smoothing.\n\n\ng(pi, pj) = (pi - pj) . I(pj, j) -I(pj, j)pj - pi2\n\n\nAll local gradients between long pairs and then summed and the \narctangent(gy/gx)\n between \ny\n and \nx\n components of the sum is taken as the angle of the keypoint. Now, we only need to rotate the short pairs by that angle to help the descriptor become more invariant to rotation.  The descriptor is built using intensity comparisons. For each short pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
             "title": "BRISK"
         }, 
         {
             "location": "/tutorials/freak/", 
-            "text": "", 
+            "text": "FREAK\n has a defined sampling pattern like \nBRISK\n. It uses a retinal sampling grid with more density of points near the centre  with the density decreasing exponentially with distance from the centre.\n\n\n\n\nFREAK\u2019s measure of orientation is similar to \nBRISK\n but instead of using long pairs, it uses a set of predefined 45 symmetric sampling pairs. The set of sampling pairs is determined using a method similar to \nORB\n, by finding sampling pairs over keypoints in standard datasets and then extracting the most discriminative pairs. The orientation weights over these pairs are summed and the sampling window is rotated by this orientation to some canonical orientation to achieve rotation invariance.\n\n\nThe descriptor is built using intensity comparisons of a predetermined set of 512 sampling pairs. This set is also obtained using a method similar to the one described above. For each pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
             "title": "FREAK"
         }, 
         {
+            "location": "/tutorials/glcm/", 
+            "text": "Gray Level Co-occurrence Matrix (GLCM)\n is used for texture analysis. We consider two pixels at a time, called the reference and the neighbour pixel. We define a particular spatial relationship between the reference and neighbour pixel before calculating the GLCM. For eg, we may define the neighbour to be 1 pixel to the right of the current pixel, or it can be 3 pixels above, or 2 pixels diagonally (one of NE, NW, SE, SW) from the reference. \n\n\nOnce a spatial relationship is defined, we create a GLCM of size (Range of Intensities x Range of Intensities) all initialised to \n0\n. For eg, a \n8\n bit single channel Image will have a \n256x256\n GLCM. We then traverse through the image and for every pair of intensities we find for the defined spatial relationship, we increment that cell of the matrix. \n\n\n\n\nEach entry of the GLCM[i,j] holds the count of the number of times that pair of intensities appears in the image with the defined spatial relationship.\n\n\nThe matrix may be made symmetrical by adding it to its transpose and normalised to that each cell expresses the probability of that pair of intensities occurring in the image.\n\n\nOnce the GLCM is calculated, we can find texture properties from the matrix to represent the textures in the image.\n\n\n\n\nGLCM Properties\n\n\nThe properties can be calculated over the entire matrix or by considering a window which is moved along the matrix.\n\n\n\n\nMean\n\n\n\n\nVariance\n\n\n\n\nCorrelation\n\n\n\n\nContrast\n\n\n\n\nIDM (Inverse Difference Moment)\n\n\n\n\nASM (Angular Second Moment)\n\n\n\n\nEntropy\n\n\n\n\nMax Probability\n\n\n\n\nEnergy\n\n\n\n\nDissimilarity", 
+            "title": "Gray Level Co-occurence Matrix"
+        }, 
+        {
+            "location": "/tutorials/glcm/#glcm-properties", 
+            "text": "The properties can be calculated over the entire matrix or by considering a window which is moved along the matrix.", 
+            "title": "GLCM Properties"
+        }, 
+        {
+            "location": "/tutorials/glcm/#mean", 
+            "text": "", 
+            "title": "Mean"
+        }, 
+        {
+            "location": "/tutorials/glcm/#variance", 
+            "text": "", 
+            "title": "Variance"
+        }, 
+        {
+            "location": "/tutorials/glcm/#correlation", 
+            "text": "", 
+            "title": "Correlation"
+        }, 
+        {
+            "location": "/tutorials/glcm/#contrast", 
+            "text": "", 
+            "title": "Contrast"
+        }, 
+        {
+            "location": "/tutorials/glcm/#idm-inverse-difference-moment", 
+            "text": "", 
+            "title": "IDM (Inverse Difference Moment)"
+        }, 
+        {
+            "location": "/tutorials/glcm/#asm-angular-second-moment", 
+            "text": "", 
+            "title": "ASM (Angular Second Moment)"
+        }, 
+        {
+            "location": "/tutorials/glcm/#entropy", 
+            "text": "", 
+            "title": "Entropy"
+        }, 
+        {
+            "location": "/tutorials/glcm/#max-probability", 
+            "text": "", 
+            "title": "Max Probability"
+        }, 
+        {
+            "location": "/tutorials/glcm/#energy", 
+            "text": "", 
+            "title": "Energy"
+        }, 
+        {
+            "location": "/tutorials/glcm/#dissimilarity", 
+            "text": "", 
+            "title": "Dissimilarity"
+        }, 
+        {
+            "location": "/tutorials/lbp/", 
+            "text": "Local Binary Pattern (LBP)\n is a very efficient texture operator which labels the pixels of an image by thresholding the neighborhood of each pixel and considers the result as a binary number. The LBP feature vector, in its simplest form, is created in the following manner :\n\n\n\n\n\n\nDivide the examined window into cells (e.g. 16x16 pixels for each cell).\n\n\nFor each pixel in a cell, compare the pixel to each of its 8 neighbors (on its left-top, left-middle, left-bottom, right-top, etc.). Follow the pixels along a circle, i.e. clockwise or counterclockwise.\n\n\nIn the above step, the neighbours considered can be changed by varying the radius of the circle around the pixel, R and the quantisation of the angular space P.\n\n\nWhere the center pixel's value is greater than the neighbor's value, write \"0\". Otherwise, write \"1\". This gives an 8-digit binary number (which is usually converted to decimal for convenience).\n\n\nCompute the histogram, over the cell, of the frequency of each \"number\" occurring (i.e., each combination of which pixels are smaller and which are greater than the center). This histogram can be seen as a 256-dimensional feature vector.\n\n\nOptionally normalize the histogram.\n\n\nConcatenate (normalized) histograms of all cells. This gives a feature vector for the entire window.\n\n\n\n\nThe feature vector can now then be processed using some machine-learning algorithm to classify images. Such classifiers are often used for face recognition or texture analysis.\n\n\n\n\nTypes of Local Binary Patterns in ImageFeatures.jl\n\n\nImageFeatures.jl provides the following types of local binary patterns :\n\n\n\n\n[\nlbp\n]\n\n\nThe original local binary patterns \n\n\n\n\n[\nmodified_lbp\n]\n\n\n\n\n[\ndirection_coded_lbp\n]\n\n\n\n\n[\nmulti_block_lbp\n]", 
+            "title": "Local Binary Patterns"
+        }, 
+        {
+            "location": "/tutorials/lbp/#types-of-local-binary-patterns-in-imagefeaturesjl", 
+            "text": "ImageFeatures.jl provides the following types of local binary patterns :", 
+            "title": "Types of Local Binary Patterns in ImageFeatures.jl"
+        }, 
+        {
+            "location": "/tutorials/lbp/#lbp", 
+            "text": "The original local binary patterns", 
+            "title": "[lbp]"
+        }, 
+        {
+            "location": "/tutorials/lbp/#modified_lbp", 
+            "text": "", 
+            "title": "[modified_lbp]"
+        }, 
+        {
+            "location": "/tutorials/lbp/#direction_coded_lbp", 
+            "text": "", 
+            "title": "[direction_coded_lbp]"
+        }, 
+        {
+            "location": "/tutorials/lbp/#multi_block_lbp", 
+            "text": "", 
+            "title": "[multi_block_lbp]"
+        }, 
+        {
             "location": "/function_reference/", 
-            "text": "Function Reference\n\n\nBelow \n[]\n in an argument list means an optional argument.\n\n\nTEST TEST\n\n\n\n\nTypes\n\n\nKeypoint\nKeypoints\nFeature\nFeatures\nBRIEF\nORB\nCENSURE\nBRISK\nFREAK\n\n\n\n\n\n\nEdges\n\n\n\n\nCorners\n\n\n#\n\n\nImageFeatures.corner_orientations\n \n \nFunction\n.\n\n\norientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)\n\n\n\n\nReturns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as \nC = (m01/m00, m10/m00)\n where mpq is defined as -\n\n\nmpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch\n\n\n\n\nThe kernel used for the patch can be given through the \nkernel\n argument.\n\n\nsource\n\n\n\n\nGray Level Co-occurence Matrix\n\n\nglcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ncontrast\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour\n\n\n\n\n\n\nLocal Binary Patterns\n\n\nlbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp\n\n\n\n\n\n\nBRIEF Sampling Patterns\n\n\nrandom_uniform\nrandom_coarse\ngaussian\ngaussian_local\ncentered\n\n\n\n\n\n\nFeature Extraction\n\n\n\n\nFeature Description\n\n\ncreate_descriptor\n\n\n\n\n\n\nFeature Matching\n\n\nhamming_distance\nmatch_keypoints", 
+            "text": "Feature Extraction and Descriptors\n\n\nBelow \n[]\n in an argument list means an optional argument.\n\n\n\n\nTypes\n\n\nKeypoint\nKeypoints\nFeature\nFeatures\nBRIEF\nORB\nCENSURE\nBRISK\nFREAK\n\n\n\n\n\n\nEdges\n\n\n\n\nCorners\n\n\n#\n\n\nImageFeatures.corner_orientations\n \n \nFunction\n.\n\n\norientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)\n\n\n\n\nReturns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as \nC = (m01/m00, m10/m00)\n where mpq is defined as -\n\n\nmpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch\n\n\n\n\nThe kernel used for the patch can be given through the \nkernel\n argument.\n\n\nsource\n\n\n\n\nBRIEF Sampling Patterns\n\n\nrandom_uniform\nrandom_coarse\ngaussian\ngaussian_local\ncentered\n\n\n\n\n\n\nFeature Extraction\n\n\n\n\nFeature Description\n\n\ncreate_descriptor\n\n\n\n\n\n\nFeature Matching\n\n\nhamming_distance\nmatch_keypoints\n\n\n\n\n\n\nTexture Matching\n\n\n\n\nGray Level Co-occurence Matrix\n\n\nglcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ncontrast\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour\n\n\n\n\n\n\nLocal Binary Patterns\n\n\nlbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp", 
             "title": "Function Reference"
         }, 
         {
-            "location": "/function_reference/#function-reference", 
-            "text": "Below  []  in an argument list means an optional argument.  TEST TEST", 
-            "title": "Function Reference"
+            "location": "/function_reference/#feature-extraction-and-descriptors", 
+            "text": "Below  []  in an argument list means an optional argument.", 
+            "title": "Feature Extraction and Descriptors"
         }, 
         {
             "location": "/function_reference/#types", 
@@ -109,16 +174,6 @@
             "location": "/function_reference/#corners", 
             "text": "#  ImageFeatures.corner_orientations     Function .  orientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)  Returns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as  C = (m01/m00, m10/m00)  where mpq is defined as -  mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch  The kernel used for the patch can be given through the  kernel  argument.  source", 
             "title": "Corners"
-        }, 
-        {
-            "location": "/function_reference/#gray-level-co-occurence-matrix", 
-            "text": "glcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ncontrast\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour", 
-            "title": "Gray Level Co-occurence Matrix"
-        }, 
-        {
-            "location": "/function_reference/#local-binary-patterns", 
-            "text": "lbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp", 
-            "title": "Local Binary Patterns"
         }, 
         {
             "location": "/function_reference/#brief-sampling-patterns", 
@@ -139,6 +194,21 @@
             "location": "/function_reference/#feature-matching", 
             "text": "hamming_distance\nmatch_keypoints", 
             "title": "Feature Matching"
+        }, 
+        {
+            "location": "/function_reference/#texture-matching", 
+            "text": "", 
+            "title": "Texture Matching"
+        }, 
+        {
+            "location": "/function_reference/#gray-level-co-occurence-matrix", 
+            "text": "glcm\nglcm_symmetric\nglcm_norm\nglcm_prop\nmax_prob\ncontrast\nASM\nIDM\nglcm_entropy\nenergy\ncontrast\ndissimilarity\ncorrelation\nglcm_mean_ref\nglcm_mean_neighbour\nglcm_var_ref\nglcm_var_neighbour", 
+            "title": "Gray Level Co-occurence Matrix"
+        }, 
+        {
+            "location": "/function_reference/#local-binary-patterns", 
+            "text": "lbp\nmodified_lbp\ndirection_coded_lbp\nlbp_original\nlbp_uniform\nlbp_rotation_invariant\nmulti_block_lbp", 
+            "title": "Local Binary Patterns"
         }, 
         {
             "location": "/CONTRIBUTING/", 

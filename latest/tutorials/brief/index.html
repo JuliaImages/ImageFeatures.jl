@@ -202,17 +202,8 @@
       
         
   <li>
-    <a class="" title="Gray Level Co-occurence Matrix" href="../glcm/">
-      Gray Level Co-occurence Matrix
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="Local Binary Patterns" href="../lbp/">
-      Local Binary Patterns
+    <a class="" title="CENSURE" href="../censure/">
+      CENSURE
     </a>
     
   </li>
@@ -234,8 +225,6 @@
     </a>
     
       
-        
-      
       
     
   </li>
@@ -245,15 +234,6 @@
   <li>
     <a class="" title="ORB" href="../orb/">
       ORB
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="CENSURE" href="../censure/">
-      CENSURE
     </a>
     
   </li>
@@ -272,6 +252,24 @@
   <li>
     <a class="" title="FREAK" href="../freak/">
       FREAK
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Gray Level Co-occurence Matrix" href="../glcm/">
+      Gray Level Co-occurence Matrix
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Local Binary Patterns" href="../lbp/">
+      Local Binary Patterns
     </a>
     
   </li>
@@ -336,8 +334,13 @@
       <article class="article">
         <div class="wrapper">
           
-          <p><a id='BRIEF-1'></a></p>
-<h1 id="brief">BRIEF</h1>
+            <h1>BRIEF</h1>
+          
+          <p><em>BRIEF</em> (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the <code>SxS</code> patch.</p>
+<p>To build a BRIEF descriptor of length <code>n</code>, we need to determine <code>n</code> pairs <code>(Xi,Yi)</code>. Denote by <code>X</code> and <code>Y</code> the vectors of point <code>Xi</code> and <code>Yi</code>, respectively.</p>
+<p>In ImageFeatures.jl we have five methods to determine the vectors <code>X</code> and <code>Y</code> : - [<code>random_uniform</code>] : <code>X</code> and <code>Y</code> are randomly uniformly sampled - [<code>gaussian</code>] : <code>X</code> and <code>Y</code> are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred - [<code>gaussian_local</code>] : <code>X</code> and <code>Y</code> are randomly sampled using a Gaussian distribution where first <code>X</code> is sampled with a standard deviation of <code>0.04*S^2</code> and then the <code>Yi’s</code> are sampled using a Gaussian distribution – Each <code>Yi</code> is sampled with mean <code>Xi</code> and standard deviation of <code>0.01 * S^2</code> - [<code>random_coarse</code>] : <code>X and</code>Y<code>are randomly sampled from discrete location of a coarse polar grid - [</code>centered<code>] : For each</code>i<code>,</code>Xi<code>is</code>(0, 0)<code>and</code>Yi` takes all possible values on a coarse polar grid</p>
+<p>As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.</p>
+<p>BRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
           <aside class="copyright" role="note">
             
             Documentation built with
