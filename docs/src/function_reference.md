@@ -1,10 +1,8 @@
-# Function Reference
+# Feature Extraction and Descriptors
 
 Below `[]` in an argument list means an optional argument.
 
-TEST TEST
-
-# Types
+## Types
 
 ```@docs
 Keypoint
@@ -18,19 +16,49 @@ BRISK
 FREAK
 ```
 
-# Edges
+## Edges
 
 ```@docs
 
 ```
 
-# Corners
+## Corners
 
 ```@docs
 corner_orientations
 ```
 
-# Gray Level Co-occurence Matrix
+## BRIEF Sampling Patterns
+
+```@docs
+random_uniform
+random_coarse
+gaussian
+gaussian_local
+centered
+```
+
+## Feature Extraction
+
+```@docs
+```
+
+## Feature Description
+
+```@docs
+create_descriptor
+```
+
+## Feature Matching
+
+```@docs
+hamming_distance
+match_keypoints
+```
+
+# Texture Matching
+
+## Gray Level Co-occurence Matrix
 
 ```@docs
 glcm
@@ -52,7 +80,7 @@ glcm_var_ref
 glcm_var_neighbour
 ```
 
-# Local Binary Patterns
+## Local Binary Patterns
 
 ```@docs
 lbp
@@ -62,32 +90,4 @@ lbp_original
 lbp_uniform
 lbp_rotation_invariant
 multi_block_lbp
-```
-
-# BRIEF Sampling Patterns
-
-```@docs
-random_uniform
-random_coarse
-gaussian
-gaussian_local
-centered
-```
-
-# Feature Extraction
-
-```@docs
-```
-
-# Feature Description
-
-```@docs
-create_descriptor
-```
-
-# Feature Matching
-
-```@docs
-hamming_distance
-match_keypoints
 ```

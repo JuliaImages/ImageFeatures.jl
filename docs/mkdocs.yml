@@ -33,14 +33,14 @@ pages:
   - Tutorials:
     - Edges: tutorials/edges.md
     - Corners: tutorials/corners.md
-    - Gray Level Co-occurence Matrix: tutorials/glcm.md
-    - Local Binary Patterns: tutorials/lbp.md
+    - CENSURE: tutorials/censure.md
     - Feature Matching: tutorials/feature_matching.md
     - BRIEF: tutorials/brief.md
     - ORB: tutorials/orb.md
-    - CENSURE: tutorials/censure.md
     - BRISK: tutorials/brisk.md
     - FREAK: tutorials/freak.md
+    - Gray Level Co-occurence Matrix: tutorials/glcm.md
+    - Local Binary Patterns: tutorials/lbp.md
   - Function Reference: function_reference.md
   - Contributing: CONTRIBUTING.md
   - About:
