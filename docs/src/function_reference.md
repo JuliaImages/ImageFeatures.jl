@@ -2,11 +2,8 @@
 
 Below, `[]` in an argument list means an optional argument.
 
+TEST TEST
+
 # Types
 
-```@docs
-glcm
-lbp
-create_descriptor
-```
-
+Hello this is a test.
