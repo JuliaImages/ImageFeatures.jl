@@ -16,7 +16,8 @@ BRIEF is a very simple feature descriptor and does not provide scale or rotation
 
 ## Example 
 
-Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by `(10, 20)` pixels. 
+Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by `(10, 20)` pixels. We will use the `lena_gray` image from the [TestImages](https://github.com/timholy/TestImages.jl) package for this example.
+
 
 First, let us define a warping function to transform the image.
 
