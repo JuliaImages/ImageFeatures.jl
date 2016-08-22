@@ -375,7 +375,7 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>The kernel used for the patch can be given through the <code>kernel</code> argument. The default kernel used is a gaussian kernel of size <code>5x5</code>.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
 <p><a id='BRIEF-Sampling-Patterns-1'></a></p>
 <h2 id="brief-sampling-patterns">BRIEF Sampling Patterns</h2>
 <p><a id='ImageFeatures.random_uniform' href='#ImageFeatures.random_uniform'>#</a>
@@ -384,35 +384,35 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>Builds sampling pairs using random uniform sampling.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/brief.jl#L27-L33' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/brief.jl#L27-L33' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.random_coarse' href='#ImageFeatures.random_coarse'>#</a>
 <strong><code>ImageFeatures.random_coarse</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = random_coarse(size, window, seed)
 </code></pre>
 
 <p>Builds sampling pairs using random sampling over a coarse grid.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/brief.jl#L54-L60' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/brief.jl#L54-L60' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.gaussian' href='#ImageFeatures.gaussian'>#</a>
 <strong><code>ImageFeatures.gaussian</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = gaussian(size, window, seed)
 </code></pre>
 
 <p>Builds sampling pairs using gaussian sampling.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/brief.jl#L73-L79' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/brief.jl#L73-L79' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.gaussian_local' href='#ImageFeatures.gaussian_local'>#</a>
 <strong><code>ImageFeatures.gaussian_local</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = gaussian_local(size, window, seed)
 </code></pre>
 
 <p>Pairs <code>(Xi, Yi)</code> are randomly sampled using a Gaussian distribution where first <code>X</code> is sampled with a standard deviation of <code>0.04*S^2</code> and  then the <code>Yi’s</code> are sampled using a Gaussian distribution – Each <code>Yi</code> is sampled with mean <code>Xi</code> and standard deviation of <code>0.01 * S^2</code></p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/brief.jl#L99-L106' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/brief.jl#L99-L106' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.centered' href='#ImageFeatures.centered'>#</a>
 <strong><code>ImageFeatures.centered</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = centered(size, window, seed)
 </code></pre>
 
 <p>Builds sampling pairs <code>(Xi, Yi)</code> where <code>Xi</code> is <code>(0, 0)</code> and <code>Yi</code> is sampled uniformly from the window.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/brief.jl#L128-L134' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/brief.jl#L128-L134' class='documenter-source'>source</a><br></p>
 <p><a id='Feature-Extraction-1'></a></p>
 <h2 id="feature-extraction">Feature Extraction</h2>
 <p><a id='Feature-Description-1'></a></p>
@@ -428,14 +428,14 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>Calculates the hamming distance between two descriptors.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/core.jl#L27-L33' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/core.jl#L27-L33' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.match_keypoints' href='#ImageFeatures.match_keypoints'>#</a>
 <strong><code>ImageFeatures.match_keypoints</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, threshold = 0.1)
 </code></pre>
 
 <p>Finds matched keypoints using the <a href="../hamming_distance">hamming_distance</a> function having distance value less than <code>threshold</code>.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/5b50e04a4797131532dde3b547f54853da94b3a9/src/core.jl#L36-L42' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/e7c0a8e9cdabe4a2b80ddbab4a3edd56fd65c958/src/core.jl#L36-L42' class='documenter-source'>source</a><br></p>
 <p><a id='Texture-Matching-1'></a></p>
 <h1 id="texture-matching">Texture Matching</h1>
 <p><a id='Gray-Level-Co-occurence-Matrix-1'></a></p>
