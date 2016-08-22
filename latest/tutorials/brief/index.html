@@ -333,7 +333,7 @@
 <p>BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
 <p><a id='Example-1'></a></p>
 <h2 id="example">Example</h2>
-<p>Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by <code>(10, 20)</code> pixels. </p>
+<p>Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by <code>(10, 20)</code> pixels. We will use the <code>lena_gray</code> image from the <a href="https://github.com/timholy/TestImages.jl">TestImages</a> package for this example.</p>
 <p>First, let us define a warping function to transform the image.</p>
 <pre><code class="julia">function _warp(img, transx, transy)
     res = zeros(eltype(img), size(img))
