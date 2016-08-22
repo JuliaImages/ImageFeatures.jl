@@ -9,6 +9,10 @@ notifications:
 script:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
     - julia -e 'Pkg.add("Distributions")'  # Needed for Docs and Tests
+    - julia -e 'Pkg.add("TestImages")'  # Needed for Docs 
+    - julia -e 'Pkg.add("ImageMagick")'  # Needed for Docs
+    - julia -e 'Pkg.add("Images")'  # Needed for Docs 
+    - julia -e 'Pkg.clone("https://github.com/JuliaImages/ImageDraw.jl")' # Needed for Docs 
     - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
     - julia -e 'Pkg.test("ImageFeatures", coverage=true)'
 after_success:

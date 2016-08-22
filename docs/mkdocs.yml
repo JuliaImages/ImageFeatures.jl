@@ -31,9 +31,9 @@ docs_dir: 'build'
 pages:
   - Home: index.md
   - Tutorials:
-    - Edges: tutorials/edges.md
-    - Corners: tutorials/corners.md
-    - CENSURE: tutorials/censure.md
+    # - Edges: tutorials/edges.md
+    # - Corners: tutorials/corners.md
+    # - CENSURE: tutorials/censure.md
     - Feature Matching: tutorials/feature_matching.md
     - BRIEF: tutorials/brief.md
     - ORB: tutorials/orb.md

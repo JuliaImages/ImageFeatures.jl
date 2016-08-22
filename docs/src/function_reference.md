@@ -7,12 +7,8 @@ Below `[]` in an argument list means an optional argument.
 ```@docs
 Keypoint
 Keypoints
-Feature
-Features
 BRIEF
 ORB
-CENSURE
-BRISK
 FREAK
 ```
 

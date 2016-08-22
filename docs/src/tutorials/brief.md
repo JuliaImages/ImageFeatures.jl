@@ -4,12 +4,87 @@ To build a BRIEF descriptor of length `n`, we need to determine `n` pairs `(Xi,Y
 
 In ImageFeatures.jl we have five methods to determine the vectors `X` and `Y` :
 
-- [random_uniform](`random_uniform`) : `X` and `Y` are randomly uniformly sampled
-- [gaussian](`gaussian`) : `X` and `Y` are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred
-- [gaussian_local](`gaussian_local`) : `X` and `Y` are randomly sampled using a Gaussian distribution where first `X` is sampled with a standard deviation of `0.04*S^2` and then the `Yi’s` are sampled using a Gaussian distribution – Each `Yi` is sampled with mean `Xi` and standard deviation of `0.01 * S^2`
-- [random_coarse](`random_coarse`) : `X` and `Y` are randomly sampled from discrete location of a coarse polar grid
-- [centered](`centered`) : For each `i`, `Xi` is `(0, 0)` and `Yi` takes all possible values on a coarse polar grid
+- [`random_uniform`](@ref) : `X` and `Y` are randomly uniformly sampled
+- [`gaussian`](@ref) : `X` and `Y` are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred
+- [`gaussian_local`](@ref) : `X` and `Y` are randomly sampled using a Gaussian distribution where first `X` is sampled with a standard deviation of `0.04*S^2` and then the `Yi’s` are sampled using a Gaussian distribution – Each `Yi` is sampled with mean `Xi` and standard deviation of `0.01 * S^2`
+- [`random_coarse`](@ref) : `X` and `Y` are randomly sampled from discrete location of a coarse polar grid
+- [`centered`](@ref) : For each `i`, `Xi` is `(0, 0)` and `Yi` takes all possible values on a coarse polar grid
 
 As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.
 
-BRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see [ORB](orb), [BRISK](brisk) and [FREAK](freak).
+BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see [ORB](orb), [BRISK](brisk) and [FREAK](freak).
+
+## Example 
+
+Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by `(10, 20)` pixels. 
+
+First, let us define a warping function to transform the image.
+
+```@example 1
+function _warp(img, transx, transy)
+    res = zeros(eltype(img), size(img))
+    for i in 1:size(img, 1) - transx
+        for j in 1:size(img, 2) - transy
+            res[i + transx, j + transy] = img[i, j]
+        end
+    end
+    res = shareproperties(img, res)
+    res
+end
+nothing # hide
+```
+
+Now, let us create the two images we will match using BRIEF.
+
+```@example 1
+
+using ImageFeatures, TestImages, Images, ImageDraw
+
+img = testimage("lena_gray_512")
+img_array_1 = convert(Array{Images.Gray}, img)
+img_array_2 = _warp(img_array_1, 10, 20)
+nothing # hide
+```
+
+To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
+
+```@example 1
+keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))
+keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4))
+nothing # hide
+```
+
+To create the BRIEF descriptor, we first need to define the parameters by calling the [`BRIEF`](@ref) constructor.
+
+```@example 1
+brief_params = BRIEF(size = 256, window = 10, seed = 123)
+nothing # hide
+```
+
+Now pass the image with the keypoints and the parameters to the [`create_descriptor`](@ref) function.
+
+```@example 1
+desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
+desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
+nothing # hide
+```
+
+The obtained descriptors can be used to find the matches between the two images using the [`match_keypoints`](@ref) function.
+
+```@example 1
+matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
+nothing # hide
+```
+
+We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) package to view the results.
+
+```@example 1
+
+grid = hcat(img_array_1, img_array_2)
+offset = CartesianIndex(0, 512)
+map(m_i -> line!(grid, m_i[1], m_i[2] + offset), matches)
+save("brief_example.jpg", grid); nothing # hide
+
+```
+
+![](brief_example.jpg)

@@ -16,12 +16,12 @@ The feature vector can now then be processed using some machine-learning algorit
 
 ImageFeatures.jl provides the following types of local binary patterns :
 
-#### [lbp](`lbp`)
+#### [`lbp`](@ref)
 
 The original local binary patterns 
 
-#### [modified_lbp](`modified_lbp`)
+#### [`modified_lbp`](@ref)
 
-#### [direction_coded_lbp](`direction_coded_lbp`)
+#### [`direction_coded_lbp`](@ref)
 
-#### [multi_block_lbp](`multi_block_lbp`)
+#### [`multi_block_lbp`](@ref)

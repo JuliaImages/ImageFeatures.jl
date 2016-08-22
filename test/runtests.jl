@@ -47,13 +47,13 @@ function _reverserotate(p, angle, center)
 	return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
 end
 
-include("core.jl")
-include("brief.jl")
-include("glcm.jl")
-include("lbp.jl")
-include("corner.jl")
-include("orb.jl")
-include("freak.jl")
+# include("core.jl")
+# include("brief.jl")
+# include("glcm.jl")
+# include("lbp.jl")
+# include("corner.jl")
+# include("orb.jl")
+# include("freak.jl")
 
 isinteractive() || FactCheck.exitstatus()
 
