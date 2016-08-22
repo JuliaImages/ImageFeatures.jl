@@ -1,6 +1,7 @@
 The *ORB* descriptor is a somewhat similar to [BRIEF](brief). It doesn’t have an elaborate sampling pattern as [BRISK](brisk) or [FREAK](freak). 
 
 However, there are two main differences between ORB and BRIEF:
+
 - ORB uses an orientation compensation mechanism, making it rotation invariant.
 - ORB learns the optimal sampling pairs, whereas BRIEF uses randomly chosen sampling pairs.
 
@@ -18,7 +19,7 @@ Let us take a look at a simple example where the ORB descriptor is used to match
 
 First, lets define warping functions to transform and rotate the image.
 
-```@example 1
+```@example 2
 function _warp(img, transx, transy)
     res = zeros(eltype(img), size(img))
     for i in 1:size(img, 1) - transx
@@ -51,11 +52,12 @@ nothing # hide
 
 Now, let us create the two images we will match using ORB. 
 
-```@example 1
+```@example 2
 
 using ImageFeatures, TestImages, Images, ImageDraw
 
 img = testimage("lighthouse")
+img_array_1 = convert(Array{Images.Gray}, img)
 img_temp_2 = _warp(img_array_1, 5 * pi / 6)
 img_array_2 = _warp(img_temp_2, 50, 40)
         
@@ -64,14 +66,14 @@ nothing # hide
 
 The ORB descriptor calculates the keypoints as well as the descriptor, unlike [BRIEF](brief). To create the ORB descriptor, we first need to define the parameters by calling the [`ORB`](@ref) constructor.
 
-```@example 1
+```@example 2
 orb_params = ORB(num_keypoints = 1000)
 nothing # hide
 ```
 
 Now pass the image with the parameters to the [`create_descriptor`](@ref) function.
 
-```@example 1
+```@example 2
 desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
 nothing # hide
@@ -79,14 +81,14 @@ nothing # hide
 
 The obtained descriptors can be used to find the matches between the two images using the [`match_keypoints`](@ref) function.
 
-```@example 1
+```@example 2
 matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
 nothing # hide
 ```
 
 We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) package to view the results.
 
-```@example 1
+```@example 2
 
 grid = hcat(img_array_1, img_array_2)
 offset = CartesianIndex(0, 768)

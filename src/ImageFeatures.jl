@@ -40,7 +40,6 @@ export
 	IDM,
 	glcm_entropy,
 	energy,
-	contrast,
 	dissimilarity,
 	correlation,
 	glcm_mean_ref,

@@ -5,7 +5,7 @@ freak_params = FREAK([pattern_scale = 22.0])
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `pattern_scale` | `Float64` | Scaling factor for the sampling window | 
+| **pattern_scale** | Float64 | Scaling factor for the sampling window | 
 """
 type FREAK{S, T, O} <: DescriptorParams
     pattern_scale::Float64

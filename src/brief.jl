@@ -5,11 +5,11 @@ brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_ty
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `size` | `Int` | Size of the descriptor |
-| `window` | `Int` | Size of sampling window | 
-| `sigma` | `Float64` | Value of sigma used for inital gaussian smoothing of image | 
-| `sampling_type` | `Function` | Type of sampling used for building the descriptor (See [BRIEF Sampling Patterns](BRIEF Sampling Patterns)) |
-| `seed` | `Int` | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. | 
+| **size** | Int | Size of the descriptor |
+| **window** | Int | Size of sampling window | 
+| **sigma** | Float64 | Value of sigma used for inital gaussian smoothing of image | 
+| **sampling_type** | Function | Type of sampling used for building the descriptor (See [BRIEF Sampling Patterns](#brief-sampling-patterns)) |
+| **seed** | Int | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. | 
 
 """
 type BRIEF{F} <: DescriptorParams

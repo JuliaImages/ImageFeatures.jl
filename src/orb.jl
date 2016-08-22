@@ -5,13 +5,13 @@ orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harr
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `num_keypoints` | `Int` | Number of keypoints to extract and size of the descriptor calculated |
-| `n_fast` | `Int` | Number of consecutive pixels used for finding corners with FAST. See [`fastcorners`] | 
-| `threshold` | `Float64` | Threshold used to find corners in FAST. See [`fastcorners`] | 
-| `harris_factor` | `Float64` | Harris factor `k` used to rank keypoints by harris responses and extract the best ones |
-| `downsample` | `Float64` | Downsampling parameter used while building the gaussian pyramid. See [`gaussian_pyramid`] in Images.jl | 
-| `levels` | `Int` | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
-| `sigma` | `Float64` | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
+| **num_keypoints** | Int | Number of keypoints to extract and size of the descriptor calculated |
+| **n_fast** | Int | Number of consecutive pixels used for finding corners with FAST. See [`fastcorners`] | 
+| **threshold** | Float64 | Threshold used to find corners in FAST. See [`fastcorners`] | 
+| **harris_factor** | Float64 | Harris factor `k` used to rank keypoints by harris responses and extract the best ones |
+| **downsample** | Float64 | Downsampling parameter used while building the gaussian pyramid. See [`gaussian_pyramid`] in Images.jl | 
+| **levels** | Int | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
+| **sigma** | Float64 | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
 """
 type ORB <: DescriptorParams
     num_keypoints::Int

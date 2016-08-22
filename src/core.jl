@@ -38,7 +38,7 @@ hamming_distance(desc_1, desc_2) = mean(desc_1 $ desc_2)
 matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, threshold = 0.1)
 ```
 
-Finds matched keypoints using the [hamming_distance](`hamming_distance`) function having distance value less than `threshold`.
+Finds matched keypoints using the [`hamming_distance`](@ref) function having distance value less than `threshold`.
 """
 function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1, desc_2, threshold::Float64 = 0.1)
     smaller = desc_1

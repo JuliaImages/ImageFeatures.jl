@@ -13,7 +13,7 @@ Let us take a look at a simple example where the FREAK descriptor is used to mat
 
 First, lets define warping functions to transform and rotate the image.
 
-```@example 1
+```@example 3
 function _warp(img, transx, transy)
     res = zeros(eltype(img), size(img))
     for i in 1:size(img, 1) - transx
@@ -46,12 +46,12 @@ nothing # hide
 
 Now, let us create the two images we will match using FREAK.
 
-```@example 1
+```@example 3
 
 using ImageFeatures, TestImages, Images, ImageDraw
 
 img = testimage("lighthouse")
-img_array_1 = convert(Array{Gray}, img)
+img_array_1 = convert(Array{Images.Gray}, img)
 img_temp_2 = _warp(img_array_1, 5 * pi / 6)
 img_array_2 = _warp(img_temp_2, 50, 40)
 nothing # hide
@@ -59,7 +59,7 @@ nothing # hide
 
 To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
 
-```@example 1
+```@example 3
 keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.35))
 keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.35))
 nothing # hide
@@ -67,14 +67,14 @@ nothing # hide
 
 To create the BRIEF descriptor, we first need to define the parameters by calling the [`BRIEF`](@ref) constructor.
 
-```@example 1
+```@example 3
 freak_params = FREAK()
 nothing # hide
 ```
 
 Now pass the image with the keypoints and the parameters to the [`create_descriptor`](@ref) function.
 
-```@example 1
+```@example 3
 desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, freak_params)
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, freak_params)
 nothing # hide
@@ -82,20 +82,20 @@ nothing # hide
 
 The obtained descriptors can be used to find the matches between the two images using the [`match_keypoints`](@ref) function.
 
-```@example 1
+```@example 3
 matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
 nothing # hide
 ```
 
 We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) package to view the results.
 
-```@example 1
+```@example 3
 
 grid = hcat(img_array_1, img_array_2)
 offset = CartesianIndex(0, 768)
 map(m_i -> line!(grid, m_i[1], m_i[2] + offset), matches)
-save("brief_example.jpg", grid); nothing # hide
+save("freak_example.jpg", grid); nothing # hide
 
 ```
 
-![](brief_example.jpg)
+![](freak_example.jpg)
