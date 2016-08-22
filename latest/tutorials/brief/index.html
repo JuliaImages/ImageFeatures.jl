@@ -334,9 +334,8 @@
 <p><a id='Example-1'></a></p>
 <h2 id="example">Example</h2>
 <p>Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by <code>(10, 20)</code> pixels. </p>
-<pre><code class="julia">using ImageFeatures, TestImages, Images, ImageDraw
-
-function _warp(img, transx, transy)
+<p>First, let us define a warping function to transform the image.</p>
+<pre><code class="julia">function _warp(img, transx, transy)
     res = zeros(eltype(img), size(img))
     for i in 1:size(img, 1) - transx
         for j in 1:size(img, 2) - transy
@@ -346,26 +345,93 @@ function _warp(img, transx, transy)
     res = shareproperties(img, res)
     res
 end
+</code></pre>
+
+<pre><code>_warp (generic function with 1 method)
+</code></pre>
+
+<p>Now, let us create the two images we will match using BRIEF.</p>
+<pre><code class="julia">using ImageFeatures, TestImages, Images, ImageDraw
 
 img = testimage(&quot;lena_gray_512&quot;)
 img_array_1 = convert(Array{Images.Gray}, img)
 img_array_2 = _warp(img_array_1, 10, 20)
+</code></pre>
 
-keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))
+<pre><code>512×512 Array{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},2}:
+ Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
+ ⋮                             ⋱  ⋮
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.392)  Gray{U8}(0.396)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.416)  Gray{U8}(0.427)
+ Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.427)  Gray{U8}(0.396)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.408)  Gray{U8}(0.396)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.396)  Gray{U8}(0.38)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.376)  Gray{U8}(0.369)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.365)  Gray{U8}(0.353)
+ Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.357)  Gray{U8}(0.337)
+ Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.345)  Gray{U8}(0.322)
+</code></pre>
+
+<p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="../@ref"><code>fastcorners</code></a>.</p>
+<pre><code class="julia">keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))
 keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4))
+</code></pre>
 
-brief_params = BRIEF(size = 256, window = 10, seed = 123)
+<pre><code>37-element Array{CartesianIndex{2},1}:
+ CartesianIndex{2}((404,86))
+ CartesianIndex{2}((403,87))
+ CartesianIndex{2}((402,88))
+ CartesianIndex{2}((401,89))
+ CartesianIndex{2}((400,90))
+ CartesianIndex{2}((399,91))
+ CartesianIndex{2}((400,91))
+ CartesianIndex{2}((424,91))
+ CartesianIndex{2}((425,91))
+ CartesianIndex{2}((398,92))
+ ⋮
+ CartesianIndex{2}((446,200))
+ CartesianIndex{2}((445,201))
+ CartesianIndex{2}((352,202))
+ CartesianIndex{2}((445,202))
+ CartesianIndex{2}((348,205))
+ CartesianIndex{2}((243,249))
+ CartesianIndex{2}((245,253))
+ CartesianIndex{2}((213,280))
+ CartesianIndex{2}((212,281))
+</code></pre>
 
-desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
+<p>To create the BRIEF descriptor, we first need to define the parameters by calling the <a href="../../function_reference/#ImageFeatures.BRIEF"><code>BRIEF</code></a> constructor.</p>
+<pre><code class="julia">brief_params = BRIEF(size = 256, window = 10, seed = 123)
+</code></pre>
+
+<pre><code>ImageFeatures.BRIEF{ImageFeatures.#gaussian}(256,10,1.4142135623730951,ImageFeatures.gaussian,123)
+</code></pre>
+
+<p>Now pass the image with the keypoints and the parameters to the <a href="../@ref"><code>create_descriptor</code></a> function.</p>
+<pre><code class="julia">desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
-matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
-size(matches)
+</code></pre>
+
+<pre><code>(BitArray{1}[Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,false,true,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,false,true,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,false,true,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  true,true,false,false,true,false,true,true,false,false],Bool[false,false,true,true,false,true,true,false,false,true  …  false,true,false,true,true,true,false,false,false,false],Bool[false,false,true,false,false,true,true,false,false,false  …  false,true,false,true,true,true,false,false,false,true],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false]  …  Bool[false,true,true,false,false,true,false,true,false,false  …  false,true,true,true,true,false,false,true,true,false],Bool[false,false,false,false,false,true,true,false,false,false  …  false,true,false,true,true,true,false,false,false,true],Bool[false,true,true,false,false,true,true,false,false,false  …  false,true,false,true,true,true,false,false,false,false],Bool[true,false,false,true,true,true,false,true,true,true  …  true,true,true,true,true,false,true,true,false,false],Bool[false,true,true,true,false,true,true,false,false,true  …  false,true,false,true,true,false,false,false,false,false],Bool[true,false,false,true,true,true,false,true,true,true  …  true,true,true,true,true,false,true,true,false,false],Bool[true,true,false,false,true,false,false,true,true,false  …  true,false,false,false,true,true,false,true,true,false],Bool[false,true,false,true,true,false,true,false,false,true  …  true,true,false,false,false,true,false,false,true,true],Bool[true,true,false,false,true,false,true,true,false,true  …  true,true,true,true,true,true,true,true,true,false],Bool[true,true,false,true,true,true,true,true,false,true  …  true,true,true,true,true,true,true,true,true,false]],CartesianIndex{2}[CartesianIndex{2}((404,86)),CartesianIndex{2}((403,87)),CartesianIndex{2}((402,88)),CartesianIndex{2}((401,89)),CartesianIndex{2}((400,90)),CartesianIndex{2}((399,91)),CartesianIndex{2}((400,91)),CartesianIndex{2}((424,91)),CartesianIndex{2}((425,91)),CartesianIndex{2}((398,92))  …  CartesianIndex{2}((425,198)),CartesianIndex{2}((446,200)),CartesianIndex{2}((445,201)),CartesianIndex{2}((352,202)),CartesianIndex{2}((445,202)),CartesianIndex{2}((348,205)),CartesianIndex{2}((243,249)),CartesianIndex{2}((245,253)),CartesianIndex{2}((213,280)),CartesianIndex{2}((212,281))])
+</code></pre>
+
+<p>The obtained descriptors can be used to find the matches between the two images using the <a href="../../function_reference/#ImageFeatures.match_keypoints"><code>match_keypoints</code></a> function.</p>
+<pre><code class="julia">matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
 </code></pre>
 
 <pre><code>(37,)
 </code></pre>
 
-<p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to show the results.</p>
+<p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to view the results.</p>
 <pre><code class="julia">grid = hcat(img_array_1, img_array_2)
 offset = CartesianIndex(0, 512)
 map(m_i -&gt; line!(grid, m_i[1], m_i[2] + offset), matches)
