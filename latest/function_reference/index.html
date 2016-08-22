@@ -356,14 +356,14 @@
 </code></pre>
 
 <p>The <code>Keypoint</code> type.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/core.jl#L4-L10' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/core.jl#L4-L10' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.Keypoints' href='#ImageFeatures.Keypoints'>#</a>
 <strong><code>ImageFeatures.Keypoints</code></strong> &mdash; <em>Type</em>.</p>
 <pre><code>keypoints = Keypoints(boolean_img)
 </code></pre>
 
 <p>Creates a <code>Vector{Keypoint}</code> of the true values in the <code>boolean_img</code>.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/core.jl#L13-L19' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/core.jl#L13-L19' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.BRIEF' href='#ImageFeatures.BRIEF'>#</a>
 <strong><code>ImageFeatures.BRIEF</code></strong> &mdash; <em>Type</em>.</p>
 <pre><code>brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_type = gaussian], [seed = 123])
@@ -379,33 +379,33 @@
 </thead>
 <tbody>
 <tr>
-<td align="right"><code>size</code></td>
-<td align="right"><code>Int</code></td>
+<td align="right"><strong>size</strong></td>
+<td align="right"><em>Int</em></td>
 <td align="right">Size of the descriptor</td>
 </tr>
 <tr>
-<td align="right"><code>window</code></td>
-<td align="right"><code>Int</code></td>
+<td align="right"><strong>window</strong></td>
+<td align="right"><em>Int</em></td>
 <td align="right">Size of sampling window</td>
 </tr>
 <tr>
-<td align="right"><code>sigma</code></td>
-<td align="right"><code>Float64</code></td>
+<td align="right"><strong>sigma</strong></td>
+<td align="right"><em>Float64</em></td>
 <td align="right">Value of sigma used for inital gaussian smoothing of image</td>
 </tr>
 <tr>
-<td align="right"><code>sampling_type</code></td>
-<td align="right"><code>Function</code></td>
-<td align="right">Type of sampling used for building the descriptor (See <a href="../BRIEF Sampling Patterns">BRIEF Sampling Patterns</a>)</td>
+<td align="right"><strong>sampling_type</strong></td>
+<td align="right"><em>Function</em></td>
+<td align="right">Type of sampling used for building the descriptor (See <a href="#brief-sampling-patterns">BRIEF Sampling Patterns</a>)</td>
 </tr>
 <tr>
-<td align="right"><code>seed</code></td>
-<td align="right"><code>Int</code></td>
+<td align="right"><strong>seed</strong></td>
+<td align="right"><em>Int</em></td>
 <td align="right">Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same.</td>
 </tr>
 </tbody>
 </table>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/brief.jl#L1-L14' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/brief.jl#L1-L14' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.ORB' href='#ImageFeatures.ORB'>#</a>
 <strong><code>ImageFeatures.ORB</code></strong> &mdash; <em>Type</em>.</p>
 <pre><code>orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harris_factor = 0.04], [downsample = 1.3], [levels = 8], [sigma = 1.2])
@@ -421,43 +421,43 @@
 </thead>
 <tbody>
 <tr>
-<td align="right"><code>num_keypoints</code></td>
-<td align="right"><code>Int</code></td>
+<td align="right"><em>num_keypoints</em></td>
+<td align="right"><strong>Int</strong></td>
 <td align="right">Number of keypoints to extract and size of the descriptor calculated</td>
 </tr>
 <tr>
-<td align="right"><code>n_fast</code></td>
-<td align="right"><code>Int</code></td>
+<td align="right"><em>n_fast</em></td>
+<td align="right"><strong>Int</strong></td>
 <td align="right">Number of consecutive pixels used for finding corners with FAST. See [<code>fastcorners</code>]</td>
 </tr>
 <tr>
-<td align="right"><code>threshold</code></td>
-<td align="right"><code>Float64</code></td>
+<td align="right"><em>threshold</em></td>
+<td align="right"><strong>Float64</strong></td>
 <td align="right">Threshold used to find corners in FAST. See [<code>fastcorners</code>]</td>
 </tr>
 <tr>
-<td align="right"><code>harris_factor</code></td>
-<td align="right"><code>Float64</code></td>
+<td align="right"><em>harris_factor</em></td>
+<td align="right"><strong>Float64</strong></td>
 <td align="right">Harris factor <code>k</code> used to rank keypoints by harris responses and extract the best ones</td>
 </tr>
 <tr>
-<td align="right"><code>downsample</code></td>
-<td align="right"><code>Float64</code></td>
+<td align="right"><em>downsample</em></td>
+<td align="right"><strong>Float64</strong></td>
 <td align="right">Downsampling parameter used while building the gaussian pyramid. See [<code>gaussian_pyramid</code>] in Images.jl</td>
 </tr>
 <tr>
-<td align="right"><code>levels</code></td>
-<td align="right"><code>Int</code></td>
+<td align="right"><em>levels</em></td>
+<td align="right"><strong>Int</strong></td>
 <td align="right">Number of levels in the gaussian pyramid.  See [<code>gaussian_pyramid</code>] in Images.jl</td>
 </tr>
 <tr>
-<td align="right"><code>sigma</code></td>
-<td align="right"><code>Float64</code></td>
+<td align="right"><em>sigma</em></td>
+<td align="right"><strong>Float64</strong></td>
 <td align="right">Used for gaussian smoothing in each level of the gaussian pyramid.  See [<code>gaussian_pyramid</code>] in Images.jl</td>
 </tr>
 </tbody>
 </table>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/orb.jl#L1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/orb.jl#L1-L15' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.FREAK' href='#ImageFeatures.FREAK'>#</a>
 <strong><code>ImageFeatures.FREAK</code></strong> &mdash; <em>Type</em>.</p>
 <pre><code>freak_params = FREAK([pattern_scale = 22.0])
@@ -479,7 +479,7 @@
 </tr>
 </tbody>
 </table>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/freak.jl#L1-L9' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/freak.jl#L1-L9' class='documenter-source'>source</a><br></p>
 <p><a id='Corners-1'></a></p>
 <h2 id="corners">Corners</h2>
 <p><a id='ImageFeatures.corner_orientations' href='#ImageFeatures.corner_orientations'>#</a>
@@ -494,7 +494,7 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>The kernel used for the patch can be given through the <code>kernel</code> argument. The default kernel used is a gaussian kernel of size <code>5x5</code>.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/corner.jl#L1-L15' class='documenter-source'>source</a><br></p>
 <p><a id='BRIEF-Sampling-Patterns-1'></a></p>
 <h2 id="brief-sampling-patterns">BRIEF Sampling Patterns</h2>
 <p><a id='ImageFeatures.random_uniform' href='#ImageFeatures.random_uniform'>#</a>
@@ -503,35 +503,35 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>Builds sampling pairs using random uniform sampling.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/brief.jl#L27-L33' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/brief.jl#L27-L33' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.random_coarse' href='#ImageFeatures.random_coarse'>#</a>
 <strong><code>ImageFeatures.random_coarse</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = random_coarse(size, window, seed)
 </code></pre>
 
 <p>Builds sampling pairs using random sampling over a coarse grid.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/brief.jl#L54-L60' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/brief.jl#L54-L60' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.gaussian' href='#ImageFeatures.gaussian'>#</a>
 <strong><code>ImageFeatures.gaussian</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = gaussian(size, window, seed)
 </code></pre>
 
 <p>Builds sampling pairs using gaussian sampling.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/brief.jl#L73-L79' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/brief.jl#L73-L79' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.gaussian_local' href='#ImageFeatures.gaussian_local'>#</a>
 <strong><code>ImageFeatures.gaussian_local</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = gaussian_local(size, window, seed)
 </code></pre>
 
 <p>Pairs <code>(Xi, Yi)</code> are randomly sampled using a Gaussian distribution where first <code>X</code> is sampled with a standard deviation of <code>0.04*S^2</code> and  then the <code>Yi’s</code> are sampled using a Gaussian distribution – Each <code>Yi</code> is sampled with mean <code>Xi</code> and standard deviation of <code>0.01 * S^2</code></p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/brief.jl#L99-L106' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/brief.jl#L99-L106' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.centered' href='#ImageFeatures.centered'>#</a>
 <strong><code>ImageFeatures.centered</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>sample_one, sample_two = centered(size, window, seed)
 </code></pre>
 
 <p>Builds sampling pairs <code>(Xi, Yi)</code> where <code>Xi</code> is <code>(0, 0)</code> and <code>Yi</code> is sampled uniformly from the window.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/brief.jl#L128-L134' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/brief.jl#L128-L134' class='documenter-source'>source</a><br></p>
 <p><a id='Feature-Extraction-1'></a></p>
 <h2 id="feature-extraction">Feature Extraction</h2>
 <p><a id='Feature-Description-1'></a></p>
@@ -547,14 +547,14 @@ orientations = corner_orientations(img, corners, kernel)
 </code></pre>
 
 <p>Calculates the hamming distance between two descriptors.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/core.jl#L27-L33' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/core.jl#L27-L33' class='documenter-source'>source</a><br></p>
 <p><a id='ImageFeatures.match_keypoints' href='#ImageFeatures.match_keypoints'>#</a>
 <strong><code>ImageFeatures.match_keypoints</code></strong> &mdash; <em>Function</em>.</p>
 <pre><code>matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, threshold = 0.1)
 </code></pre>
 
 <p>Finds matched keypoints using the <a href="../hamming_distance">hamming_distance</a> function having distance value less than <code>threshold</code>.</p>
-<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/2256e705971f600a764c8eacd7e8870c8aa07421/src/core.jl#L36-L42' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/JuliaImages/ImageFeatures.jl/tree/f89ce37a411cc21112cc02cc47c6225f01c0be1f/src/core.jl#L36-L42' class='documenter-source'>source</a><br></p>
 <p><a id='Texture-Matching-1'></a></p>
 <h1 id="texture-matching">Texture Matching</h1>
 <p><a id='Gray-Level-Co-occurence-Matrix-1'></a></p>
