@@ -184,33 +184,6 @@
       
         
   <li>
-    <a class="" title="Edges" href="../edges/">
-      Edges
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="Corners" href="../corners/">
-      Corners
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="CENSURE" href="../censure/">
-      CENSURE
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
     <a class="" title="Feature Matching" href="../feature_matching/">
       Feature Matching
     </a>
@@ -224,6 +197,8 @@
       BRIEF
     </a>
     
+      
+        
       
       
     
@@ -334,8 +309,6 @@
       <article class="article">
         <div class="wrapper">
           
-            <h1>BRIEF</h1>
-          
           <p><em>BRIEF</em> (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the <code>SxS</code> patch.</p>
 <p>To build a BRIEF descriptor of length <code>n</code>, we need to determine <code>n</code> pairs <code>(Xi,Yi)</code>. Denote by <code>X</code> and <code>Y</code> the vectors of point <code>Xi</code> and <code>Yi</code>, respectively.</p>
 <p>In ImageFeatures.jl we have five methods to determine the vectors <code>X</code> and <code>Y</code> :</p>
@@ -348,6 +321,25 @@
 </ul>
 <p>As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.</p>
 <p>BRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
+<p><a id='Example-1'></a></p>
+<h2 id="example">Example</h2>
+<p>```@example
+using ImageFeatures, TestImages, </p>
+<p>img = testimage("lena_gray_512");
+img_array_1 = convert(Array{Gray}, img);
+img_array_2 = ImageFeatures._warp(img_array_1, 10, 20);</p>
+<p>keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4));
+keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4));</p>
+<p>brief_params = BRIEF(size = 256, window = 10, seed = 123);</p>
+<p>desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params);
+desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params);
+matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1);</p>
+<h1 id="the-results-can-be-viewed-using-imagedraw">The results can be viewed using <a href="https://github.com/JuliaImages/ImageDraw">ImageDraw</a></h1>
+<p>using ImageDraw</p>
+<p>grid = hcat(img_array_1, img_array_2);
+offset = CartesianIndex(0, 512);
+map(m_i -&gt; ImageDraw.line!(gr, m_i[1], m_i[2] + offset, m);
+```</p>
           <aside class="copyright" role="note">
             
             Documentation built with

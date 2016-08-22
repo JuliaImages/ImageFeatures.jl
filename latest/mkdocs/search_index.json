@@ -21,29 +21,24 @@
             "title": "Installation"
         }, 
         {
-            "location": "/tutorials/edges/", 
-            "text": "", 
-            "title": "Edges"
-        }, 
-        {
-            "location": "/tutorials/corners/", 
-            "text": "", 
-            "title": "Corners"
-        }, 
-        {
-            "location": "/tutorials/censure/", 
-            "text": "", 
-            "title": "CENSURE"
-        }, 
-        {
             "location": "/tutorials/feature_matching/", 
             "text": "", 
             "title": "Feature Matching"
         }, 
         {
             "location": "/tutorials/brief/", 
-            "text": "BRIEF\n (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the \nSxS\n patch.\n\n\nTo build a BRIEF descriptor of length \nn\n, we need to determine \nn\n pairs \n(Xi,Yi)\n. Denote by \nX\n and \nY\n the vectors of point \nXi\n and \nYi\n, respectively.\n\n\nIn ImageFeatures.jl we have five methods to determine the vectors \nX\n and \nY\n :\n\n\n\n\nrandom_uniform\n : \nX\n and \nY\n are randomly uniformly sampled\n\n\ngaussian\n : \nX\n and \nY\n are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred\n\n\ngaussian_local\n : \nX\n and \nY\n are randomly sampled using a Gaussian distribution where first \nX\n is sampled with a standard deviation of \n0.04*S^2\n and then the \nYi\u2019s\n are sampled using a Gaussian distribution \u2013 Each \nYi\n is sampled with mean \nXi\n and standard deviation of \n0.01 * S^2\n\n\nrandom_coarse\n : \nX\n and \nY\n are randomly sampled from discrete location of a coarse polar grid\n\n\ncentered\n : For each \ni\n, \nXi\n is \n(0, 0)\n and \nYi\n takes all possible values on a coarse polar grid\n\n\n\n\nAs with all the binary descriptors, BRIEF\u2019s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.\n\n\nBRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see \nORB\n, \nBRISK\n and \nFREAK\n.", 
+            "text": "BRIEF\n (Binary Robust Independent Elementary Features) is an efficient feature point descriptor. It is highly discriminative even when using relatively few bits and is computed using simple intensity difference tests. BRIEF does not have a sampling pattern thus pairs can be chosen at any point on the \nSxS\n patch.\n\n\nTo build a BRIEF descriptor of length \nn\n, we need to determine \nn\n pairs \n(Xi,Yi)\n. Denote by \nX\n and \nY\n the vectors of point \nXi\n and \nYi\n, respectively.\n\n\nIn ImageFeatures.jl we have five methods to determine the vectors \nX\n and \nY\n :\n\n\n\n\nrandom_uniform\n : \nX\n and \nY\n are randomly uniformly sampled\n\n\ngaussian\n : \nX\n and \nY\n are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred\n\n\ngaussian_local\n : \nX\n and \nY\n are randomly sampled using a Gaussian distribution where first \nX\n is sampled with a standard deviation of \n0.04*S^2\n and then the \nYi\u2019s\n are sampled using a Gaussian distribution \u2013 Each \nYi\n is sampled with mean \nXi\n and standard deviation of \n0.01 * S^2\n\n\nrandom_coarse\n : \nX\n and \nY\n are randomly sampled from discrete location of a coarse polar grid\n\n\ncentered\n : For each \ni\n, \nXi\n is \n(0, 0)\n and \nYi\n takes all possible values on a coarse polar grid\n\n\n\n\nAs with all the binary descriptors, BRIEF\u2019s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.\n\n\nBRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see \nORB\n, \nBRISK\n and \nFREAK\n.\n\n\n\n\nExample\n\n\n```@example\nusing ImageFeatures, TestImages, \n\n\nimg = testimage(\"lena_gray_512\");\nimg_array_1 = convert(Array{Gray}, img);\nimg_array_2 = ImageFeatures._warp(img_array_1, 10, 20);\n\n\nkeypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4));\nkeypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4));\n\n\nbrief_params = BRIEF(size = 256, window = 10, seed = 123);\n\n\ndesc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params);\ndesc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params);\nmatches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1);\n\n\nThe results can be viewed using \nImageDraw\n\n\nusing ImageDraw\n\n\ngrid = hcat(img_array_1, img_array_2);\noffset = CartesianIndex(0, 512);\nmap(m_i -\n ImageDraw.line!(gr, m_i[1], m_i[2] + offset, m);\n```", 
             "title": "BRIEF"
+        }, 
+        {
+            "location": "/tutorials/brief/#example", 
+            "text": "```@example\nusing ImageFeatures, TestImages,   img = testimage(\"lena_gray_512\");\nimg_array_1 = convert(Array{Gray}, img);\nimg_array_2 = ImageFeatures._warp(img_array_1, 10, 20);  keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4));\nkeypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4));  brief_params = BRIEF(size = 256, window = 10, seed = 123);  desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params);\ndesc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params);\nmatches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/tutorials/brief/#the-results-can-be-viewed-using-imagedraw", 
+            "text": "using ImageDraw  grid = hcat(img_array_1, img_array_2);\noffset = CartesianIndex(0, 512);\nmap(m_i -  ImageDraw.line!(gr, m_i[1], m_i[2] + offset, m);\n```", 
+            "title": "The results can be viewed using ImageDraw"
         }, 
         {
             "location": "/tutorials/orb/", 
@@ -52,7 +47,7 @@
         }, 
         {
             "location": "/tutorials/brisk/", 
-            "text": "The \nBRISK\n descriptor has a predefined sampling pattern as compared to \nBRIEF\n or \nORB\n. Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.\n\n\n\n\nTwo types of pairs are used for sampling, short and long pairs. Short pairs are those where the distance is below a set threshold distmax while the long pairs have distance above distmin. Long pairs are used for orientation and short pairs are used for calculating the descriptor by comparing intensities.\n\n\n \n\n\nBRISK achieves rotation invariance by trying the measure orientation of the keypoint and rotating the sampling pattern by that orientation. This is done by first calculating the local gradient \ng(pi,pj)\n between sampling pair \n(pi,pj)\n where \nI(pj, pj)\n is the smoothed intensity after applying gaussian smoothing.\n\n\ng(pi, pj) = (pi - pj) . I(pj, j) -I(pj, j)pj - pi2\n\n\nAll local gradients between long pairs and then summed and the \narctangent(gy/gx)\n between \ny\n and \nx\n components of the sum is taken as the angle of the keypoint. Now, we only need to rotate the short pairs by that angle to help the descriptor become more invariant to rotation.  The descriptor is built using intensity comparisons. For each short pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
+            "text": "The \nBRISK\n descriptor has a predefined sampling pattern as compared to \nBRIEF\n or \nORB\n. Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.\n\n\n\n\nTwo types of pairs are used for sampling, short and long pairs. Short pairs are those where the distance is below a set threshold distmax while the long pairs have distance above distmin. Long pairs are used for orientation and short pairs are used for calculating the descriptor by comparing intensities.\n\n\nBRISK achieves rotation invariance by trying the measure orientation of the keypoint and rotating the sampling pattern by that orientation. This is done by first calculating the local gradient \ng(pi,pj)\n between sampling pair \n(pi,pj)\n where \nI(pj, pj)\n is the smoothed intensity after applying gaussian smoothing.\n\n\ng(pi, pj) = (pi - pj) . I(pj, j) -I(pj, j)pj - pi2\n\n\nAll local gradients between long pairs and then summed and the \narctangent(gy/gx)\n between \ny\n and \nx\n components of the sum is taken as the angle of the keypoint. Now, we only need to rotate the short pairs by that angle to help the descriptor become more invariant to rotation.  The descriptor is built using intensity comparisons. For each short pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.", 
             "title": "BRISK"
         }, 
         {
