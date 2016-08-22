@@ -330,11 +330,12 @@
 <li><a href="../centered">centered</a> : For each <code>i</code>, <code>Xi</code> is <code>(0, 0)</code> and <code>Yi</code> takes all possible values on a coarse polar grid</li>
 </ul>
 <p>As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.</p>
-<p>BRIEF is a very simple feature descriptor and does not provide scale, translation or rotation invariance. To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
+<p>BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
 <p><a id='Example-1'></a></p>
 <h2 id="example">Example</h2>
+<p>Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by (10, 20) pixels. We use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to show the results.</p>
 <p>```@example
-using ImageFeatures, TestImages, Images;</p>
+using ImageFeatures, TestImages, Images, ImageDraw;</p>
 <p>function _warp(img, transx, transy)
     res = zeros(eltype(img), size(img))
     for i in 1:size(img, 1) - transx
@@ -353,9 +354,12 @@ keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4));</p>
 <p>brief_params = BRIEF(size = 256, window = 10, seed = 123);</p>
 <p>desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params);
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params);
-matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1);
+matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1);</p>
+<p>grid = hcat(img_array_1, img_array_2);
+offset = CartesianIndex(0, 512);
+map(m_i -&gt; line!(grid, m_i[1], m_i[2] + offset), matches);
+save("brief_example.jpg", grid); nothing # hide
 ```</p>
-<p>CartesianIndex{2}((0,512))</p>
 <p><img alt="" src="../brief_example.jpg" /></p>
           <aside class="copyright" role="note">
             
