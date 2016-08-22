@@ -323,11 +323,11 @@
 <p>To build a BRIEF descriptor of length <code>n</code>, we need to determine <code>n</code> pairs <code>(Xi,Yi)</code>. Denote by <code>X</code> and <code>Y</code> the vectors of point <code>Xi</code> and <code>Yi</code>, respectively.</p>
 <p>In ImageFeatures.jl we have five methods to determine the vectors <code>X</code> and <code>Y</code> :</p>
 <ul>
-<li><a href="../random_uniform">random_uniform</a> : <code>X</code> and <code>Y</code> are randomly uniformly sampled</li>
-<li><a href="../gaussian">gaussian</a> : <code>X</code> and <code>Y</code> are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred</li>
-<li><a href="../gaussian_local">gaussian_local</a> : <code>X</code> and <code>Y</code> are randomly sampled using a Gaussian distribution where first <code>X</code> is sampled with a standard deviation of <code>0.04*S^2</code> and then the <code>Yi’s</code> are sampled using a Gaussian distribution – Each <code>Yi</code> is sampled with mean <code>Xi</code> and standard deviation of <code>0.01 * S^2</code></li>
-<li><a href="../random_coarse">random_coarse</a> : <code>X</code> and <code>Y</code> are randomly sampled from discrete location of a coarse polar grid</li>
-<li><a href="../centered">centered</a> : For each <code>i</code>, <code>Xi</code> is <code>(0, 0)</code> and <code>Yi</code> takes all possible values on a coarse polar grid</li>
+<li><a href="../../function_reference/#ImageFeatures.random_uniform"><code>random_uniform</code></a> : <code>X</code> and <code>Y</code> are randomly uniformly sampled</li>
+<li><a href="../../function_reference/#ImageFeatures.gaussian"><code>gaussian</code></a> : <code>X</code> and <code>Y</code> are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred</li>
+<li><a href="../../function_reference/#ImageFeatures.gaussian_local"><code>gaussian_local</code></a> : <code>X</code> and <code>Y</code> are randomly sampled using a Gaussian distribution where first <code>X</code> is sampled with a standard deviation of <code>0.04*S^2</code> and then the <code>Yi’s</code> are sampled using a Gaussian distribution – Each <code>Yi</code> is sampled with mean <code>Xi</code> and standard deviation of <code>0.01 * S^2</code></li>
+<li><a href="../../function_reference/#ImageFeatures.random_coarse"><code>random_coarse</code></a> : <code>X</code> and <code>Y</code> are randomly sampled from discrete location of a coarse polar grid</li>
+<li><a href="../../function_reference/#ImageFeatures.centered"><code>centered</code></a> : For each <code>i</code>, <code>Xi</code> is <code>(0, 0)</code> and <code>Yi</code> takes all possible values on a coarse polar grid</li>
 </ul>
 <p>As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.</p>
 <p>BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
@@ -347,9 +347,6 @@
 end
 </code></pre>
 
-<pre><code>_warp (generic function with 1 method)
-</code></pre>
-
 <p>Now, let us create the two images we will match using BRIEF.</p>
 <pre><code class="julia">using ImageFeatures, TestImages, Images, ImageDraw
 
@@ -358,62 +355,13 @@ img_array_1 = convert(Array{Images.Gray}, img)
 img_array_2 = _warp(img_array_1, 10, 20)
 </code></pre>
 
-<pre><code>512×512 Array{ColorTypes.Gray{FixedPointNumbers.UFixed{UInt8,8}},2}:
- Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.0)    Gray{U8}(0.0)
- ⋮                             ⋱  ⋮
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.392)  Gray{U8}(0.396)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.416)  Gray{U8}(0.427)
- Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.427)  Gray{U8}(0.396)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.408)  Gray{U8}(0.396)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.396)  Gray{U8}(0.38)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.376)  Gray{U8}(0.369)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.365)  Gray{U8}(0.353)
- Gray{U8}(0.0)  Gray{U8}(0.0)  …  Gray{U8}(0.357)  Gray{U8}(0.337)
- Gray{U8}(0.0)  Gray{U8}(0.0)     Gray{U8}(0.345)  Gray{U8}(0.322)
-</code></pre>
-
 <p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="../@ref"><code>fastcorners</code></a>.</p>
 <pre><code class="julia">keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))
 keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4))
 </code></pre>
 
-<pre><code>37-element Array{CartesianIndex{2},1}:
- CartesianIndex{2}((404,86))
- CartesianIndex{2}((403,87))
- CartesianIndex{2}((402,88))
- CartesianIndex{2}((401,89))
- CartesianIndex{2}((400,90))
- CartesianIndex{2}((399,91))
- CartesianIndex{2}((400,91))
- CartesianIndex{2}((424,91))
- CartesianIndex{2}((425,91))
- CartesianIndex{2}((398,92))
- ⋮
- CartesianIndex{2}((446,200))
- CartesianIndex{2}((445,201))
- CartesianIndex{2}((352,202))
- CartesianIndex{2}((445,202))
- CartesianIndex{2}((348,205))
- CartesianIndex{2}((243,249))
- CartesianIndex{2}((245,253))
- CartesianIndex{2}((213,280))
- CartesianIndex{2}((212,281))
-</code></pre>
-
 <p>To create the BRIEF descriptor, we first need to define the parameters by calling the <a href="../../function_reference/#ImageFeatures.BRIEF"><code>BRIEF</code></a> constructor.</p>
 <pre><code class="julia">brief_params = BRIEF(size = 256, window = 10, seed = 123)
-</code></pre>
-
-<pre><code>ImageFeatures.BRIEF{ImageFeatures.#gaussian}(256,10,1.4142135623730951,ImageFeatures.gaussian,123)
 </code></pre>
 
 <p>Now pass the image with the keypoints and the parameters to the <a href="../@ref"><code>create_descriptor</code></a> function.</p>
@@ -421,14 +369,8 @@ keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4))
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
 </code></pre>
 
-<pre><code>(BitArray{1}[Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,false,true,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,false,true,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,false,true,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false],Bool[true,false,true,true,false,true,true,true,false,true  …  true,true,false,false,true,false,true,true,false,false],Bool[false,false,true,true,false,true,true,false,false,true  …  false,true,false,true,true,true,false,false,false,false],Bool[false,false,true,false,false,true,true,false,false,false  …  false,true,false,true,true,true,false,false,false,true],Bool[true,false,true,true,false,true,true,true,false,true  …  false,true,true,false,true,false,true,true,false,false]  …  Bool[false,true,true,false,false,true,false,true,false,false  …  false,true,true,true,true,false,false,true,true,false],Bool[false,false,false,false,false,true,true,false,false,false  …  false,true,false,true,true,true,false,false,false,true],Bool[false,true,true,false,false,true,true,false,false,false  …  false,true,false,true,true,true,false,false,false,false],Bool[true,false,false,true,true,true,false,true,true,true  …  true,true,true,true,true,false,true,true,false,false],Bool[false,true,true,true,false,true,true,false,false,true  …  false,true,false,true,true,false,false,false,false,false],Bool[true,false,false,true,true,true,false,true,true,true  …  true,true,true,true,true,false,true,true,false,false],Bool[true,true,false,false,true,false,false,true,true,false  …  true,false,false,false,true,true,false,true,true,false],Bool[false,true,false,true,true,false,true,false,false,true  …  true,true,false,false,false,true,false,false,true,true],Bool[true,true,false,false,true,false,true,true,false,true  …  true,true,true,true,true,true,true,true,true,false],Bool[true,true,false,true,true,true,true,true,false,true  …  true,true,true,true,true,true,true,true,true,false]],CartesianIndex{2}[CartesianIndex{2}((404,86)),CartesianIndex{2}((403,87)),CartesianIndex{2}((402,88)),CartesianIndex{2}((401,89)),CartesianIndex{2}((400,90)),CartesianIndex{2}((399,91)),CartesianIndex{2}((400,91)),CartesianIndex{2}((424,91)),CartesianIndex{2}((425,91)),CartesianIndex{2}((398,92))  …  CartesianIndex{2}((425,198)),CartesianIndex{2}((446,200)),CartesianIndex{2}((445,201)),CartesianIndex{2}((352,202)),CartesianIndex{2}((445,202)),CartesianIndex{2}((348,205)),CartesianIndex{2}((243,249)),CartesianIndex{2}((245,253)),CartesianIndex{2}((213,280)),CartesianIndex{2}((212,281))])
-</code></pre>
-
 <p>The obtained descriptors can be used to find the matches between the two images using the <a href="../../function_reference/#ImageFeatures.match_keypoints"><code>match_keypoints</code></a> function.</p>
 <pre><code class="julia">matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
-</code></pre>
-
-<pre><code>(37,)
 </code></pre>
 
 <p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to view the results.</p>
