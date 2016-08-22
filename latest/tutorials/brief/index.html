@@ -334,10 +334,20 @@
 <p><a id='Example-1'></a></p>
 <h2 id="example">Example</h2>
 <p>```@example
-using ImageFeatures, TestImages, </p>
+using ImageFeatures, TestImages, Images;</p>
+<p>function _warp(img, transx, transy)
+    res = zeros(eltype(img), size(img))
+    for i in 1:size(img, 1) - transx
+        for j in 1:size(img, 2) - transy
+            res[i + transx, j + transy] = img[i, j]
+        end
+    end
+    res = shareproperties(img, res)
+    res
+end</p>
 <p>img = testimage("lena_gray_512");
-img_array_1 = convert(Array{Gray}, img);
-img_array_2 = ImageFeatures._warp(img_array_1, 10, 20);</p>
+img_array_1 = convert(Array{Images.Gray}, img);
+img_array_2 = _warp(img_array_1, 10, 20);</p>
 <p>keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4));
 keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4));</p>
 <p>brief_params = BRIEF(size = 256, window = 10, seed = 123);</p>
