@@ -320,7 +320,11 @@
             <h1>ORB</h1>
           
           <p>The <em>ORB</em> descriptor is a somewhat similar to <a href="../brief">BRIEF</a>. It doesn’t have an elaborate sampling pattern as <a href="../brisk">BRISK</a> or <a href="../freak">FREAK</a>. </p>
-<p>However, there are two main differences between ORB and BRIEF: - ORB uses an orientation compensation mechanism, making it rotation invariant. - ORB learns the optimal sampling pairs, whereas BRIEF uses randomly chosen sampling pairs.</p>
+<p>However, there are two main differences between ORB and BRIEF:</p>
+<ul>
+<li>ORB uses an orientation compensation mechanism, making it rotation invariant.</li>
+<li>ORB learns the optimal sampling pairs, whereas BRIEF uses randomly chosen sampling pairs.</li>
+</ul>
 <p>The ORB descriptor uses the intensity centroid as a measure of orientation. To calculate the centroid, we first need to find the moment of a patch, which is given by <code>Mpq = x,yxpyqI(x,y)</code>. The centroid, or ‘centre of mass' is then given by <code>C=(M10M00, M01M00)</code>.</p>
 <p>The vector from the corner’s center to the centroid gives the orientation of the patch. Now, the patch can be rotated to some predefined canonical orientation before calculating the descriptor, thus achieving rotation invariance.</p>
 <p>ORB tries to take sampling pairs which are uncorrelated so that each new pair will bring new information to the descriptor, thus maximizing the amount of information the descriptor carries. We also want high variance among the pairs making a feature more discriminative, since it responds differently to inputs. To do this, we consider the sampling pairs over keypoints in standard datasets and then do a greedy evaluation of all the pairs in order of distance from mean till the number of desired pairs are obtained i.e. the size of the descriptor.</p>
@@ -359,43 +363,33 @@ end
 </code></pre>
 
 <p>Now, let us create the two images we will match using ORB. </p>
-<p>```@example 1</p>
-<p>using ImageFeatures, TestImages, Images, ImageDraw</p>
-<p>img = testimage("lighthouse")
+<pre><code class="julia">using ImageFeatures, TestImages, Images, ImageDraw
+
+img = testimage(&quot;lighthouse&quot;)
+img_array_1 = convert(Array{Images.Gray}, img)
 img_temp_2 = _warp(img_array_1, 5 * pi / 6)
-img_array_2 = _warp(img_temp_2, 50, 40)</p>
-<p>nothing # hide</p>
-<pre><code>
+img_array_2 = _warp(img_temp_2, 50, 40)
+</code></pre>
 
-The ORB descriptor calculates the keypoints as well as the descriptor, unlike [BRIEF](brief). To create the ORB descriptor, we first need to define the parameters by calling the [`ORB`](../function_reference.md#ImageFeatures.ORB) constructor.
-
-
-```julia
-orb_params = ORB(num_keypoints = 1000)
+<p>The ORB descriptor calculates the keypoints as well as the descriptor, unlike <a href="../brief">BRIEF</a>. To create the ORB descriptor, we first need to define the parameters by calling the <a href="../../function_reference/#ImageFeatures.ORB"><code>ORB</code></a> constructor.</p>
+<pre><code class="julia">orb_params = ORB(num_keypoints = 1000)
 </code></pre>
 
 <p>Now pass the image with the parameters to the <a href="../@ref"><code>create_descriptor</code></a> function.</p>
-<p>```@example 1
-desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
+<pre><code class="julia">desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
-nothing # hide</p>
-<pre><code>
+</code></pre>
 
-The obtained descriptors can be used to find the matches between the two images using the [`match_keypoints`](../function_reference.md#ImageFeatures.match_keypoints) function.
-
-
-```@example 1
-matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
-nothing # hide
+<p>The obtained descriptors can be used to find the matches between the two images using the <a href="../../function_reference/#ImageFeatures.match_keypoints"><code>match_keypoints</code></a> function.</p>
+<pre><code class="julia">matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
 </code></pre>
 
 <p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to view the results.</p>
-<p>```@example 1</p>
-<p>grid = hcat(img_array_1, img_array_2)
+<pre><code class="julia">grid = hcat(img_array_1, img_array_2)
 offset = CartesianIndex(0, 768)
 map(m_i -&gt; line!(grid, m_i[1], m_i[2] + offset), matches)
-save("orb_example.jpg", grid); nothing # hide</p>
-<p>```</p>
+</code></pre>
+
 <p><img alt="" src="../orb_example.jpg" /></p>
           <aside class="copyright" role="note">
             

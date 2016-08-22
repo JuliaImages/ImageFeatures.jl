@@ -357,22 +357,17 @@ end
 </code></pre>
 
 <p>Now, let us create the two images we will match using FREAK.</p>
-<p>```@example 1</p>
-<p>using ImageFeatures, TestImages, Images, ImageDraw</p>
-<p>img = testimage("lighthouse")
-img_array_1 = convert(Array{Gray}, img)
+<pre><code class="julia">using ImageFeatures, TestImages, Images, ImageDraw
+
+img = testimage(&quot;lighthouse&quot;)
+img_array_1 = convert(Array{Images.Gray}, img)
 img_temp_2 = _warp(img_array_1, 5 * pi / 6)
 img_array_2 = _warp(img_temp_2, 50, 40)
-nothing # hide</p>
-<pre><code>
+</code></pre>
 
-To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
-
-
-```@example 1
-keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.35))
+<p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="../@ref"><code>fastcorners</code></a>.</p>
+<pre><code class="julia">keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.35))
 keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.35))
-nothing # hide
 </code></pre>
 
 <p>To create the BRIEF descriptor, we first need to define the parameters by calling the <a href="../../function_reference/#ImageFeatures.BRIEF"><code>BRIEF</code></a> constructor.</p>
@@ -380,28 +375,21 @@ nothing # hide
 </code></pre>
 
 <p>Now pass the image with the keypoints and the parameters to the <a href="../@ref"><code>create_descriptor</code></a> function.</p>
-<p>```@example 1
-desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, freak_params)
+<pre><code class="julia">desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, freak_params)
 desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, freak_params)
-nothing # hide</p>
-<pre><code>
+</code></pre>
 
-The obtained descriptors can be used to find the matches between the two images using the [`match_keypoints`](../function_reference.md#ImageFeatures.match_keypoints) function.
-
-
-```@example 1
-matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
-nothing # hide
+<p>The obtained descriptors can be used to find the matches between the two images using the <a href="../../function_reference/#ImageFeatures.match_keypoints"><code>match_keypoints</code></a> function.</p>
+<pre><code class="julia">matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
 </code></pre>
 
 <p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to view the results.</p>
-<p>```@example 1</p>
-<p>grid = hcat(img_array_1, img_array_2)
+<pre><code class="julia">grid = hcat(img_array_1, img_array_2)
 offset = CartesianIndex(0, 768)
 map(m_i -&gt; line!(grid, m_i[1], m_i[2] + offset), matches)
-save("brief_example.jpg", grid); nothing # hide</p>
-<p>```</p>
-<p><img alt="" src="../brief_example.jpg" /></p>
+</code></pre>
+
+<p><img alt="" src="../freak_example.jpg" /></p>
           <aside class="copyright" role="note">
             
             Documentation built with
