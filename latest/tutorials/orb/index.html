@@ -358,12 +358,12 @@ function _warp(img, angle)
 end
 </code></pre>
 
-<p>Now, let us create the two images we will match using BRIEF. </p>
+<p>Now, let us create the two images we will match using ORB. </p>
 <p>```@example 1</p>
 <p>using ImageFeatures, TestImages, Images, ImageDraw</p>
 <p>img = testimage("lighthouse")
-img_array_1 = convert(Array{Gray}, img)
-img_array_2 = _warp(img_array_1, pi / 4)</p>
+img_temp_2 = _warp(img_array_1, 5 * pi / 6)
+img_array_2 = _warp(img_temp_2, 50, 40)</p>
 <p>nothing # hide</p>
 <pre><code>
 
