@@ -48,7 +48,7 @@ function _reverserotate(p, angle, center)
 end
 
 # include("core.jl")
-# include("brief.jl")
+include("brief.jl")
 # include("glcm.jl")
 # include("lbp.jl")
 # include("corner.jl")
