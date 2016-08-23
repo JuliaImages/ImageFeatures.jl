@@ -61,6 +61,10 @@ end
 
 Keypoints(features::Features) = map(f -> f.keypoint, features)        
 
+typealias OrientationPair Vector{Int16}
+typealias OrientationWeights Vector{Float16}
+typealias SamplePair Vector{Float16}
+
 """
 ```
 distance = hamming_distance(desc_1, desc_2)

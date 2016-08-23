@@ -7,30 +7,27 @@ freak_params = FREAK([pattern_scale = 22.0])
 |----------|------|-------------|
 | **pattern_scale** | Float64 | Scaling factor for the sampling window | 
 """
-type FREAK{S, T, O} <: Params
+type FREAK{S, T, OW} <: Params
     pattern_scale::Float64
-    pattern_table::Array{Array{S, 1}, 1}
-    smoothing_table::Array{T, 1}
-    orientation_weights::Array{O, 1}
+    pattern_table::Vector{Vector{S}}
+    smoothing_table::Vector{Vector{T}}
+    orientation_weights::Vector{OW}
 end
-
-typealias OrientationPair Vector{Int}
-typealias SamplePair Vector{Float64}
 
 function FREAK(; pattern_scale::Float64 = 22.0)
     pattern_table, smoothing_table = _freak_tables(pattern_scale)
-    orientation_weights = OrientationPair[]
+    orientation_weights = OrientationWeights[]
     for o in freak_orientation_sampling_pattern
         offset_1 = pattern_table[1][o[1]]
         offset_2 = pattern_table[1][o[2]]
         dy, dx = offset_1 - offset_2
         norm = (dx ^ 2 + dy ^ 2)
-        push!(orientation_weights, OrientationPair([round(Int, dy * 4096 / norm), round(Int, dx * 4096 / norm)]))
+        push!(orientation_weights, OrientationWeights([dy / norm, dx / norm]))
     end
     FREAK(pattern_scale, pattern_table, smoothing_table, orientation_weights)
 end
 
-function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float64)
+function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float16)
     y = keypoint[1] + offset[1]
     x = keypoint[2] + offset[2]
     if sigma < 0.5
@@ -45,15 +42,15 @@ function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::
 end
 
 function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair}, 
-                                        orientation_weights::Array{OrientationPair}, sigmas::Array{Float64})
+                                        orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16})
     direction_sum_y = 0.0
     direction_sum_x = 0.0
     for (i, o) in enumerate(freak_orientation_sampling_pattern)
         offset_1 = pattern[o[1]]
         offset_2 = pattern[o[2]]
         intensity_diff = _freak_mean_intensity(int_img, keypoint, offset_1, sigmas[o[1]]) - _freak_mean_intensity(int_img, keypoint, offset_2, sigmas[o[2]])
-        direction_sum_y += orientation_weights[i][1] * intensity_diff / 4096
-        direction_sum_x += orientation_weights[i][2] * intensity_diff / 4096
+        direction_sum_y += orientation_weights[i][1] * intensity_diff
+        direction_sum_x += orientation_weights[i][2] * intensity_diff
     end
     angle = atan2(direction_sum_y, direction_sum_x)
     scaled_angle = ceil(Int, (angle + pi) * freak_orientation_steps / (2 * pi))
@@ -62,11 +59,11 @@ end
 
 function _freak_tables(pattern_scale::Float64)
     pattern_table = Vector{SamplePair}[]
-    smoothing_table = Vector{Float64}[]
+    smoothing_table = Vector{Float16}[]
     for ori in 0:freak_orientation_steps - 1
         theta = ori * 2 * pi / freak_orientation_steps 
         pattern = SamplePair[]
-        sigmas = Float64[]
+        sigmas = Float16[]
         for (i, n) in enumerate(freak_num_circular_pattern)
             for circle_number in 0:n - 1
                 alt_offset = (pi / n) * ((i - 1) % 2)
@@ -88,10 +85,9 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
     descriptors = BitArray{1}[]
     ret_keypoints = Keypoint[]
     window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.pattern_scale) + 1
-    tl_lim = CartesianIndex(-window_size, -window_size)
-    br_lim = CartesianIndex(window_size, window_size)
+    lim = CartesianIndex(window_size, window_size)
     for k in keypoints
-        checkbounds(Bool, img, k + tl_lim) && checkbounds(Bool, img, k + br_lim) || continue
+        checkbounds(Bool, img, k - lim) && checkbounds(Bool, img, k + lim) || continue
         orientation = _freak_orientation(int_img, k, params.pattern_table[1], params.orientation_weights, params.smoothing_table[1])
         sampled_intensities = T[]
         for (i, p) in enumerate(params.pattern_table[orientation])
