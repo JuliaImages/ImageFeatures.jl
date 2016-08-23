@@ -333,7 +333,7 @@
 <p>BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see <a href="../orb">ORB</a>, <a href="../brisk">BRISK</a> and <a href="../freak">FREAK</a>.</p>
 <p><a id='Example-1'></a></p>
 <h2 id="example">Example</h2>
-<p>Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by <code>(10, 20)</code> pixels. We will use the <code>lena_gray</code> image from the <a href="https://github.com/timholy/TestImages.jl">TestImages</a> package for this example.</p>
+<p>Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by <code>(100, 200)</code> pixels. We will use the <code>lena_gray</code> image from the <a href="https://github.com/timholy/TestImages.jl">TestImages</a> package for this example.</p>
 <p>First, let us define a warping function to transform the image.</p>
 <pre><code class="julia">function _warp(img, transx, transy)
     res = zeros(eltype(img), size(img))
@@ -352,7 +352,7 @@ end
 
 img = testimage(&quot;lena_gray_512&quot;)
 img_array_1 = convert(Array{Images.Gray}, img)
-img_array_2 = _warp(img_array_1, 10, 20)
+img_array_2 = _warp(img_array_1, 100, 200)
 </code></pre>
 
 <p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="../@ref"><code>fastcorners</code></a>.</p>
