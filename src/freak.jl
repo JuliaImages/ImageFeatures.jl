@@ -7,11 +7,11 @@ freak_params = FREAK([pattern_scale = 22.0])
 |----------|------|-------------|
 | **pattern_scale** | Float64 | Scaling factor for the sampling window | 
 """
-type FREAK{S, T, OW} <: Params
+type FREAK <: Params
     pattern_scale::Float64
-    pattern_table::Vector{Vector{S}}
-    smoothing_table::Vector{Vector{T}}
-    orientation_weights::Vector{OW}
+    pattern_table::Vector{Vector{SamplePair}}
+    smoothing_table::Vector{Vector{Float16}}
+    orientation_weights::Vector{OrientationWeights}
 end
 
 function FREAK(; pattern_scale::Float64 = 22.0)
@@ -20,9 +20,10 @@ function FREAK(; pattern_scale::Float64 = 22.0)
     for o in freak_orientation_sampling_pattern
         offset_1 = pattern_table[1][o[1]]
         offset_2 = pattern_table[1][o[2]]
-        dy, dx = offset_1 - offset_2
+        dy = offset_1[1] - offset_2[1]
+        dx = offset_1[2] - offset_2[2]
         norm = (dx ^ 2 + dy ^ 2)
-        push!(orientation_weights, OrientationWeights([dy / norm, dx / norm]))
+        push!(orientation_weights, OrientationWeights((dy / norm, dx / norm)))
     end
     FREAK(pattern_scale, pattern_table, smoothing_table, orientation_weights)
 end
@@ -69,8 +70,8 @@ function _freak_tables(pattern_scale::Float64)
                 alt_offset = (pi / n) * ((i - 1) % 2)
                 angle = (circle_number * 2 * pi / n) + alt_offset + theta
 
-                push!(pattern, SamplePair([freak_radii[i] * sin(angle) * pattern_scale, 
-                                            freak_radii[i] * cos(angle) * pattern_scale]))
+                push!(pattern, SamplePair((freak_radii[i] * sin(angle) * pattern_scale, 
+                                            freak_radii[i] * cos(angle) * pattern_scale)))
                 push!(sigmas, freak_sigma[i] * pattern_scale)
             end
         end

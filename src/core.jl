@@ -61,9 +61,9 @@ end
 
 Keypoints(features::Features) = map(f -> f.keypoint, features)        
 
-typealias OrientationPair Vector{Int16}
-typealias OrientationWeights Vector{Float16}
-typealias SamplePair Vector{Float16}
+typealias OrientationPair Tuple{Int16, Int16}
+typealias OrientationWeights Tuple{Float16, Float16}
+typealias SamplePair Tuple{Float16, Float16}
 
 """
 ```
