@@ -65,7 +65,7 @@ keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.35))
 nothing # hide
 ```
 
-To create the BRIEF descriptor, we first need to define the parameters by calling the [`BRIEF`](@ref) constructor.
+To create the FREAK descriptor, we first need to define the parameters by calling the [`FREAK`](@ref) constructor.
 
 ```@example 3
 freak_params = FREAK()

@@ -79,7 +79,7 @@ function _brisk_tables(pattern_scale::Float64)
     pattern_table, smoothing_table
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, features::Array{Feature}, params::BRISK)
+function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, features::Features, params::BRISK)
     int_img = integral_image(img)
     descriptors = BitArray{1}[]
     ret_features = Feature[]
