@@ -5,11 +5,14 @@ Below `[]` in an argument list means an optional argument.
 ## Types
 
 ```@docs
+Feature
+Features
 Keypoint
 Keypoints
 BRIEF
 ORB
 FREAK
+BRISK
 ```
 
 ## Corners
