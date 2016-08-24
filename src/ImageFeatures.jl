@@ -11,8 +11,9 @@ include("glcm.jl")
 include("brief.jl")
 include("orb.jl")
 include("freak.jl")
+include("brisk.jl")
 
-export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB, FREAK
+export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK
 
 export 
 	#Core

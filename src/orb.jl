@@ -13,7 +13,7 @@ orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harr
 | **levels** | Int | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
 | **sigma** | Float64 | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
 """
-type ORB <: DescriptorParams
+type ORB <: Params
     num_keypoints::Int
     n_fast::Int
     threshold::Float64

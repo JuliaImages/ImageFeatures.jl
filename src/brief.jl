@@ -12,7 +12,7 @@ brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_ty
 | **seed** | Int | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. | 
 
 """
-type BRIEF{F} <: DescriptorParams
+type BRIEF{F} <: Params
     size::Int
     window::Int
     sigma::Float64

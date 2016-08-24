@@ -9,6 +9,11 @@ facts("Core") do
         keypoints = Keypoints(img)
         @fact sort(keypoints) == sort(ids) --> true
         @fact Keypoint(1, 2) --> CartesianIndex{2}(1, 2)
+        
+        features = Features(img)
+        keypoints = Keypoints(features)
+        @fact sort(keypoints) == sort(ids) --> true
+
     end
 
     context("Keypoint Matching") do

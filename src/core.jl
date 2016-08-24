@@ -1,28 +1,69 @@
-abstract Detector
-abstract DescriptorParams
+abstract Params
 
 """
 ```
 keypoint = Keypoint(y, x)
+keypoint = Keypoint(feature)
 ```
 
-The `Keypoint` type.
+A `Keypoint` may be created by passing the coordinates of the point or from a feature.
 """
 typealias Keypoint CartesianIndex{2}
 
 """
 ```
 keypoints = Keypoints(boolean_img)
+keypoints = Keypoints(features)
 ```
 
-Creates a `Vector{Keypoint}` of the true values in the `boolean_img`.
+Creates a `Vector{Keypoint}` of the `true` values in a boolean image or from a list of features.
 """
 typealias Keypoints Vector{CartesianIndex{2}}
+
+"""
+```
+feature = Feature(keypoint, orientation = 0.0, scale = 0.0)
+```
+
+The `Feature` type has the keypoint, its orientation and its scale.
+"""
+immutable Feature
+    keypoint::Keypoint
+    orientation::Float64
+    scale::Float64
+end
+
+"""
+```
+features = Features(boolean_img)
+features = Features(keypoints)
+```
+
+Returns a `Vector{Feature}` of features generated from the `true` values in a boolean image or from a 
+list of keypoints.
+"""
+typealias Features Vector{Feature}
+
+Feature(k::Keypoint) = Feature(k, 0.0, 0.0)
+
+Feature(k::Keypoint, ori::Number) = Feature(k, ori, 0.0)
+
+Features(keypoints::Keypoints) = map(k -> Feature(k), keypoints)
+
+Features(img::AbstractArray) = Features(Keypoints(img))
+
+Keypoint(feature::Feature) = feature.keypoint
 
 function Keypoints(img::AbstractArray)
     r, c, _ = findnz(img)
     map((ri, ci) -> Keypoint(ri, ci), r, c)
 end
+
+Keypoints(features::Features) = map(f -> f.keypoint, features)        
+
+typealias OrientationPair Tuple{Int16, Int16}
+typealias OrientationWeights Tuple{Float16, Float16}
+typealias SamplePair Tuple{Float16, Float16}
 
 """
 ```

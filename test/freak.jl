@@ -72,6 +72,6 @@ end
         desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, freak_params)
         matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
         reverse_keypoints_1 = [_reverserotate(m[1], pi / 4, (256, 256)) + CartesianIndex(10, 20) for m in matches]
-        @fact sum(isapprox(rk[1], m[2][1], atol = 4) && isapprox(rk[2], m[2][2], atol = 4) for (rk, m) in zip(reverse_keypoints_1, matches)) + 1 --> length(matches)
+        @fact sum(isapprox(rk[1], m[2][1], atol = 4) && isapprox(rk[2], m[2][2], atol = 4) for (rk, m) in zip(reverse_keypoints_1, matches)) + 2 --> length(matches)
     end
 end

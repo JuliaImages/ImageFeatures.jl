@@ -96,3 +96,17 @@ const freak_radii = [freak_largest_radius, freak_largest_radius - 6 * freak_circ
 const freak_sigma = vcat(freak_radii[1:end - 1] / 2, freak_radii[end - 1] / 2)
 
 const freak_orientation_steps = 256;
+
+const brisk_radii = [0, 2.9, 4.9, 7.4, 10.8]
+
+const brisk_sigma = [0.65, 1.16, 1.41, 2.00, 2.19]
+
+const brisk_num_circular_pattern = [1, 10, 14, 15, 20]
+
+const brisk_orientation_steps = 1024
+
+const brisk_dmin = 8.2
+
+const brisk_dmax = 5.85
+
+const brisk_points = 60
