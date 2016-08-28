@@ -1,4 +1,4 @@
-The *ORB* descriptor is a somewhat similar to [BRIEF](brief). It doesn’t have an elaborate sampling pattern as [BRISK](brisk) or [FREAK](freak). 
+The *ORB* (Oriented Fast and Rotated Brief) descriptor is a somewhat similar to [BRIEF](brief). It doesn’t have an elaborate sampling pattern as [BRISK](brisk) or [FREAK](freak). 
 
 However, there are two main differences between ORB and BRIEF:
 

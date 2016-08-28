@@ -34,7 +34,7 @@ pages:
     # - Edges: tutorials/edges.md
     # - Corners: tutorials/corners.md
     # - CENSURE: tutorials/censure.md
-    - Feature Matching: tutorials/feature_matching.md
+    - Framework: tutorials/framework.md
     - BRIEF: tutorials/brief.md
     - ORB: tutorials/orb.md
     - BRISK: tutorials/brisk.md

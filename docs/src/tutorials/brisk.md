@@ -1,4 +1,4 @@
-The *BRISK* descriptor has a predefined sampling pattern as compared to [BRIEF](brief) or [ORB](orb). Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.
+The *BRISK* (Binary Robust Invariant Scalable Keypoints) descriptor has a predefined sampling pattern as compared to [BRIEF](brief) or [ORB](orb). Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.
 
 ![BRISK Sampling Pattern](/img/brisk_pattern.png = 50x50)
 

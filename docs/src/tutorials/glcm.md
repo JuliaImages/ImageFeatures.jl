@@ -10,17 +10,5 @@ The matrix may be made symmetrical by adding it to its transpose and normalised 
 
 Once the GLCM is calculated, we can find texture properties from the matrix to represent the textures in the image.
 
-## GLCM Properties
+## Example
 
-The properties can be calculated over the entire matrix or by considering a window which is moved along the matrix.
-
-#### Mean
-#### Variance
-#### Correlation
-#### Contrast
-#### IDM (Inverse Difference Moment)
-#### ASM (Angular Second Moment)
-#### Entropy
-#### Max Probability
-#### Energy
-#### Dissimilarity
