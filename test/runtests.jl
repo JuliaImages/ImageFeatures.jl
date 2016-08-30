@@ -55,6 +55,7 @@ include("corner.jl")
 include("orb.jl")
 include("freak.jl")
 include("brisk.jl")
+include("censure.jl")
 
 isinteractive() || FactCheck.exitstatus()
 

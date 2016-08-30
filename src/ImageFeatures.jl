@@ -1,5 +1,4 @@
 module ImageFeatures
-
 # package code goes here
 using Images, ColorTypes, FixedPointNumbers, Distributions
 
@@ -12,8 +11,9 @@ include("brief.jl")
 include("orb.jl")
 include("freak.jl")
 include("brisk.jl")
+include("censure.jl")
 
-export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK
+export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB, CENSURE, OctagonFilter, BoxFilter, BiFilter, Detector
 
 export 
 	#Core
@@ -56,5 +56,8 @@ export
 	random_coarse,
 	gaussian,
 	gaussian_local,
-	centered
+	centered,
+
+	#CENSURE
+	censure
 end
