@@ -12,12 +12,12 @@ function glcm{T<:Real, A<:Real}(img::AbstractArray{T, 2}, distances::Array{Int, 
 end
 
 function glcm{T<:Colorant}(img::AbstractArray{T, 2}, distance::Integer, angle::Real, mat_size::Integer = 16)
-    img_rescaled = map(i -> max(1, Int(ceil((convert(Gray{U8}, i).val.i) * mat_size / 256))), img)
+    img_rescaled = map(i -> max(1, Int(ceil((convert(Gray{FixedPointNumbers.Normed{UInt8, 8}}, i).val.i) * mat_size / 256))), img)
     _glcm(img_rescaled, distance, angle, mat_size)
 end
 
 function glcm{T<:Colorant, A<:Real}(img::AbstractArray{T, 2}, distances::Array{Int, 1}, angles::Array{A, 1}, mat_size::Integer = 16)
-    img_rescaled = map(i -> max(1, Int(ceil((convert(Gray{U8}, i).val.i) * mat_size / 256))), img)  
+    img_rescaled = map(i -> max(1, Int(ceil((convert(Gray{FixedPointNumbers.Normed{UInt8, 8}}, i).val.i) * mat_size / 256))), img)  
     glcm_matrices = [_glcm(img_rescaled, d, a, mat_size) for d in distances, a in angles]
     glcm_matrices
 end

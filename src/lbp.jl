@@ -80,7 +80,7 @@ function _direction_coded_lbp{T}(img::AbstractArray{T, 2}, offsets::Array)
 	lbp_image = zeros(UInt, size(img))
 	R = CartesianRange(size(img))
 	p = Int(length(offsets) / 2)
-	raw_img = convert(Array{Int}, raw(img))
+	raw_img = convert(Array{Int}, rawview(channelview(img)))
 	neighbours = zeros(Int, length(offsets))
 	for I in R
 		for (i, o) in enumerate(offsets) neighbours[i] = Int(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]).val.i) end
@@ -116,7 +116,7 @@ function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2}, tl_y::Integer, tl_x:
 	lbp_code
 end
 
-function _create_descriptor{T<:FixedPointNumbers.UFixed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4, lbp_type::Function = lbp, args...)
+function _create_descriptor{T<:FixedPointNumbers.Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4, lbp_type::Function = lbp, args...)
 	h, w = size(img)
     blockh = ceil(Int, h / (yblocks))
     blockw = ceil(Int, w / (xblocks))
@@ -134,7 +134,7 @@ function _create_descriptor{T<:FixedPointNumbers.UFixed}(img::AbstractArray{Gray
     descriptor
 end
 
-function create_descriptor{T<:FixedPointNumbers.UFixed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4; lbp_type::Function = lbp, args...)
+function create_descriptor{T<:FixedPointNumbers.Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4; lbp_type::Function = lbp, args...)
     h, w = size(img)
     y_padded = ceil(Int, h / (yblocks)) * yblocks
     x_padded = ceil(Int, w / (xblocks)) * xblocks
