@@ -52,7 +52,7 @@ include("brief.jl")
 include("glcm.jl")
 include("lbp.jl")
 include("corner.jl")
-include("orb.jl")
+#include("orb.jl")
 include("freak.jl")
 include("brisk.jl")
 

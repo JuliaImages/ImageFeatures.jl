@@ -1,4 +1,4 @@
-using FactCheck, Images, ImageFeatures, TestImages, Distributions, ColorTypes, TestImages
+using FactCheck, Images, ImageFeatures, TestImages, Distributions, TestImages
 
 facts("ORB") do 
     
