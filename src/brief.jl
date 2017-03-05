@@ -153,8 +153,6 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
     _eltype{T,R<:Real}(::Type{T}, ::Type{R}) = T
     factkernel = KernelFactors.IIRGaussian([params.sigma, params.sigma])
     img_smoothed = imfilter(_eltype(Float64, eltype(img)), img, factkernel, NA())
-
-#    img_smoothed = imfilter_gaussian(img, [params.sigma, params.sigma])
     sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
     descriptors = BitArray{1}[]
     h, w = size(img_smoothed)
