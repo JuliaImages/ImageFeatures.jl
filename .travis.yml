@@ -14,7 +14,7 @@ script:
     - julia -e 'Pkg.add("Images")'  # Needed for Docs 
     - julia -e 'Pkg.clone("https://github.com/JuliaImages/ImageDraw.jl")' # Needed for Docs 
     - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
-    - travis_wait 30 julia -e 'Pkg.test("ImageFeatures",coverage=true)'
+    - travis_wait 180 julia -e 'Pkg.test("ImageFeatures",coverage=true)'
 after_success:
     - if [ $TRAVIS_OS_NAME = "linux" ]; then
          julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
