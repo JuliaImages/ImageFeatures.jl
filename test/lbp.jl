@@ -245,9 +245,9 @@ facts("Local Binary Patterns") do
 		@fact multi_block_lbp(img, 1, 1, 4, 4) --> 18
 	end
 
-	context("Descriptor") do
+	#=context("Descriptor") do
 
-		#=img = testimage("lena_gray_256")
+		img = testimage("lena_gray_256")
 		descriptor = create_descriptor(img, 1, 1)
 		expected = [9682,6124,2182,3172,1668,1231,1751,3687,2684,1611,1238,2054,2916,2299,7206,16031]
 		println("algo: ",descriptor)
