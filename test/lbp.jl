@@ -260,7 +260,7 @@ facts("Local Binary Patterns") do
 					577,585,689,1554,3997]
 		println("algo: ",descriptor)
 		println("expected: ",expected)
-		@fact all(descriptor .== expected) --> true=#
-	end
+		@fact all(descriptor .== expected) --> true
+	end=#
 
 end
