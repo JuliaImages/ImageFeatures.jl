@@ -111,7 +111,7 @@ end
 grade = grade_matches(keypoints_1, keypoints_2, difference_method)
 ```
 
-Returns a measure of similarity between keypoints in keypoints_1 and keypoints_2 where difference_method
+Returns a measure of similarity between keypoints in `keypoints_1` and `keypoints_2` where `difference_method`
 is the method used for computing difference between individual pair of keypoints.
 """
 
