@@ -148,11 +148,8 @@ function centered(size::Int, window::Int, seed::Int)
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::BRIEF)
-    
-    _eltype{T,C<:Colorant}(::Type{T}, ::Type{C}) = base_colorant_type(C){T}
-    _eltype{T,R<:Real}(::Type{T}, ::Type{R}) = T
     factkernel = KernelFactors.IIRGaussian([params.sigma, params.sigma])
-    img_smoothed = imfilter(_eltype(Float64, eltype(img)), img, factkernel, NA())
+    img_smoothed = imfilter(Float64, img, factkernel, NA())
     sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
     descriptors = BitArray{1}[]
     h, w = size(img_smoothed)

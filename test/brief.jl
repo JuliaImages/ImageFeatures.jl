@@ -27,22 +27,38 @@ facts("BRIEF") do
     end
 
     context("Descriptor Calculation") do
-        #=img_1 = Gray{Float64}[  0 0 0 0 0 0 
-                                0 0 1 1 0 0 
-                                0 0 1 1 0 0 
-                                0 0 1 1 0 0 
-                                0 0 1 1 0 0 
-                                0 0 0 0 0 0 ]
+        img_1 = Gray{Float64}[  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+                                0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+                                0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  ]
         keypoints_1 = Keypoints(imcorner(img_1))
 
-        img_2 = Gray{Float64}[  0 0 0 0 0 0  
-                                0 0 1 1 0 0  
-                                0 0 1 1 0 0  
-                                0 0 1 1 0 0  
-                                0 0 1 1 0 0  
-                                0 0 1 1 0 0  
-                                0 0 1 1 0 0  
-                                0 0 0 0 0 0  ]
+        img_2 = Gray{Float64}[ 0 0 0 0 0 0 0 0 0 0
+                               0 0 0 0 0 0 0 0 0 0
+                               0 0 1 1 1 0 0 0 0 0
+                               0 0 1 1 1 1 0 0 0 0
+                               0 0 1 1 1 1 1 0 0 0
+                               0 0 1 1 1 1 1 1 0 0
+                               0 0 1 1 1 1 1 1 0 0
+                               0 0 1 1 1 1 1 1 0 0
+                               0 0 0 0 0 0 0 0 0 0
+                               0 0 0 0 0 0 0 0 0 0 ]
         keypoints_2 = Keypoints(imcorner(img_2))
 
         brief_params = BRIEF(size = 8, window = 3, seed = 123)
@@ -50,9 +66,12 @@ facts("BRIEF") do
         desc_1, ret_keypoints_1 = create_descriptor(img_1, keypoints_1, brief_params)
         desc_2, ret_keypoints_2 = create_descriptor(img_2, keypoints_2, brief_params)
         matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2)
-        expected_matches = [[CartesianIndex((2,3)),CartesianIndex((2,3))],
-                            [CartesianIndex((5,3)),CartesianIndex((7,3))]]
-        @fact all(matches .== expected_matches) --> true=#
+        expected_matches = [[CartesianIndex((5,4)),CartesianIndex((3,3))],
+                            [CartesianIndex((16,4)),CartesianIndex((8,3))],
+                            [CartesianIndex((16,15)),CartesianIndex((8,8))]]
+        println("algo: ", matches)
+        println("expected: ", expected_matches)
+        @fact all(matches .== expected_matches) --> true
 
         img_1 = Gray{Float64}[ 0 0 0 0 0 0 0 0 0 
                   0 0 1 1 1 1 0 0 0 
