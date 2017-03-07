@@ -122,7 +122,7 @@ function _create_descriptor{T<:FixedPointNumbers.Normed}(img::AbstractArray{Gray
     blockw = ceil(Int, w / (xblocks))
     el_max = typemax(FixedPointNumbers.rawtype(eltype(img[1])))
     edges = 0:Int((el_max+1)^0.5):el_max+1
-    descriptor = Int64[]
+    descriptor = Int[]
     for i in 1:xblocks
     	for j in 1:yblocks
     		lbp_image = lbp_type(img[j : j + blockh - 1, i : i + blockw - 1], args...)

@@ -69,8 +69,6 @@ facts("BRIEF") do
         expected_matches = [[CartesianIndex((5,4)),CartesianIndex((3,3))],
                             [CartesianIndex((16,4)),CartesianIndex((8,3))],
                             [CartesianIndex((16,15)),CartesianIndex((8,8))]]
-        println("algo: ", matches)
-        println("expected: ", expected_matches)
         @fact all(matches .== expected_matches) --> true
 
         img_1 = Gray{Float64}[ 0 0 0 0 0 0 0 0 0 

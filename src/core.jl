@@ -105,3 +105,26 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     end
     matches
 end
+
+"""
+```
+grade = grade_matches(keypoints_1, keypoints_2, difference_method)
+```
+
+Returns a measure of similarity between keypoints in keypoints_1 and keypoints_2 where difference_method
+is the method used for computing difference between individual pair of keypoints.
+"""
+
+function grade_matches(K1::Keypoints, K2::Keypoints, diff::Function = (i,j)->(abs(i[1] - j[1]) + (abs(i[2] - j[2]))))
+    sum = 0.0
+    count = 0
+    for (i,j) in zip(K1, K2)
+        sum += diff(i,j)
+        count += 1
+    end
+    if count != 0
+        sum / count
+    else
+        0
+    end
+end
