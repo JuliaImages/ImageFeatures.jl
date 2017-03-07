@@ -1,4 +1,4 @@
-using FactCheck, Images, ImageFeatures, TestImages, Distributions,  TestImages
+using FactCheck, Images, ImageFeatures, TestImages, Distributions
 
 facts("BRIEF") do 
     

@@ -20,6 +20,7 @@ export
 	create_descriptor,
 	hamming_distance,
 	match_keypoints,
+	grade_matches,
 
     #Local Binary Patterns
 	lbp,
