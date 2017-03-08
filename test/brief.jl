@@ -12,7 +12,7 @@ facts("BRIEF") do
     context("Sampling Patterns") do
         # Check Bounds
         for si in [32, 128, 256], wi in [5, 15, 25, 49], se in [123, 546, 178]
-            s1, s2 = ImageFeatures.centered(si, wi, se)
+            s1, s2 = ImageFeatures.centre_sample(si, wi, se)
             @fact check_samples(s1, s2, si, wi) --> true
             @fact s1 == zeros(CartesianIndex{2}, si) --> true
             s1, s2 = random_coarse(si, wi, se)

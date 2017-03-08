@@ -111,20 +111,15 @@ end
 grade = grade_matches(keypoints_1, keypoints_2, difference_method)
 ```
 
-Returns a measure of similarity between keypoints in `keypoints_1` and `keypoints_2` where `difference_method`
+Returns a measure of dissimilarity between keypoints in `keypoints_1` and `keypoints_2` where `difference_method`
 is the method used for computing difference between individual pair of keypoints.
 """
 
-function grade_matches(K1::Keypoints, K2::Keypoints, diff::Function = (i,j)->(abs(i[1] - j[1]) + (abs(i[2] - j[2]))))
-    sum = 0.0
-    count = 0
-    for (i,j) in zip(K1, K2)
-        sum += diff(i,j)
-        count += 1
-    end
-    if count != 0
-        sum / count
-    else
-        0
-    end
+function grade_matches(keypoints_1::Keypoints, keypoints_2::Keypoints, diff::Function = (i,j) -> (sqrt( (i[1]-j[1])^2 + (i[2]-j[2])^2 )))
+    @assert length(keypoints_1)==length(keypoints_2) "Keypoint lists are of different lengths."
+    @assert length(keypoints_1)!=0 "Keypoint list is of size zero."
+    mean(map((keypoint_1,keypoint_2)->diff(keypoint_1,keypoint_2), keypoints_1, keypoints_2))
 end
+
+grade_matches(keypoints_1::Keypoints, keypoints_2::Keypoints, limit::Real, diff::Function = (i,j)->(sqrt( (i[1]-j[1])^2 + (i[2]-j[2])^2 ))) =
+    grade_matches(keypoints_1, keypoints_2, (i,j) -> ((diff(i,j) < limit) ? 1 : 0))

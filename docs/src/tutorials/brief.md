@@ -8,7 +8,7 @@ In ImageFeatures.jl we have five methods to determine the vectors `X` and `Y` :
 - [`gaussian`](@ref) : `X` and `Y` are randomly sampled using a Gaussian distribution, meaning that locations that are closer to the center of the patch are preferred
 - [`gaussian_local`](@ref) : `X` and `Y` are randomly sampled using a Gaussian distribution where first `X` is sampled with a standard deviation of `0.04*S^2` and then the `Yi’s` are sampled using a Gaussian distribution – Each `Yi` is sampled with mean `Xi` and standard deviation of `0.01 * S^2`
 - [`random_coarse`](@ref) : `X` and `Y` are randomly sampled from discrete location of a coarse polar grid
-- [`centered`](@ref) : For each `i`, `Xi` is `(0, 0)` and `Yi` takes all possible values on a coarse polar grid
+- [`centre_sample`](@ref) : For each `i`, `Xi` is `(0, 0)` and `Yi` takes all possible values on a coarse polar grid
 
 As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.
 

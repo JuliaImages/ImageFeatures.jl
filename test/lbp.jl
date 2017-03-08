@@ -14,7 +14,7 @@ facts("Local Binary Patterns") do
 			 0x1a  0xe0  0x52  0x5a  0x6a  0x03  0xe8  0xcb  0x95  0xfc
 			 ]
 
-	img_gray = map(i -> Images.Gray(reinterpret(FixedPointNumbers.Normed{UInt8, 8}, i)), img)
+	img_gray = map(i -> Images.Gray(reinterpret(N0f8, i)), img)
 
 	@fact ImageFeatures.circular_offsets(8, 1) --> [ (-0.0,1.0), (-0.70711,0.70711), (-1.0,0.0), (-0.70711,-0.70711), (-0.0,-1.0), (0.70711,-0.70711), (1.0,-0.0), (0.70711,0.70711)]
 
@@ -25,7 +25,7 @@ facts("Local Binary Patterns") do
 		@fact lbp_original(BitArray([true, false, true]), uniform_params)[1] --> 5
 		@fact lbp_original(BitArray([true, false, true, true, false]), uniform_params)[1] --> 22
 
-		img = zeros(Gray{FixedPointNumbers.Normed{UInt8, 8}}, 10, 10)
+		img = zeros(Gray{N0f8}, 10, 10)
 
 		lbp_image = lbp(img)
 		@fact all(lbp_image .== 255) --> true	
@@ -107,7 +107,7 @@ facts("Local Binary Patterns") do
 
 	context("Modified") do
 
-		img = zeros(Gray{FixedPointNumbers.Normed{UInt8, 8}}, 10, 10)
+		img = zeros(Gray{N0f8}, 10, 10)
 
 		lbp_image = modified_lbp(img)
 		@fact all(lbp_image .== 255) --> true
@@ -153,7 +153,7 @@ facts("Local Binary Patterns") do
 		@fact lbp_rotation_invariant(BitArray([true, false, true, true, false]), uniform_params)[1] --> 11
 		@fact lbp_rotation_invariant(BitArray([false, true, true, true, false, true, true, false]), uniform_params)[1] --> 59
 
-		img = zeros(Gray{FixedPointNumbers.Normed{UInt8, 8}}, 10, 10)
+		img = zeros(Gray{N0f8}, 10, 10)
 		lbp_image = lbp(img)
 		@fact all(lbp_image .== 255) --> true
 
@@ -191,7 +191,7 @@ facts("Local Binary Patterns") do
 
 	context("Direction Coded") do
 	
-		img = zeros(Gray{FixedPointNumbers.Normed{UInt8, 8}}, 10, 10)
+		img = zeros(Gray{N0f8}, 10, 10)
 
 		lbp_image = direction_coded_lbp(img)
 		@fact all(lbp_image .== 255) --> true
