@@ -109,10 +109,13 @@ end
 """
 ```
 grade = grade_matches(keypoints_1, keypoints_2, difference_method)
+grade = grade_matches(keypoints_1, keypoints_2, limit, difference_method)
 ```
 
-Returns a measure of dissimilarity between keypoints in `keypoints_1` and `keypoints_2` where `difference_method`
-is the method used for computing difference between individual pair of keypoints.
+Returns the average difference between keypoints in `keypoints_1` and `keypoints_2` where
+`difference_method` is the method used for computing difference between individual pair of keypoints.
+If `limit` is provided then it returns the fraction of keypoint pairs which have
+`difference_method(keypoint_1,keypoint_2)` less than `limit`.
 """
 
 function grade_matches(keypoints_1::Keypoints, keypoints_2::Keypoints, diff::Function = (i,j) -> (sqrt( (i[1]-j[1])^2 + (i[2]-j[2])^2 )))

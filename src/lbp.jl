@@ -116,11 +116,11 @@ function multi_block_lbp{T<:Gray}(img::AbstractArray{T, 2}, tl_y::Integer, tl_x:
 	lbp_code
 end
 
-function _create_descriptor{T<:FixedPointNumbers.Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4, lbp_type::Function = lbp, args...)
+function _create_descriptor{T<:Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4, lbp_type::Function = lbp, args...)
 	h, w = size(img)
     blockh = ceil(Int, h / (yblocks))
     blockw = ceil(Int, w / (xblocks))
-    el_max = typemax(FixedPointNumbers.rawtype(eltype(img[1])))
+    el_max = typemax(rawtype(eltype(img[1])))
     edges = 0:Int((el_max+1)^0.5):el_max+1
     descriptor = Int[]
     for i in 1:xblocks
@@ -134,7 +134,7 @@ function _create_descriptor{T<:FixedPointNumbers.Normed}(img::AbstractArray{Gray
     descriptor
 end
 
-function create_descriptor{T<:FixedPointNumbers.Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4; lbp_type::Function = lbp, args...)
+function create_descriptor{T<:Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4, xblocks = 4; lbp_type::Function = lbp, args...)
     h, w = size(img)
     y_padded = ceil(Int, h / (yblocks)) * yblocks
     x_padded = ceil(Int, w / (xblocks)) * xblocks
