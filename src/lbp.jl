@@ -125,7 +125,7 @@ function _create_descriptor{T<:Normed}(img::AbstractArray{Gray{T}, 2}, yblocks::
     descriptor = Int[]
     for i in 1:xblocks
     	for j in 1:yblocks
-    		lbp_image = lbp_type(img[j : j + blockh - 1, i : i + blockw - 1], args...)
+    		lbp_image = lbp_type(img[(j-1)*blockh+1 : j*blockh, (i-1)*blockw+1 : i*blockw], args...)
     		lbp_norm = lbp_image
     		_, hist = imhist(lbp_image, edges)
     		append!(descriptor, hist[2 : end - 1])

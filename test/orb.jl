@@ -33,7 +33,7 @@ facts("ORB") do
         desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
         matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
         reverse_keypoints_1 = [_reverserotate(m[1], pi / 4, (256, 384)) for m in matches]
-        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) < 1.5 ) --> true
+        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], 10, (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) > 0.95 ) --> true
     end
 
     context("Testing with Standard Images - Lighthouse (Rotation 45, Translation (50, 40))") do
@@ -48,7 +48,7 @@ facts("ORB") do
         desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
         matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
         reverse_keypoints_1 = [_reverserotate(m[1], pi / 4, (256, 384)) + CartesianIndex(50, 40) for m in matches]
-        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) < 1.5 ) --> true
+        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], 10, (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) > 0.95 ) --> true
     end
 
     context("Testing with Standard Images - Lighthouse (Rotation 75, Translation (50, 40))") do
@@ -63,7 +63,7 @@ facts("ORB") do
         desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
         matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
         reverse_keypoints_1 = [_reverserotate(m[1], 5 * pi / 6, (256, 384)) + CartesianIndex(50, 40) for m in matches]
-        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) < 3.5 ) --> true
+        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], 10, (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) > 0.95 ) --> true
     end
 
     context("Testing with Standard Images - Lena (Rotation 45, Translation (10, 20))") do
@@ -78,6 +78,6 @@ facts("ORB") do
         desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
         matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.2)
         reverse_keypoints_1 = [_reverserotate(m[1], pi / 4, (256, 256)) + CartesianIndex(10, 20) for m in matches]
-        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) < 2 ) --> true
+        @fact (grade_matches(reverse_keypoints_1, [match[2] for match in matches], 10, (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) > 0.95 ) --> true
     end
 end
