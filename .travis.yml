@@ -10,15 +10,15 @@ notifications:
 script:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
     - julia -e 'Pkg.add("Distributions")'  # Needed for Docs and Tests
-    - julia -e 'Pkg.add("TestImages")'  # Needed for Docs 
+    - julia -e 'Pkg.add("TestImages")'  # Needed for Docs
     - julia -e 'Pkg.add("ImageMagick")'  # Needed for Docs
-    - julia -e 'Pkg.add("Images")'  # Needed for Docs 
-    - julia -e 'Pkg.clone("https://github.com/JuliaImages/ImageDraw.jl")' # Needed for Docs 
+    - julia -e 'Pkg.add("Images")'  # Needed for Docs
+    - julia -e 'Pkg.clone("https://github.com/JuliaImages/ImageDraw.jl")' # Needed for Docs
     - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
-    - julia -e 'Pkg.test("ImageFeatures",coverage=true)'
+    - julia -e 'Pkg.test("ImageFeatures", coverage=false)'
 after_success:
-    - if [ $TRAVIS_OS_NAME = "linux" ]; then
-         julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
-      fi
+    # - if [ $TRAVIS_OS_NAME = "linux" ]; then
+    #      julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
+    #   fi
     - julia -e 'Pkg.add("Documenter")'
     - julia -e 'cd(Pkg.dir("ImageFeatures")); include(joinpath("docs", "make.jl"))'
