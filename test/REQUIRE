@@ -1,5 +1,6 @@
 FactCheck
 TestImages
 @linux ImageMagick
+@windows ImageMagick
 @osx QuartzImageIO
 Distributions
