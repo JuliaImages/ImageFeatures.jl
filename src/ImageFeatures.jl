@@ -57,5 +57,5 @@ export
 	random_coarse,
 	gaussian,
 	gaussian_local,
-	centre_sample
+	center_sample
 end

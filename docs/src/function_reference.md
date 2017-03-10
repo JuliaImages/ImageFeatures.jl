@@ -28,7 +28,7 @@ random_uniform
 random_coarse
 gaussian
 gaussian_local
-centre_sample
+center_sample
 ```
 
 ## Feature Extraction

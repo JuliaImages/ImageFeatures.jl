@@ -127,12 +127,12 @@ end
 
 """
 ```
-sample_one, sample_two = centre_sample(size, window, seed)
+sample_one, sample_two = center_sample(size, window, seed)
 ```
 
 Builds sampling pairs `(Xi, Yi)` where `Xi` is `(0, 0)` and `Yi` is sampled uniformly from the window.
 """
-function centre_sample(size::Int, window::Int, seed::Int)
+function center_sample(size::Int, window::Int, seed::Int)
     srand(seed)
     count = 0
     sample = CartesianIndex{2}[]
