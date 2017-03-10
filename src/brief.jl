@@ -127,12 +127,12 @@ end
 
 """
 ```
-sample_one, sample_two = centered(size, window, seed)
+sample_one, sample_two = center_sample(size, window, seed)
 ```
 
 Builds sampling pairs `(Xi, Yi)` where `Xi` is `(0, 0)` and `Yi` is sampled uniformly from the window.
 """
-function centered(size::Int, window::Int, seed::Int)
+function center_sample(size::Int, window::Int, seed::Int)
     srand(seed)
     count = 0
     sample = CartesianIndex{2}[]
@@ -148,7 +148,8 @@ function centered(size::Int, window::Int, seed::Int)
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::BRIEF)
-    img_smoothed = imfilter_gaussian(img, [params.sigma, params.sigma])
+    factkernel = KernelFactors.IIRGaussian([params.sigma, params.sigma])
+    img_smoothed = imfilter(Float64, img, factkernel, NA())
     sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)
     descriptors = BitArray{1}[]
     h, w = size(img_smoothed)

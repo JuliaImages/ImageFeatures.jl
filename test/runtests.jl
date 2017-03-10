@@ -20,7 +20,6 @@ function _warp(img, transx, transy)
             res[i + transx, j + transy] = img[i, j]
         end
     end
-    res = shareproperties(img, res)
     res
 end
 
@@ -37,7 +36,6 @@ function _warp(img, angle)
 			if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
 		end
 	end
-    res = shareproperties(img, res)
 	res
 end	
 

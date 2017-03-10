@@ -20,6 +20,7 @@ export
 	create_descriptor,
 	hamming_distance,
 	match_keypoints,
+	grade_matches,
 
     #Local Binary Patterns
 	lbp,
@@ -56,5 +57,5 @@ export
 	random_coarse,
 	gaussian,
 	gaussian_local,
-	centered
+	center_sample
 end

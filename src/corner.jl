@@ -18,8 +18,8 @@ function corner_orientations{T<:Gray, K<:Real}(img::AbstractArray{T, 2}, corners
 	pre_y = ceil(Int, (h - 1) / 2)
 	pre_x = ceil(Int, (w - 1) / 2)
 	post_y = floor(Int, (h - 1) / 2)
-	post_x = floor(Int, (w - 1) / 2)
-	img_padded = padarray(img, [pre_y, pre_x], [post_y, post_x], "value", 0)
+       post_x = floor(Int, (w - 1) / 2)
+       img_padded = parent(padarray(img, Fill(0, (pre_y, pre_x), (post_y, post_x))))
 	orientations = Float64[]
 	for c in corners
 		m10 = zero(T)
@@ -49,13 +49,13 @@ end
 function corner_orientations(img::AbstractArray)
     corners = imcorner(img)
     corner_indexes = Keypoints(corners)
-    kernel = gaussian2d(2, [5, 5])
+    kernel = Kernel.gaussian((2,2), (5, 5))
     kernel /= maxfinite(kernel)
-    corner_orientations(img, corner_indexes, kernel)
+    corner_orientations(img, corner_indexes, parent(kernel))
 end
 
 function corner_orientations(img::AbstractArray, corners::Keypoints)
-    kernel = gaussian2d(2, [5, 5])
+    kernel = Kernel.gaussian((2,2), (5, 5))
     kernel /= maxfinite(kernel)
-    corner_orientations(img, corners, kernel)
+    corner_orientations(img, corners, parent(kernel))
 end

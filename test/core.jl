@@ -43,4 +43,15 @@ facts("Core") do
         @fact all(expected_matches .== matches) --> true
     end
 
+    context("Grade Matches") do
+        k1 = map(CartesianIndex{2}, [(1,1),(2,1)])
+        k2 = map(CartesianIndex{2}, [(1,1),(2,1)])
+        @fact grade_matches(k1, k2, 1) == 1 --> true
+        @fact grade_matches(k1, k2, 1, (i,j)->(abs(i[1]-j[1]) + abs(i[2]-j[2]))) == 1 --> true
+        k2 = map(CartesianIndex{2}, [(1,0),(0,1)])
+        @fact grade_matches(k1, k2, 1) == 0 --> true
+        @fact grade_matches(k1, k2, 2) == 0.5 --> true
+        k2 = map(CartesianIndex{2}, [(0,0),(2,1)])
+        @fact grade_matches(k1, k2, 1.2) == 0.5 --> true
+    end
 end

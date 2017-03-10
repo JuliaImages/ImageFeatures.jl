@@ -1,4 +1,4 @@
-using FactCheck, Base.Test, Images, ImageFeatures, ColorTypes
+using FactCheck, Base.Test, Images, ImageFeatures
 
 facts("Gray Level Co Occurence Matrix") do 
 
