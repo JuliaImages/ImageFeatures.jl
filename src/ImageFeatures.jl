@@ -60,6 +60,9 @@ export
     gaussian_local,
     center_sample,
 
-    #Lines and Ellipses
+    #Lines
     hough_transform_standard
+
+    #Circles
+    hough_circle_gradient
 end
