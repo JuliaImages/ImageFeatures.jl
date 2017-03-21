@@ -9,7 +9,7 @@ using ImageFeatures
             for j in 1:size(img)[2]
                 img[i,j] = true
             end
-            h = hough_transform_standard(img,1,0.1,0,3.14,9,2)
+            h = hough_transform_standard(img,1,linspace(0,π/2,100),9,2)
             @test length(h) == 1
             @test h[1][1] == i
             for j in 1:size(img)[2]
@@ -19,7 +19,7 @@ using ImageFeatures
 
     #For images with diagonal line
         img = diagm([true, true ,true])
-        h = hough_transform_standard(img,1,0.1,0,3.14,2,3)
+        h = hough_transform_standard(img,1,linspace(0,π,100),2,3)
         @test length(h) == 1
         @test h[1][1] == 0
 
@@ -28,12 +28,12 @@ using ImageFeatures
         for i in 1:10
             img[2,i] = img[i,2] = img[7,i] = img[i,9] = true
         end
-        h = hough_transform_standard(img,1,0.01,0,3.14/2,9,10)
+        h = hough_transform_standard(img,1,linspace(0,π/2,100),9,10)
         @test length(h) == 4
         r = [h[i][1] for i in CartesianRange(size(h))]
         @test all(r .== [2,2,7,9])
         theta = [h[i][2] for i in CartesianRange(size(h))]
-        er = sum(map((t1,t2) -> abs(t1-t2), theta, [0, 3.14/2, 3.14/2, 0]))
+        er = sum(map((t1,t2) -> abs(t1-t2), theta, [0, π/2, π/2, 0]))
         @test er <= 0.1
     end
 end
