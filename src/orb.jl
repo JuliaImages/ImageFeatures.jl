@@ -6,12 +6,12 @@ orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harr
 | Argument | Type | Description |
 |----------|------|-------------|
 | **num_keypoints** | Int | Number of keypoints to extract and size of the descriptor calculated |
-| **n_fast** | Int | Number of consecutive pixels used for finding corners with FAST. See [`fastcorners`] | 
-| **threshold** | Float64 | Threshold used to find corners in FAST. See [`fastcorners`] | 
+| **n_fast** | Int | Number of consecutive pixels used for finding corners with FAST. See [`fastcorners`] |
+| **threshold** | Float64 | Threshold used to find corners in FAST. See [`fastcorners`] |
 | **harris_factor** | Float64 | Harris factor `k` used to rank keypoints by harris responses and extract the best ones |
-| **downsample** | Float64 | Downsampling parameter used while building the gaussian pyramid. See [`gaussian_pyramid`] in Images.jl | 
-| **levels** | Int | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
-| **sigma** | Float64 | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl | 
+| **downsample** | Float64 | Downsampling parameter used while building the gaussian pyramid. See [`gaussian_pyramid`] in Images.jl |
+| **levels** | Int | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl |
+| **sigma** | Float64 | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl |
 """
 type ORB <: Params
     num_keypoints::Int
@@ -33,7 +33,7 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
     patch = ones(31, 31)
     orientations_stack = map((image, keypoints) -> corner_orientations(image, keypoints, patch), pyramid, keypoints_stack)
     harris_response_stack = map(image -> harris(image, k = params.harris_factor), pyramid)
-    descriptors = BitArray[]
+    descriptors = BitVector[]
     ret_keypoints = Keypoint[]
     harris_responses = Float64[]
     scales = Float64[]
@@ -46,7 +46,7 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
         append!(harris_responses, harris_response_stack[i][ret_key])
         append!(scales, ones(length(ret_key)) * floor(Int, (params.downsample ^ (i - 1))))
     end
-    
+
     if params.num_keypoints < length(descriptors)
         first_n_indices = selectperm(harris_responses, 1:params.num_keypoints, rev = true)
         return descriptors[first_n_indices], ret_keypoints[first_n_indices], scales[first_n_indices]
@@ -56,13 +56,13 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
 end
 
 function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, orientations::Array{Float64}, params::ORB)
-    descriptors = BitArray[]
+    descriptors = BitVector[]
     ret_keypoints = Keypoint[]
     for (i, k) in enumerate(keypoints)
         orientation = orientations[i]
         sin_angle = sin(orientation)
         cos_angle = cos(orientation)
-        descriptor = BitArray([])
+        descriptor = BitVector([])
         for (y0, x0, y1, x1) in orb_sampling_pattern
             pixel0 = CartesianIndex(floor(Int, sin_angle * y0 + cos_angle * x0), floor(Int, cos_angle * y0 - sin_angle * x0))
             pixel1 = CartesianIndex(floor(Int, sin_angle * y1 + cos_angle * x1), floor(Int, cos_angle * y1 - sin_angle * x1))
