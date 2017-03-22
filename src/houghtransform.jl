@@ -1,19 +1,4 @@
 
-#function to compute local maximum lines with values > threshold and return a vector containing them
-function findlocalmaxima(accumulator_matrix::Array{Integer,2},threshold::Integer)
-    validLines = Vector{CartesianIndex}(0)
-    for val in CartesianRange(size(accumulator_matrix))
-        if  accumulator_matrix[val] > threshold &&
-            accumulator_matrix[val] > accumulator_matrix[val[1],val[2] - 1] &&
-            accumulator_matrix[val] >= accumulator_matrix[val[1],val[2] + 1] &&
-            accumulator_matrix[val] > accumulator_matrix[val[1] - 1,val[2]] &&
-            accumulator_matrix[val] >= accumulator_matrix[val[1] + 1,val[2]]
-            push!(validLines,val)
-        end
-    end
-    validLines
-end
-
 """
 ```
 lines = hough_transform_standard(image, ρ, θ, threshold, linesMax)
@@ -41,6 +26,22 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
             ρ::Number, θ::Range,
             threshold::Integer, linesMax::Integer)
    
+
+    #function to compute local maximum lines with values > threshold and return a vector containing them
+    function findlocalmaxima(accumulator_matrix::Array{Integer,2},threshold::Integer)
+        validLines = Vector{CartesianIndex}(0)
+        for val in CartesianRange(size(accumulator_matrix))
+            if  accumulator_matrix[val] > threshold &&
+                accumulator_matrix[val] > accumulator_matrix[val[1],val[2] - 1] &&
+                accumulator_matrix[val] >= accumulator_matrix[val[1],val[2] + 1] &&
+                accumulator_matrix[val] > accumulator_matrix[val[1] - 1,val[2]] &&
+                accumulator_matrix[val] >= accumulator_matrix[val[1] + 1,val[2]]
+                push!(validLines,val)
+            end
+        end
+        validLines
+    end
+
     ρ > 0 || error("Discrete step size must be positive")
     
     height, width = size(img)
