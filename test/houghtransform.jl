@@ -36,4 +36,26 @@ using ImageFeatures
         er = sum(map((t1,t2) -> abs(t1-t2), theta, [0, π/2, π/2, 0]))
         @test er <= 0.1
     end
+
+    @testset "Hough Circle Gradient" begin
+
+    dist(a, b) = sqrt(sum(abs2, (a-b).I))
+
+    img=zeros(Integer, 300, 300)
+    for i in CartesianRange(size(img))
+        if dist(i, CartesianIndex(100, 100))<25 || dist(i, CartesianIndex(200, 200))<50
+            img[i]=255
+        else
+            img[i]=0
+        end
+    end
+
+    centers, radii=hough_circle_gradient(img, 1, 40, 0.8, 40, 5, 75)
+
+    @test dist(centers[1], CartesianIndex(200,200))<5
+    @test dist(centers[2], CartesianIndex(100,100))<5
+    @test abs(radii[1]-50)<5
+    @test abs(radii[2]-25)<5
+
+    end
 end

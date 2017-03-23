@@ -127,6 +127,40 @@ function hough_circle_gradient{T<:Integer}(
     f = CartesianIndex(map(r->first(r), indices(votes)))
     l = CartesianIndex(map(r->last(r), indices(votes)))
 
+    function vote!(img, x, y)
+        i=Int(floor(x))+1
+        j=Int(floor(y))+1
+        p=CartesianIndex(i,j)
+
+        if min(f,p)==f && max(l,p)==l
+            votes[p]+=1
+        end
+
+        i=Int(floor(x))+2
+        j=Int(floor(y))+1
+        p=CartesianIndex(i,j)
+
+        if min(f,p)==f && max(l,p)==l
+            votes[p]+=1
+        end
+
+        i=Int(floor(x))+1
+        j=Int(floor(y))+2
+        p=CartesianIndex(i,j)
+
+        if min(f,p)==f && max(l,p)==l
+            votes[p]+=1
+        end
+
+        i=Int(floor(x))+2
+        j=Int(floor(y))+2
+        p=CartesianIndex(i,j)
+
+        if min(f,p)==f && max(l,p)==l
+            votes[p]+=1
+        end
+    end
+
     for i in indices(img, 1)
         for j in indices(img, 2)
             if img_edges[i,j]!=0
@@ -134,21 +168,13 @@ function hough_circle_gradient{T<:Integer}(
                 cos_theta = sin(img_phase[i,j]);
 
                 for r in min_radius:max_radius
-                    x=Int(floor((i+r*sin_theta)/scale))+1
-                    y=Int(floor((j+r*cos_theta)/scale))+1
-                    p=CartesianIndex(x,y)
+                    x=(i+r*sin_theta)/scale
+                    y=(j+r*cos_theta)/scale
+                    vote!(img, x, y)
 
-                    if min(f,p)==f && max(l,p)==l
-                        votes[p]+=1
-                    end
-
-                    x=Int(floor((i-r*sin_theta)/scale))+1
-                    y=Int(floor((j-r*cos_theta)/scale))+1
-                    p=CartesianIndex(x,y)
-
-                    if min(f,p)==f && max(l,p)==l
-                        votes[p]+=1
-                    end
+                    x=(i-r*sin_theta)/scale
+                    y=(j-r*cos_theta)/scale
+                    vote!(img, x, y)
                 end
                 push!(non_zeros, CartesianIndex{2}(i,j));
             end
@@ -178,7 +204,7 @@ function hough_circle_gradient{T<:Integer}(
             end
         end
         if too_close==true
-            break
+            continue;
         end
 
         for point in non_zeros
