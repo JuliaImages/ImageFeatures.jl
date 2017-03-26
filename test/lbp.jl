@@ -1,4 +1,4 @@
-using FactCheck, Base.Test, Images, Colors, FixedPointNumbers, ImageFeatures, TestImages
+using FactCheck, Base.Test, Images, Colors, FixedPointNumbers, ImageFeatures
 
 facts("Local Binary Patterns") do
 
