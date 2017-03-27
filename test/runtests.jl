@@ -1,6 +1,7 @@
 module ImageFeatureTests
 
-using FactCheck, ImageFeatures, Base.Test, TestImages, Distributions, ColorTypes, Images
+using ImageFeatures, Images, TestImages, Distributions, ColorTypes
+using Base.Test
 
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true
@@ -10,7 +11,7 @@ function check_samples(sample_one, sample_two, size::Int, window::Int)
         check_bool = check_bool && (s1[1] >= ceil(-window / 2) && s1[1] <= floor((window - 1) / 2)) && (s1[2] >= ceil(-window / 2) && s1[2] <= floor((window - 1) / 2))
         check_bool = check_bool && (s2[1] >= ceil(-window / 2) && s2[1] <= floor((window - 1) / 2)) && (s2[2] >= ceil(-window / 2) && s2[2] <= floor((window - 1) / 2))
     end
-    return check_bool 
+    return check_bool
 end
 
 function _warp(img, transx, transy)
@@ -37,7 +38,7 @@ function _warp(img, angle)
 		end
 	end
 	res
-end	
+end
 
 function _reverserotate(p, angle, center)
 	cos_angle = cos(angle)
@@ -45,15 +46,21 @@ function _reverserotate(p, angle, center)
 	return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
 end
 
-include("core.jl")
-include("brief.jl")
-include("glcm.jl")
-include("lbp.jl")
-include("corner.jl")
-include("orb.jl")
-include("freak.jl")
-include("brisk.jl")
+tests = [
+	"core.jl",
+	"brief.jl",
+	"glcm.jl",
+	"lbp.jl",
+	"corner.jl",
+	"orb.jl",
+	"freak.jl",
+	"brisk.jl",
+]
 
-isinteractive() || FactCheck.exitstatus()
+for t in tests
+    @testset "$t" begin
+        include(t)
+    end
+end
 
 end
