@@ -12,6 +12,7 @@ include("brief.jl")
 include("orb.jl")
 include("freak.jl")
 include("brisk.jl")
+include("houghtransform.jl")
 
 export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK
 
@@ -57,5 +58,8 @@ export
 	random_coarse,
 	gaussian,
 	gaussian_local,
-	center_sample
+	center_sample,
+
+	#Lines and Ellipses
+	hough_transform_standard
 end
