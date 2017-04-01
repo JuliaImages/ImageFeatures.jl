@@ -17,7 +17,7 @@ function glcm{T<:Colorant}(img::AbstractArray{T, 2}, distance::Integer, angle::R
 end
 
 function glcm{T<:Colorant, A<:Real}(img::AbstractArray{T, 2}, distances::Array{Int, 1}, angles::Array{A, 1}, mat_size::Integer = 16)
-    img_rescaled = map(i -> max(1, Int(ceil((reinterpret(gray(convert(Gray{N0f8}, i)))) * mat_size / 256))), img)  
+    img_rescaled = map(i -> max(1, Int(ceil((reinterpret(gray(convert(Gray{N0f8}, i)))) * mat_size / 256))), img)
     glcm_matrices = [_glcm(img_rescaled, d, a, mat_size) for d in distances, a in angles]
     glcm_matrices
 end
@@ -36,7 +36,7 @@ function _glcm{T}(img::AbstractArray{T, 2}, distance::Integer, angle::Number, ma
             int_one = img[j, i]
             i_off = i + Int(round(cos_angle * distance))
 
-            if checkbounds(Bool, img, j_off, i_off) 
+            if checkbounds(Bool, img, j_off, i_off)
                 int_two = img[j_off, i_off]
                 co_oc_matrix[int_one, int_two] += 1
             end
@@ -101,7 +101,7 @@ function glcm_entropy{T<:Real}(glcm_window::Array{T, 2})
 end
 
 function ASM{T<:Real}(glcm_window::Array{T, 2})
-    sum(map(i -> i ^ 2, glcm_window))   
+    sum(map(i -> i ^ 2, glcm_window))
 end
 
 function IDM{T<:Real}(glcm_window::Array{T, 2})

@@ -1,6 +1,7 @@
 module ImageFeatureTests
 
-using FactCheck, ImageFeatures, Base.Test, TestImages, Distributions, ColorTypes, Images
+using ImageFeatures, Images, TestImages, Distributions, ColorTypes
+using Base.Test
 
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true
@@ -10,7 +11,7 @@ function check_samples(sample_one, sample_two, size::Int, window::Int)
         check_bool = check_bool && (s1[1] >= ceil(-window / 2) && s1[1] <= floor((window - 1) / 2)) && (s1[2] >= ceil(-window / 2) && s1[2] <= floor((window - 1) / 2))
         check_bool = check_bool && (s2[1] >= ceil(-window / 2) && s2[1] <= floor((window - 1) / 2)) && (s2[2] >= ceil(-window / 2) && s2[2] <= floor((window - 1) / 2))
     end
-    return check_bool 
+    return check_bool
 end
 
 function _warp(img, transx, transy)
@@ -24,37 +25,43 @@ function _warp(img, transx, transy)
 end
 
 function _warp(img, angle)
-	cos_angle = cos(angle)
-	sin_angle = sin(angle)
+    cos_angle = cos(angle)
+    sin_angle = sin(angle)
     res = zeros(eltype(img), size(img))
     cx = size(img, 1) / 2
     cy = size(img, 2) / 2
-	for i in 1:size(res, 1)
-		for j in 1:size(res, 2)
-			i_rot = ceil(Int, cos_angle * (i - cx) - sin_angle * (j - cy) + cx)
-			j_rot = ceil(Int, sin_angle * (i - cx) + cos_angle * (j - cy) + cy)
-			if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
-		end
-	end
-	res
-end	
-
-function _reverserotate(p, angle, center)
-	cos_angle = cos(angle)
-	sin_angle = sin(angle)
-	return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
+    for i in 1:size(res, 1)
+        for j in 1:size(res, 2)
+            i_rot = ceil(Int, cos_angle * (i - cx) - sin_angle * (j - cy) + cx)
+            j_rot = ceil(Int, sin_angle * (i - cx) + cos_angle * (j - cy) + cy)
+            if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
+        end
+    end
+    res
 end
 
-include("core.jl")
-include("brief.jl")
-include("glcm.jl")
-include("lbp.jl")
-include("corner.jl")
-include("orb.jl")
-include("freak.jl")
-include("brisk.jl")
-include("houghtransform.jl")
+function _reverserotate(p, angle, center)
+    cos_angle = cos(angle)
+    sin_angle = sin(angle)
+    return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
+end
 
-isinteractive() || FactCheck.exitstatus()
+tests = [
+    "core.jl",
+    "brief.jl",
+    "glcm.jl",
+    "lbp.jl",
+    "corner.jl",
+    "orb.jl",
+    "freak.jl",
+    "brisk.jl",
+    "houghtransform.jl",
+]
+
+for t in tests
+    @testset "$t" begin
+        include(t)
+    end
+end
 
 end
