@@ -25,37 +25,37 @@ function _warp(img, transx, transy)
 end
 
 function _warp(img, angle)
-	cos_angle = cos(angle)
-	sin_angle = sin(angle)
+    cos_angle = cos(angle)
+    sin_angle = sin(angle)
     res = zeros(eltype(img), size(img))
     cx = size(img, 1) / 2
     cy = size(img, 2) / 2
-	for i in 1:size(res, 1)
-		for j in 1:size(res, 2)
-			i_rot = ceil(Int, cos_angle * (i - cx) - sin_angle * (j - cy) + cx)
-			j_rot = ceil(Int, sin_angle * (i - cx) + cos_angle * (j - cy) + cy)
-			if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
-		end
-	end
-	res
+    for i in 1:size(res, 1)
+        for j in 1:size(res, 2)
+            i_rot = ceil(Int, cos_angle * (i - cx) - sin_angle * (j - cy) + cx)
+            j_rot = ceil(Int, sin_angle * (i - cx) + cos_angle * (j - cy) + cy)
+            if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
+        end
+    end
+    res
 end
 
 function _reverserotate(p, angle, center)
-	cos_angle = cos(angle)
-	sin_angle = sin(angle)
-	return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
+    cos_angle = cos(angle)
+    sin_angle = sin(angle)
+    return CartesianIndex(floor(Int, sin_angle * (p[2] - center[2]) + cos_angle * (p[1] - center[1]) + center[1]), floor(Int, cos_angle * (p[2] - center[2]) - sin_angle * (p[1] - center[1]) + center[2]))
 end
 
 tests = [
-	"core.jl",
-	"brief.jl",
-	"glcm.jl",
-	"lbp.jl",
-	"corner.jl",
-	"orb.jl",
-	"freak.jl",
-	"brisk.jl",
-  "houghtransform.jl",
+    "core.jl",
+    "brief.jl",
+    "glcm.jl",
+    "lbp.jl",
+    "corner.jl",
+    "orb.jl",
+    "freak.jl",
+    "brisk.jl",
+    "houghtransform.jl",
 ]
 
 for t in tests

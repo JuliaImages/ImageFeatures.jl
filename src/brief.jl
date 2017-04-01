@@ -6,10 +6,10 @@ brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_ty
 | Argument | Type | Description |
 |----------|------|-------------|
 | **size** | Int | Size of the descriptor |
-| **window** | Int | Size of sampling window | 
-| **sigma** | Float64 | Value of sigma used for inital gaussian smoothing of image | 
+| **window** | Int | Size of sampling window |
+| **sigma** | Float64 | Value of sigma used for inital gaussian smoothing of image |
 | **sampling_type** | Function | Type of sampling used for building the descriptor (See [BRIEF Sampling Patterns](#brief-sampling-patterns)) |
-| **seed** | Int | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. | 
+| **seed** | Int | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. |
 
 """
 type BRIEF{F} <: Params
@@ -101,7 +101,7 @@ end
 sample_one, sample_two = gaussian_local(size, window, seed)
 ```
 
-Pairs `(Xi, Yi)` are randomly sampled using a Gaussian distribution where first `X` is sampled with a standard deviation of `0.04*S^2` and 
+Pairs `(Xi, Yi)` are randomly sampled using a Gaussian distribution where first `X` is sampled with a standard deviation of `0.04*S^2` and
 then the `Yi’s` are sampled using a Gaussian distribution – Each `Yi` is sampled with mean `Xi` and standard deviation of `0.01 * S^2`
 """
 function gaussian_local(size::Int, window::Int, seed::Int)
@@ -164,4 +164,4 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoin
         push!(ret_keypoints, k)
     end
     descriptors, ret_keypoints
-end 
+end

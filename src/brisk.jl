@@ -5,7 +5,7 @@ brisk_params = BRISK([pattern_scale = 1.0])
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `pattern_scale` | `Float64` | Scaling factor for the sampling window | 
+| `pattern_scale` | `Float64` | Scaling factor for the sampling window |
 """
 type BRISK <: Params
     threshold::Float64
@@ -41,7 +41,7 @@ function BRISK(; threshold::Float64 = 0.25, octaves::Int = 4, pattern_scale = 1.
     BRISK(threshold, octaves, pattern_scale, pattern_table, smoothing_table, orientation_weights, short_pairs, long_pairs)
 end
 
-function _brisk_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair}, 
+function _brisk_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
                                         orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16}, long_pairs::Array{OrientationPair})
     direction_sum_y = 0.0
     direction_sum_x = 0.0
@@ -61,14 +61,14 @@ function _brisk_tables(pattern_scale::Float64)
     pattern_table = Vector{SamplePair}[]
     smoothing_table = Vector{Float16}[]
     for ori in 0:brisk_orientation_steps - 1
-        theta = ori * 2 * pi / brisk_orientation_steps 
+        theta = ori * 2 * pi / brisk_orientation_steps
         pattern = SamplePair[]
         sigmas = Float16[]
         for (i, n) in enumerate(brisk_num_circular_pattern)
             for circle_number in 0:n - 1
                 angle = (circle_number * 2 * pi / n) + theta
 
-                push!(pattern, SamplePair((brisk_radii[i] * sin(angle) * pattern_scale * 0.85, 
+                push!(pattern, SamplePair((brisk_radii[i] * sin(angle) * pattern_scale * 0.85,
                                             brisk_radii[i] * cos(angle) * pattern_scale * 0.85)))
                 push!(sigmas, brisk_sigma[i] * pattern_scale * 0.85)
             end
@@ -102,5 +102,5 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, features::Features
         push!(descriptors, descriptor)
         push!(ret_features, Feature(keypoint, orientation))
     end
-    descriptors, ret_features   
+    descriptors, ret_features
 end

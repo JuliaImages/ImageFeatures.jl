@@ -39,7 +39,7 @@ features = Features(boolean_img)
 features = Features(keypoints)
 ```
 
-Returns a `Vector{Feature}` of features generated from the `true` values in a boolean image or from a 
+Returns a `Vector{Feature}` of features generated from the `true` values in a boolean image or from a
 list of keypoints.
 """
 typealias Features Vector{Feature}
@@ -59,7 +59,7 @@ function Keypoints(img::AbstractArray)
     map((ri, ci) -> Keypoint(ri, ci), r, c)
 end
 
-Keypoints(features::Features) = map(f -> f.keypoint, features)        
+Keypoints(features::Features) = map(f -> f.keypoint, features)
 
 typealias OrientationPair Tuple{Int16, Int16}
 typealias OrientationWeights Tuple{Float16, Float16}
@@ -87,7 +87,7 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     s_key = keypoints_1
     l_key = keypoints_2
     order = false
-    if length(desc_1) > length(desc_2) 
+    if length(desc_1) > length(desc_2)
         smaller = desc_2
         larger = desc_1
         s_key = keypoints_2

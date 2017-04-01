@@ -25,7 +25,7 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
             img::AbstractArray{T,2},
             ρ::Number, θ::Range,
             threshold::Integer, linesMax::Integer)
-   
+
 
     #function to compute local maximum lines with values > threshold and return a vector containing them
     function findlocalmaxima(accumulator_matrix::Array{Integer,2},threshold::Integer)
@@ -43,7 +43,7 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
     end
 
     ρ > 0 || error("Discrete step size must be positive")
-    
+
     height, width = size(img)
     ρinv = 1 / ρ
     numangle = length(θ)
@@ -68,7 +68,7 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
 
     #Finding local maximum lines
     validLines = findlocalmaxima(accumulator_matrix, threshold)
-    
+
     #Sorting by value in accumulator_matrix
     sort!(validLines, by = (x)->accumulator_matrix[x], rev = true)
 

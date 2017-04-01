@@ -5,7 +5,7 @@ freak_params = FREAK([pattern_scale = 22.0])
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| **pattern_scale** | Float64 | Scaling factor for the sampling window | 
+| **pattern_scale** | Float64 | Scaling factor for the sampling window |
 """
 type FREAK <: Params
     pattern_scale::Float64
@@ -42,7 +42,7 @@ function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::
     intensity / ((xst - xs + 1) * (yst - ys + 1))
 end
 
-function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair}, 
+function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
                                         orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16})
     direction_sum_y = 0.0
     direction_sum_x = 0.0
@@ -62,7 +62,7 @@ function _freak_tables(pattern_scale::Float64)
     pattern_table = Vector{SamplePair}[]
     smoothing_table = Vector{Float16}[]
     for ori in 0:freak_orientation_steps - 1
-        theta = ori * 2 * pi / freak_orientation_steps 
+        theta = ori * 2 * pi / freak_orientation_steps
         pattern = SamplePair[]
         sigmas = Float16[]
         for (i, n) in enumerate(freak_num_circular_pattern)
@@ -70,7 +70,7 @@ function _freak_tables(pattern_scale::Float64)
                 alt_offset = (pi / n) * ((i - 1) % 2)
                 angle = (circle_number * 2 * pi / n) + alt_offset + theta
 
-                push!(pattern, SamplePair((freak_radii[i] * sin(angle) * pattern_scale, 
+                push!(pattern, SamplePair((freak_radii[i] * sin(angle) * pattern_scale,
                                             freak_radii[i] * cos(angle) * pattern_scale)))
                 push!(sigmas, freak_sigma[i] * pattern_scale)
             end
