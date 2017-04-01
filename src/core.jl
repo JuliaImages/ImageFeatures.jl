@@ -1,4 +1,4 @@
-abstract Params
+@compat abstract type Params end
 
 """
 ```
@@ -8,7 +8,7 @@ keypoint = Keypoint(feature)
 
 A `Keypoint` may be created by passing the coordinates of the point or from a feature.
 """
-typealias Keypoint CartesianIndex{2}
+const Keypoint = CartesianIndex{2}
 
 """
 ```
@@ -18,7 +18,7 @@ keypoints = Keypoints(features)
 
 Creates a `Vector{Keypoint}` of the `true` values in a boolean image or from a list of features.
 """
-typealias Keypoints Vector{CartesianIndex{2}}
+const Keypoints = Vector{CartesianIndex{2}}
 
 """
 ```
@@ -42,7 +42,7 @@ features = Features(keypoints)
 Returns a `Vector{Feature}` of features generated from the `true` values in a boolean image or from a
 list of keypoints.
 """
-typealias Features Vector{Feature}
+const Features = Vector{Feature}
 
 Feature(k::Keypoint) = Feature(k, 0.0, 0.0)
 
@@ -61,9 +61,9 @@ end
 
 Keypoints(features::Features) = map(f -> f.keypoint, features)
 
-typealias OrientationPair Tuple{Int16, Int16}
-typealias OrientationWeights Tuple{Float16, Float16}
-typealias SamplePair Tuple{Float16, Float16}
+const OrientationPair = Tuple{Int16, Int16}
+const OrientationWeights = Tuple{Float16, Float16}
+const SamplePair = Tuple{Float16, Float16}
 
 """
 ```
@@ -72,7 +72,7 @@ distance = hamming_distance(desc_1, desc_2)
 
 Calculates the hamming distance between two descriptors.
 """
-hamming_distance(desc_1, desc_2) = mean(desc_1 $ desc_2)
+hamming_distance(desc_1, desc_2) = mean(xor.(desc_1, desc_2))
 
 """
 ```
