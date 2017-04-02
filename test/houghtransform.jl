@@ -44,13 +44,13 @@ using ImageFeatures
     img=zeros(Integer, 300, 300)
     for i in CartesianRange(size(img))
         if dist(i, CartesianIndex(100, 100))<25 || dist(i, CartesianIndex(200, 200))<50
-            img[i]=255
+            img[i]=1
         else
             img[i]=0
         end
     end
 
-    img_edges = canny(img, 1, 0.8, 0.2, percentile=false)
+    img_edges = canny(img, 1, 0.2, 0.1, percentile=false)
     dx, dy=imgradients(img, KernelFactors.ando3)
     _, img_phase = magnitude_phase(dx, dy)
 
