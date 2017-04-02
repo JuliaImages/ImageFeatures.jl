@@ -106,8 +106,8 @@ Parameters:
     max_radius   = maximum circle radius
 """
 
-function hough_circle_gradient{N<:Bool, T<:Number}(
-        img_edges::AbstractArray{N,2}, img_phase::AbstractArray{T,2},
+function hough_circle_gradient{T<:Number}(
+        img_edges::AbstractArray{Bool,2}, img_phase::AbstractArray{T,2},
         scale::Number, min_dist::Number,
         vote_thres::Number, radii::AbstractVector{Int})
 
