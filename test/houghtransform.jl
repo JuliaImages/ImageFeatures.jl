@@ -50,7 +50,11 @@ using ImageFeatures
         end
     end
 
-    centers, radii=hough_circle_gradient(img, 1, 40, 0.8, 40, 5, 75)
+    img_edges = canny(img, 1, 0.8, 0.2, percentile=false)
+    dx, dy=imgradients(img, KernelFactors.ando3)
+    _, img_phase = magnitude_phase(dx, dy)
+
+    centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 40, 40, 5:75)
 
     @test dist(centers[1], CartesianIndex(200,200))<5
     @test dist(centers[2], CartesianIndex(100,100))<5

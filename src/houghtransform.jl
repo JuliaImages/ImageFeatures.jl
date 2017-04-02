@@ -1,4 +1,4 @@
-
+using Images
 """
 ```
 lines = hough_transform_standard(image, ρ, θ, threshold, linesMax)
@@ -106,75 +106,49 @@ Parameters:
     max_radius   = maximum circle radius
 """
 
-function hough_circle_gradient{T<:Integer}(
-        img::AbstractArray{T,2},
+function hough_circle_gradient{N<:Bool, T<:Number}(
+        img_edges::AbstractArray{N,2}, img_phase::AbstractArray{T,2},
         scale::Number, min_dist::Number,
-        canny_thres::Number, vote_thres::Number,
-        min_radius::Integer, max_radius::Integer)
+        vote_thres::Number, radii::AbstractVector{Int})
 
-    rows,cols=size(img)
-
-    img_edges = canny(img, 1, canny_thres, canny_thres/4, percentile=false)
-    dx, dy=imgradients(img, KernelFactors.ando3)
-    _, img_phase = magnitude_phase(dx, dy)
+    rows,cols=size(img_edges)
 
     non_zeros=CartesianIndex{2}[]
     centers=CartesianIndex{2}[]
     circle_centers=CartesianIndex{2}[]
-    circle_radius=Integer[]
-    votes=zeros(Integer, Int(floor(rows/scale))+1, Int(floor(cols/scale))+1)
+    circle_radius=Int[]
+    votes=zeros(Int, Int(floor(rows/scale))+1, Int(floor(cols/scale))+1)
 
     f = CartesianIndex(map(r->first(r), indices(votes)))
     l = CartesianIndex(map(r->last(r), indices(votes)))
 
-    function vote!(img, x, y)
-        i=Int(floor(x))+1
-        j=Int(floor(y))+1
-        p=CartesianIndex(i,j)
+    function vote!(votes, x, y)
+        fx = Int(floor(x))
+        fy = Int(floor(y))
 
-        if min(f,p)==f && max(l,p)==l
-            votes[p]+=1
-        end
-
-        i=Int(floor(x))+2
-        j=Int(floor(y))+1
-        p=CartesianIndex(i,j)
-
-        if min(f,p)==f && max(l,p)==l
-            votes[p]+=1
-        end
-
-        i=Int(floor(x))+1
-        j=Int(floor(y))+2
-        p=CartesianIndex(i,j)
-
-        if min(f,p)==f && max(l,p)==l
-            votes[p]+=1
-        end
-
-        i=Int(floor(x))+2
-        j=Int(floor(y))+2
-        p=CartesianIndex(i,j)
-
-        if min(f,p)==f && max(l,p)==l
-            votes[p]+=1
+        for i in fx:fx+1
+            for j in fy:fy+1
+                if checkbounds(Bool, votes, i, j)
+                    @inbounds votes[i, j] += 1
+                end
+            end
         end
     end
 
-    for i in indices(img, 1)
-        for j in indices(img, 2)
+    for j in indices(img_edges, 2)
+        for i in indices(img_edges, 1)
             if img_edges[i,j]!=0
                 sin_theta = -cos(img_phase[i,j]);
                 cos_theta = sin(img_phase[i,j]);
 
-                for r in min_radius:max_radius
+                for r in radii
                     x=(i+r*sin_theta)/scale
                     y=(j+r*cos_theta)/scale
-                    vote!(img, x, y)
+                    vote!(votes, x, y)
 
                     x=(i-r*sin_theta)/scale
                     y=(j-r*cos_theta)/scale
-                    vote!(img, x, y)
+                    vote!(votes, x, y)
                 end
                 push!(non_zeros, CartesianIndex{2}(i,j));
             end
@@ -190,7 +164,7 @@ function hough_circle_gradient{T<:Integer}(
     sort!(centers, lt=(a, b) -> votes[a]>votes[b])
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
-    votes=Array(Integer, Int(floor(dist(f,l))+1))
+    votes=Array(Int, Int(floor(dist(f,l))+1))
 
     for center in centers
         center=(center-1)*scale
@@ -203,7 +177,7 @@ function hough_circle_gradient{T<:Integer}(
                 break
             end
         end
-        if too_close==true
+        if too_close
             continue;
         end
 

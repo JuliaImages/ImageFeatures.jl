@@ -61,7 +61,7 @@ export
     center_sample,
 
     #Lines
-    hough_transform_standard
+    hough_transform_standard,
 
     #Circles
     hough_circle_gradient
