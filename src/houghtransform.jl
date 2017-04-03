@@ -118,9 +118,6 @@ function hough_circle_gradient{T<:Number}(
     circle_radius=Int[]
     votes=zeros(Int, Int(floor(rows/scale))+1, Int(floor(cols/scale))+1)
 
-    f = CartesianIndex(map(r->first(r), indices(votes)))
-    l = CartesianIndex(map(r->last(r), indices(votes)))
-
     function vote!(votes, x, y)
         fx = Int(floor(x))
         fy = Int(floor(y))
