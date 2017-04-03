@@ -163,7 +163,7 @@ function hough_circle_gradient{T<:Number}(
 
     f = CartesianIndex(map(r->first(r), indices(votes)))
     l = CartesianIndex(map(r->last(r), indices(votes)))
-    radius_votes=Vector{Int}(Int(floor(dist(f,l))+1))
+    radius_votes=Vector{Int}(Int(floor(dist(f,l)/scale)+1))
 
     for center in centers
         center=(center-1)*scale
@@ -181,11 +181,14 @@ function hough_circle_gradient{T<:Number}(
         end
 
         for point in non_zeros
-            radius_votes[Int(floor(dist(center, point)/scale))+1]+=1
+            r=Int(floor(dist(center, point)/scale))
+            if radii.start/scale<=r<=radii.stop/scale
+                radius_votes[r+1]+=1
+            end
         end
 
         voters, radius = findmax(radius_votes)
-        radius-=1
+        radius=(radius-1)*scale;
 
         if voters>vote_thres
             push!(circle_centers, center)
