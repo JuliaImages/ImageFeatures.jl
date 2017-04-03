@@ -89,22 +89,21 @@ end
 
 """
 ```
-circle_centers, circle_radius = hough_circle_gradient(img, scale, min_dist, canny_thres, vote_thres, min_radius, max_radius)
+circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, scale, min_dist, vote_thres, min_radius:max_radius)  
 ```
-Returns two vectors, corresponding to circle centers and radius.
-
-The circles are generated using a hough transform variant in which a non-zero point only votes for circle
-centers perpendicular to the local gradient.
-
-Parameters:
-    img          = image to detect circles in
-    scale        = relative accumulator resolution factor
-    min_dist     = minimum distance between detected circle centers
-    canny_thres  = upper threshold for canny, lower threshold=upper threshold/4
-    vote_thres   = accumulator threshold for circle detection
-    min_radius   = minimum circle radius
-    max_radius   = maximum circle radius
-"""
+Returns two vectors, corresponding to circle centers and radius.  
+  
+The circles are generated using a hough transform variant in which a non-zero point only votes for circle  
+centers perpendicular to the local gradient.  
+  
+Parameters:  
+-   `img_edges`    = edges of the image  
+-   `img_phase`    = phase of the gradient image   
+-   `scale`        = relative accumulator resolution factor  
+-   `min_dist`     = minimum distance between detected circle centers  
+-   `vote_thres`   = accumulator threshold for circle detection  
+-   `min_radius:max_radius`   = circle radius range  
+"""  
 
 function hough_circle_gradient{T<:Number}(
         img_edges::AbstractArray{Bool,2}, img_phase::AbstractArray{T,2},
@@ -138,16 +137,16 @@ function hough_circle_gradient{T<:Number}(
     for j in indices(img_edges, 2)::AbstractUnitRange{Int}
         for i in indices(img_edges, 1)::AbstractUnitRange{Int}
             if img_edges[i,j]
-                sin_theta = -cos(img_phase[i,j]);
-                cos_theta = sin(img_phase[i,j]);
+                sinθ = -cos(img_phase[i,j]);
+                cosθ = sin(img_phase[i,j]);
 
                 for r in radii
-                    x=(i+r*sin_theta)/scale
-                    y=(j+r*cos_theta)/scale
+                    x=(i+r*sinθ)/scale
+                    y=(j+r*cosθ)/scale
                     vote!(votes, x, y)
 
-                    x=(i-r*sin_theta)/scale
-                    y=(j-r*cos_theta)/scale
+                    x=(i-r*sinθ)/scale
+                    y=(j-r*cosθ)/scale
                     vote!(votes, x, y)
                 end
                 push!(non_zeros, CartesianIndex{2}(i,j));
