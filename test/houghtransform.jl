@@ -41,7 +41,7 @@ using ImageFeatures
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
 
-    img=zeros(Integer, 300, 300)
+    img=zeros(Int, 300, 300)
     for i in CartesianRange(size(img))
         if dist(i, CartesianIndex(100, 100))<25 || dist(i, CartesianIndex(200, 200))<50
             img[i]=1

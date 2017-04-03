@@ -137,7 +137,7 @@ function hough_circle_gradient{T<:Number}(
 
     for j in indices(img_edges, 2)::AbstractUnitRange{Int}
         for i in indices(img_edges, 1)::AbstractUnitRange{Int}
-            if img_edges[i,j]!=0
+            if img_edges[i,j]
                 sin_theta = -cos(img_phase[i,j]);
                 cos_theta = sin(img_phase[i,j]);
 
@@ -164,7 +164,7 @@ function hough_circle_gradient{T<:Number}(
     sort!(centers, lt=(a, b) -> votes[a]>votes[b])
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
-    radius_votes=Array(Int, Int(floor(dist(f,l))+1))
+    radius_votes=Vector{Int}(Int(floor(dist(f,l))+1))
 
     for center in centers
         center=(center-1)*scale
