@@ -160,6 +160,9 @@ function hough_circle_gradient{T<:Number}(
     sort!(centers, lt=(a, b) -> votes[a]>votes[b])
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
+
+    f = CartesianIndex(map(r->first(r), indices(votes)))
+    l = CartesianIndex(map(r->last(r), indices(votes)))
     radius_votes=Vector{Int}(Int(floor(dist(f,l))+1))
 
     for center in centers
@@ -191,3 +194,4 @@ function hough_circle_gradient{T<:Number}(
     end
     return circle_centers, circle_radius
 end
+
