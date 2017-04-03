@@ -134,8 +134,8 @@ function hough_circle_gradient{T<:Number}(
         end
     end
 
-    for j in indices(img_edges, 2)::AbstractUnitRange{Int}
-        for i in indices(img_edges, 1)::AbstractUnitRange{Int}
+    for j in indices(img_edges, 2)
+        for i in indices(img_edges, 1)
             if img_edges[i,j]
                 sinθ = -cos(img_phase[i,j]);
                 cosθ = sin(img_phase[i,j]);
