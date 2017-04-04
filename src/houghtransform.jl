@@ -157,7 +157,9 @@ function hough_circle_gradient{T<:Number}(
         end
     end
 
-    sort!(centers, lt=(a, b) -> votes[a]>votes[b])
+    @noinline sort_by_votes(centers, votes) = sort!(centers, lt=(a, b) -> votes[a]>votes[b])
+
+    sort_by_votes(centers, votes)
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
 
