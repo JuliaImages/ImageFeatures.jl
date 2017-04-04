@@ -129,16 +129,16 @@ function hough_circle_gradient{T<:Number}(
     centers=CartesianIndex{2}[]
     circle_centers=CartesianIndex{2}[]
     circle_radius=Int[]
-    votes=zeros(Int, Int(floor(rows/scale))+1, Int(floor(cols/scale))+1)
+    accumulator_matrix=zeros(Int, Int(floor(rows/scale))+1, Int(floor(cols/scale))+1)
 
-    function vote!(votes, x, y)
+    function vote!(accumulator_matrix, x, y)
         fx = Int(floor(x))
         fy = Int(floor(y))
 
         for i in fx:fx+1
             for j in fy:fy+1
-                if checkbounds(Bool, votes, i, j)
-                    @inbounds votes[i, j] += 1
+                if checkbounds(Bool, accumulator_matrix, i, j)
+                    @inbounds accumulator_matrix[i, j] += 1
                 end
             end
         end
@@ -153,36 +153,36 @@ function hough_circle_gradient{T<:Number}(
                 for r in radii
                     x=(i+r*sinθ)/scale
                     y=(j+r*cosθ)/scale
-                    vote!(votes, x, y)
+                    vote!(accumulator_matrix, x, y)
 
                     x=(i-r*sinθ)/scale
                     y=(j-r*cosθ)/scale
-                    vote!(votes, x, y)
+                    vote!(accumulator_matrix, x, y)
                 end
                 push!(non_zeros, CartesianIndex{2}(i,j));
             end
         end
     end
 
-    for i in findlocalmaxima(votes)
-        if votes[i]>vote_thres
+    for i in findlocalmaxima(accumulator_matrix)
+        if accumulator_matrix[i]>vote_thres
             push!(centers, i);
         end
     end
 
-    @noinline sort_by_votes(centers, votes) = sort!(centers, lt=(a, b) -> votes[a]>votes[b])
+    @noinline sort_by_votes(centers, accumulator_matrix) = sort!(centers, lt=(a, b) -> accumulator_matrix[a]>accumulator_matrix[b])
 
-    sort_by_votes(centers, votes)
+    sort_by_votes(centers, accumulator_matrix)
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
 
-    f = CartesianIndex(map(r->first(r), indices(votes)))
-    l = CartesianIndex(map(r->last(r), indices(votes)))
-    radius_votes=Vector{Int}(Int(floor(dist(f,l)/scale)+1))
+    f = CartesianIndex(map(r->first(r), indices(accumulator_matrix)))
+    l = CartesianIndex(map(r->last(r), indices(accumulator_matrix)))
+    radius_accumulator=Vector{Int}(Int(floor(dist(f,l)/scale)+1))
 
     for center in centers
         center=(center-1)*scale
-        fill!(radius_votes, 0)
+        fill!(radius_accumulator, 0)
 
         too_close=false
         for circle_center in circle_centers
@@ -198,11 +198,11 @@ function hough_circle_gradient{T<:Number}(
         for point in non_zeros
             r=Int(floor(dist(center, point)/scale))
             if radii.start/scale<=r<=radii.stop/scale
-                radius_votes[r+1]+=1
+                radius_accumulator[r+1]+=1
             end
         end
 
-        voters, radius = findmax(radius_votes)
+        voters, radius = findmax(radius_accumulator)
         radius=(radius-1)*scale;
 
         if voters>vote_thres
