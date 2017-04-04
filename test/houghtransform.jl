@@ -52,7 +52,7 @@ using ImageFeatures
 
     img_edges = canny(img, 1, 0.2, 0.1, percentile=false)
     dx, dy=imgradients(img, KernelFactors.ando3)
-    _, img_phase = magnitude_phase(dx, dy)
+    img_phase = phase(dx, dy)
 
     centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 40, 40, 5:75)
 

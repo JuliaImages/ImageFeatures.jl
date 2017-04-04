@@ -102,7 +102,20 @@ Parameters:
 -   `scale`        = relative accumulator resolution factor  
 -   `min_dist`     = minimum distance between detected circle centers  
 -   `vote_thres`   = accumulator threshold for circle detection  
--   `min_radius:max_radius`   = circle radius range  
+-   `min_radius:max_radius`   = circle radius range
+
+[`canny`](@ref) and [`phase`](@ref) can be used for obtaining img_edges and img_phase respectively.
+
+# Example
+```julia
+img = load("circle.png")
+
+img_edges = canny(img, 1, 0.99, 0.97)
+dx, dy=imgradients(img, KernelFactors.ando5)
+img_phase = phase(dx, dy)
+
+centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 60, 60, 3:50)
+```
 """  
 
 function hough_circle_gradient{T<:Number}(
