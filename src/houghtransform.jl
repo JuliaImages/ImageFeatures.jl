@@ -94,7 +94,7 @@ circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, scal
 Returns two vectors, corresponding to circle centers and radius.  
   
 The circles are generated using a hough transform variant in which a non-zero point only votes for circle  
-centers perpendicular to the local gradient.  
+centers perpendicular to the local gradient. In case of concentric circles, only the largest circle is detected.
   
 Parameters:  
 -   `img_edges`    = edges of the image  
