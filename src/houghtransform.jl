@@ -1,4 +1,4 @@
-
+using Images
 """
 ```
 lines = hough_transform_standard(image, ρ, θ, threshold, linesMax)
@@ -86,3 +86,130 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
     lines
 
 end
+
+"""
+```
+circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, scale, min_dist, vote_thres, min_radius:max_radius)  
+```
+Returns two vectors, corresponding to circle centers and radius.  
+  
+The circles are generated using a hough transform variant in which a non-zero point only votes for circle  
+centers perpendicular to the local gradient. In case of concentric circles, only the largest circle is detected.
+  
+Parameters:  
+-   `img_edges`    = edges of the image  
+-   `img_phase`    = phase of the gradient image   
+-   `scale`        = relative accumulator resolution factor  
+-   `min_dist`     = minimum distance between detected circle centers  
+-   `vote_thres`   = accumulator threshold for circle detection  
+-   `min_radius:max_radius`   = circle radius range
+
+[`canny`](@ref) and [`phase`](@ref) can be used for obtaining img_edges and img_phase respectively.
+
+# Example
+```julia
+img = load("circle.png")
+
+img_edges = canny(img, 1, 0.99, 0.97)
+dx, dy=imgradients(img, KernelFactors.ando5)
+img_phase = phase(dx, dy)
+
+centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 60, 60, 3:50)
+```
+"""  
+
+function hough_circle_gradient{T<:Number}(
+        img_edges::AbstractArray{Bool,2}, img_phase::AbstractArray{T,2},
+        scale::Number, min_dist::Number,
+        vote_thres::Number, radii::AbstractVector{Int})
+
+    rows,cols=size(img_edges)
+
+    non_zeros=CartesianIndex{2}[]
+    centers=CartesianIndex{2}[]
+    circle_centers=CartesianIndex{2}[]
+    circle_radius=Int[]
+    accumulator_matrix=zeros(Int, Int(floor(rows/scale))+1, Int(floor(cols/scale))+1)
+
+    function vote!(accumulator_matrix, x, y)
+        fx = Int(floor(x))
+        fy = Int(floor(y))
+
+        for i in fx:fx+1
+            for j in fy:fy+1
+                if checkbounds(Bool, accumulator_matrix, i, j)
+                    @inbounds accumulator_matrix[i, j] += 1
+                end
+            end
+        end
+    end
+
+    for j in indices(img_edges, 2)
+        for i in indices(img_edges, 1)
+            if img_edges[i,j]
+                sinθ = -cos(img_phase[i,j]);
+                cosθ = sin(img_phase[i,j]);
+
+                for r in radii
+                    x=(i+r*sinθ)/scale
+                    y=(j+r*cosθ)/scale
+                    vote!(accumulator_matrix, x, y)
+
+                    x=(i-r*sinθ)/scale
+                    y=(j-r*cosθ)/scale
+                    vote!(accumulator_matrix, x, y)
+                end
+                push!(non_zeros, CartesianIndex{2}(i,j));
+            end
+        end
+    end
+
+    for i in findlocalmaxima(accumulator_matrix)
+        if accumulator_matrix[i]>vote_thres
+            push!(centers, i);
+        end
+    end
+
+    @noinline sort_by_votes(centers, accumulator_matrix) = sort!(centers, lt=(a, b) -> accumulator_matrix[a]>accumulator_matrix[b])
+
+    sort_by_votes(centers, accumulator_matrix)
+
+    dist(a, b) = sqrt(sum(abs2, (a-b).I))
+
+    f = CartesianIndex(map(r->first(r), indices(accumulator_matrix)))
+    l = CartesianIndex(map(r->last(r), indices(accumulator_matrix)))
+    radius_accumulator=Vector{Int}(Int(floor(dist(f,l)/scale)+1))
+
+    for center in centers
+        center=(center-1)*scale
+        fill!(radius_accumulator, 0)
+
+        too_close=false
+        for circle_center in circle_centers
+            if dist(center, circle_center)< min_dist
+                too_close=true
+                break
+            end
+        end
+        if too_close
+            continue;
+        end
+
+        for point in non_zeros
+            r=Int(floor(dist(center, point)/scale))
+            if radii.start/scale<=r<=radii.stop/scale
+                radius_accumulator[r+1]+=1
+            end
+        end
+
+        voters, radius = findmax(radius_accumulator)
+        radius=(radius-1)*scale;
+
+        if voters>vote_thres
+            push!(circle_centers, center)
+            push!(circle_radius, radius)
+        end
+    end
+    return circle_centers, circle_radius
+end
+
