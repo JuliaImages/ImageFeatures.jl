@@ -50,7 +50,7 @@ using ImageFeatures
         end
     end
 
-    img_edges = canny(img, 1, 0.2, 0.1, percentile=false)
+    img_edges = canny(img, (0.2, 0.1) ,1)
     dx, dy=imgradients(img, KernelFactors.ando3)
     img_phase = phase(dx, dy)
 
