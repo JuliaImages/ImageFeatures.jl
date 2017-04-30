@@ -25,7 +25,7 @@ type OctagonFilter <: BiFilter
 
 end
 
-type CENSURE{F} <: Detector
+type CENSURE{F} <: Params
 
     smallest :: Int
     largest :: Int
