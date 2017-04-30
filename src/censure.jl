@@ -147,8 +147,8 @@ function _filter_response(int_imgs::Tuple, OF::OctagonFilter)
     
     for I in R
         topleft = I + CartesianIndex(- m_in2 - 1, - m_in2 - OF.n_in - 1)
-        topright = I + CartesianIndex(m_in2, - m_in2 - OF.n_in - 1)
-        bottomleft = I + CartesianIndex(- m_in2 - 1, m_in2 + OF.n_in)
+        topright = I + CartesianIndex(- m_in2 - 1, m_in2 + OF.n_in)
+        bottomleft = I + CartesianIndex(m_in2, - m_in2 - OF.n_in - 1)
         bottomright = I + CartesianIndex(m_in2, m_in2 + OF.n_in)
         A = checkbounds(Bool, int_img, topleft) ? int_img[topleft] : zero(T)
         B = checkbounds(Bool, int_img, topright) ? int_img[topright] : zero(T)

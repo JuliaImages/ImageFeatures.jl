@@ -17,7 +17,7 @@ include("brisk.jl")
 include("houghtransform.jl")
 include("censure.jl")
 
-export Keypoint, Keypoints, BRIEF, DescriptorParams, ORB, CENSURE, OctagonFilter, BoxFilter, BiFilter, Detector
+export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK, CENSURE, OctagonFilter, BoxFilter, BiFilter
 
 export
     #Core
