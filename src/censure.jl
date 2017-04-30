@@ -25,6 +25,17 @@ type OctagonFilter <: BiFilter
 
 end
 
+type StarFilter <: BiFilter
+
+    a_in :: Int
+    a_out:: Int
+    in_area :: Float64
+    out_area :: Float64
+    in_weight :: Float64
+    out_weight :: Float64
+
+end
+
 type CENSURE{F} <: Params
 
     smallest :: Int
@@ -52,6 +63,17 @@ function BoxFilter(s)
     BF
 end
 
+function StarFilter(in, out)
+    SF = StarFilter(star_filter_sizes[in], star_filter_sizes[out], 0.0, 0.0, 0.0, 0.0)
+    a_in2=Int(floor(SF.a_in / 2))
+    a_out2=Int(floor(SF.a_out / 2))
+    SF.in_area = 4 * a_in2 ^ 2 + (2*SF.a_in + 1)^2
+    SF.out_area = 4 * a_out2 ^ 2 + (2*SF.a_out + 1)^2
+    SF.in_weight = 1.0 / SF.in_area
+    SF.out_weight = 1.0 / (SF.out_area - SF.in_area)
+    SF
+end
+
 const octagon_filter_kernels = [[5, 3, 2, 0],
                                 [5, 3, 3, 1],
                                 [7, 3, 3, 2],
@@ -62,8 +84,13 @@ const octagon_filter_kernels = [[5, 3, 2, 0],
 
 const box_filter_kernels = [1, 2, 3, 4, 5, 6, 7]
 
+const star_filter_kernels = [[2, 1], [4, 2], [5, 3], [6, 4], [8, 5], [9, 6],
+                             [10, 7], [12, 9], [14, 11], [15, 12], [16, 13], [17, 15]]
+const star_filter_sizes = [1, 2, 3, 4, 6, 8, 11, 12, 16, 22, 23, 32, 45, 46, 64, 90, 128]
+
 _getkernel(::Type{BoxFilter}) = box_filter_kernels
 _getkernel(::Type{OctagonFilter}) = octagon_filter_kernels
+_getkernel(::Type{StarFilter}) = star_filter_kernels
 
 function _get_filter_stack(filter_type::Type, smallest::Integer, largest::Integer)
     k = _getkernel(filter_type)
