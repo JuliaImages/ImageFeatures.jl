@@ -47,7 +47,7 @@ function _reverserotate(p, angle, center)
 end
 
 tests = [
-#    "core.jl",
+    "core.jl",
     "brief.jl",
     "glcm.jl",
     "lbp.jl",
