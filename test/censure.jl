@@ -1,4 +1,5 @@
-using FactCheck, Base.Test, Images, Colors, FixedPointNumbers, ImageFeatures
+#using FactCheck, Base.Test, Images, Colors, FixedPointNumbers, ImageFeatures
+using Images, Base.Test, ImageFeatures
 
 facts("CENSURE") do
 
