@@ -99,7 +99,7 @@ end
 
 _get_integral_image(img, filter_type::BoxFilter) = integral_image(img)
 
-function _get_integral_image(img, filter_type::OctagonFilter)
+function _get_integral_image(img, filter_type::Union{OctagonFilter, StarFilter})
     img_shape = size(img)
     int_img = zeros(img_shape)
     right_slant_img = zeros(img_shape)
