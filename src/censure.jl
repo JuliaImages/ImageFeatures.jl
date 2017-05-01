@@ -240,6 +240,153 @@ function _filter_response(int_imgs::Tuple, OF::OctagonFilter)
     
 end
 
+function _filter_response(int_imgs::Tuple, SF::StarFilter)
+    int_img = int_imgs[1]
+    rs_img = int_imgs[2]
+    ls_img = int_imgs[3]
+
+    margin = SF.a_out + Int(floor(SF.a_out/2))
+    img_shape = size(int_img)
+    response = zeros(T, img_shape)
+    R = CartesianRange(CartesianIndex((margin + 2, margin + 2)), CartesianIndex((img_shape[1] - margin, img_shape[2] - margin))) 
+
+    a_in2=Int(floor(SF.a_in/2))
+    a_out2=Int(floor(SF.a_out/2))
+    
+    for I in R
+        #inner star
+        in_sum=0
+
+        topleft = I + CartesianIndex(-SF.a_in - a_in2 - 1, -1)
+        topright = I + CartesianIndex(-SF.a_in - a_in2 - 1, 0)
+        bottomleft = I + CartesianIndex(-SF.a_in - 1, -a_in2)
+        bottomright = I + CartesianIndex(-SF.a_in - 1, a_in2 - 1)
+        A = checkbounds(Bool, int_img, topleft) ? ls_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? rs_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? rs_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? ls_img[bottomright] : zero(T)
+        in_sum += B + D - A - C
+
+        topleft = I + CartesianIndex(-SF.a_in - 1, -SF.a_in - 1)
+        topright = I + CartesianIndex(-SF.a_in - 1, SF.a_in)
+        bottomleft = I + CartesianIndex(-a_in2 , -SF.a_in - 1)
+        bottomright = I + CartesianIndex(-a_in2 , SF.a_in)
+        A = checkbounds(Bool, int_img, topleft) ? int_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? int_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? int_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? int_img[bottomright] : zero(T)
+        in_sum += A + D - B - C
+
+        topleft = bottomleft
+        topright = bottomright
+        bottomleft = I + CartesianIndex(0, -SF.a_in - a_in2 - 1)
+        bottomright = I + CartesianIndex(0, SF.a_in + a_in2)
+        A = checkbounds(Bool, int_img, topleft) ? rs_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? ls_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? rs_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? ls_img[bottomright] : zero(T)
+        in_sum += A + D - B - C
+
+        topleft = bottomleft
+        topright = bottomright
+        bottomleft = I + CartesianIndex(a_in2 - 1, -SF.a_in - 2)
+        bottomright = I + CartesianIndex(a_in2 - 1, SF.a_in + 1)
+        A = checkbounds(Bool, int_img, topleft) ? ls_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? rs_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? ls_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? rs_img[bottomright] : zero(T)
+        in_sum += A + D - B - C
+
+        topleft = I + CartesianIndex(a_in2 - 1, -SF.a_in - 1)
+        topright = I + CartesianIndex(a_in2 - 1, SF.a_in)
+        bottomleft = I + CartesianIndex(SF.a_in, -SF.a_in - 1)
+        bottomright = I + CartesianIndex(SF.a_in, SF.a_in)
+        A = checkbounds(Bool, int_img, topleft) ? int_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? int_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? int_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? int_img[bottomright] : zero(T)
+        in_sum += A + D - B - C
+
+        topleft = I + CartesianIndex(SF.a_in , - a_in2 - 1)
+        topright = I + CartesianIndex(SF.a_in , a_in2)
+        bottomleft = I + CartesianIndex(SF.a_in + a_in2, -1)
+        bottomright = I + CartesianIndex(SF.a_in + a_in2, 0)
+        A = checkbounds(Bool, int_img, topleft) ? ls_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? rs_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? ls_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? rs_img[bottomright] : zero(T)
+        in_sum += A + D - B - C
+
+        #outer star
+        out_sum=0
+
+        topleft = I + CartesianIndex(-SF.a_out - a_out2 - 1, -1)
+        topright = I + CartesianIndex(-SF.a_out - a_out2 - 1, 0)
+        bottomleft = I + CartesianIndex(-SF.a_out - 1, -a_out2)
+        bottomright = I + CartesianIndex(-SF.a_out - 1, a_out2 - 1)
+        A = checkbounds(Bool, int_img, topleft) ? ls_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? rs_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? rs_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? ls_img[bottomright] : zero(T)
+        out_sum += B + D - A - C
+
+        topleft = I + CartesianIndex(-SF.a_out - 1, -SF.a_out - 1)
+        topright = I + CartesianIndex(-SF.a_out - 1, SF.a_out)
+        bottomleft = I + CartesianIndex(-a_out2 , -SF.a_out - 1)
+        bottomright = I + CartesianIndex(-a_out2 , SF.a_out)
+        A = checkbounds(Bool, int_img, topleft) ? int_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? int_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? int_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? int_img[bottomright] : zero(T)
+        out_sum += A + D - B - C
+
+        topleft = bottomleft
+        topright = bottomright
+        bottomleft = I + CartesianIndex(0, -SF.a_out - a_out2 - 1)
+        bottomright = I + CartesianIndex(0, SF.a_out + a_out2)
+        A = checkbounds(Bool, int_img, topleft) ? rs_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? ls_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? rs_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? ls_img[bottomright] : zero(T)
+        out_sum += A + D - B - C
+
+        topleft = bottomleft
+        topright = bottomright
+        bottomleft = I + CartesianIndex(a_out2 - 1, -SF.a_out - 2)
+        bottomright = I + CartesianIndex(a_out2 - 1, SF.a_out + 1)
+        A = checkbounds(Bool, int_img, topleft) ? ls_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? rs_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? ls_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? rs_img[bottomright] : zero(T)
+        out_sum += A + D - B - C
+
+        topleft = I + CartesianIndex(a_out2 - 1, -SF.a_out - 1)
+        topright = I + CartesianIndex(a_out2 - 1, SF.a_out)
+        bottomleft = I + CartesianIndex(SF.a_out, -SF.a_out - 1)
+        bottomright = I + CartesianIndex(SF.a_out, SF.a_out)
+        A = checkbounds(Bool, int_img, topleft) ? int_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? int_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? int_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? int_img[bottomright] : zero(T)
+        out_sum += A + D - B - C
+
+        topleft = I + CartesianIndex(SF.a_out , - a_out2 - 1)
+        topright = I + CartesianIndex(SF.a_out , a_out2)
+        bottomleft = I + CartesianIndex(SF.a_out + a_out2, -1)
+        bottomright = I + CartesianIndex(SF.a_out + a_out2, 0)
+        A = checkbounds(Bool, int_img, topleft) ? ls_img[topleft] : zero(T)
+        B = checkbounds(Bool, int_img, topright) ? rs_img[topright] : zero(T)
+        C = checkbounds(Bool, int_img, bottomleft) ? ls_img[bottomleft] : zero(T)
+        D = checkbounds(Bool, int_img, bottomright) ? rs_img[bottomright] : zero(T)
+        out_sum += A + D - B - C
+
+        out_sum = out_sum - in_sum
+        response[I] = out_sum * SF.out_weight - SF.in_weight * in_sum
+    end
+
+    response
+end
+
 function CENSURE(; smallest::Integer = 1, largest::Integer = 7, filter::Type = BoxFilter, response_threshold::Number = 0.15, line_threshold::Number = 10)
     CENSURE{filter}(smallest, largest, filter, _get_filter_stack(filter, smallest, largest), response_threshold, line_threshold)
 end
