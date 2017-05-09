@@ -58,10 +58,10 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
 
     ρ > 0 || error("Discrete step size must be positive")
 
-    height, width = indices(img)
+    indsy, indsx = indices(img)
     ρinv = 1 / ρ
     numangle = length(θ)
-    numrho = round(Int,(2(last(width) + last(height)) + 1)*ρinv)
+    numrho = round(Int,(2(length(indsx) + length(indsy)) + 1)*ρinv)
 
     accumulator_matrix = zeros(Int, numangle + 2, numrho + 2)
 
@@ -93,7 +93,7 @@ function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
     lines = Vector{Tuple{Float64,Float64}}(0)
 
     #Getting lines with Maximum value in accumulator_matrix && size(lines) < linesMax
-    for l in range(1,linesMax)
+    for l in 1:linesMax
         lrho = ((validLines[l][2]-1) - (numrho-1)*0.5)*ρ
         langle = θ[validLines[l][1]-1]
         push!(lines,(lrho,langle))
