@@ -1,7 +1,6 @@
 __precompile__(true)
 
 module ImageFeatures
-
 # package code goes here
 using Images, ColorTypes, FixedPointNumbers, Distributions
 using Compat
@@ -16,8 +15,9 @@ include("orb.jl")
 include("freak.jl")
 include("brisk.jl")
 include("houghtransform.jl")
+include("censure.jl")
 
-export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK
+export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK, CENSURE, OctagonFilter, BoxFilter, BiFilter, StarFilter
 
 export
     #Core
@@ -68,4 +68,7 @@ export
 
     #Circles
     hough_circle_gradient
+
+    #CENSURE
+    censure
 end
