@@ -3,6 +3,8 @@
 hog_params = HOG([orientations = 9], [cell_size = 8], [block_size = 2], [block_stride = 1], [norm_method = "L2-norm"])
 ```
 
+Histogram of Oriented Gradient (HOG) is a dense feature desciptor usually used for object detection. See "Histograms of Oriented Gradients for Human Detection" by Dalal and Triggs.
+
 Parameters:  
 -    orientations   = number of orientation bins
 -    cell_size      = size of a cell is cell_size x cell_size (in pixels)
