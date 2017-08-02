@@ -60,7 +60,7 @@ function create_descriptor{T<:Images.NumberLike}(img::AbstractArray{T, 2}, param
         cell_j::Int = floor((i[2] - 1)/cell_cols) + 1
 
         #votes are weighted by gradient magnitude and linearly interpolated between neighboring bin centers
-        if lower != 9
+        if lower != orientations
             hist[lower, cell_i, cell_j] += mag[i]*(abs(phase[i] - (lower-1)*180/orientations))/(abs(phase[i] - (lower-1)*180/orientations) + abs(phase[i] - (upper-1)*180/orientations))
             hist[upper, cell_i, cell_j] += mag[i]*(abs(phase[i] - (upper-1)*180/orientations))/(abs(phase[i] - (lower-1)*180/orientations) + abs(phase[i] - (upper-1)*180/orientations))
         else
