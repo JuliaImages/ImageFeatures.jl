@@ -55,20 +55,50 @@ function create_descriptor{T<:Images.NumberLike}(img::AbstractArray{T, 2}, param
     R = CartesianRange(indices(img))
 
     for i in R
-        lower = floor(Int, phase[i]*orientations/180) + 1
-        upper = lower%orientations + 1
+        #votes are weighted by gradient magnitude and trilinearly interpolated between neighboring bin centers (in space and orientation)
+        #For notation and details, see Appendix-D of "Finding People in Images and Videos"-Navneet Dalal
+        w = mag[i]
 
-        cell_i::Int = floor((i[1] - 1)/cell_rows) + 1
-        cell_j::Int = floor((i[2] - 1)/cell_cols) + 1
+        b_θ = 180/orientations
+        bin_θ1 = floor(Int, phase[i]*orientations/180) + 1
+        bin_θ2 = bin_θ1%orientations + 1
 
-        #votes are weighted by gradient magnitude and linearly interpolated between neighboring bin centers
-        if lower != orientations
-            hist[lower, cell_i, cell_j] += mag[i]*(abs(phase[i] - (lower-1)*180/orientations))/(abs(phase[i] - (lower-1)*180/orientations) + abs(phase[i] - (upper-1)*180/orientations))
-            hist[upper, cell_i, cell_j] += mag[i]*(abs(phase[i] - (upper-1)*180/orientations))/(abs(phase[i] - (lower-1)*180/orientations) + abs(phase[i] - (upper-1)*180/orientations))
+        bin_x1 = floor(Int, (i[1]+cell_size/2)/cell_size)
+        bin_x2 = bin_x1 + 1
+
+        bin_y1 = floor(Int, (i[2]+cell_size/2)/cell_size)
+        bin_y2 = bin_y1 + 1
+
+        #At edges/corners, bin_x1=bin_x2 or bin_y1=bin_y2 and effectively bilinear/linear interpolation takes place
+        bin_x1 = max(1, bin_x1)
+        bin_x2 = min(cell_rows, bin_x2)
+        bin_y1 = max(1, bin_y1)
+        bin_y2 = min(cell_cols, bin_y2)
+
+        if bin_θ1 != orientations
+            θ1 = (bin_θ1-1)*180/orientations
+            θ2 = (bin_θ2-1)*180/orientations
         else
-            hist[lower, cell_i, cell_j] += mag[i]*(abs(phase[i] - (lower-1)*180/orientations))/(abs(phase[i] - (lower-1)*180/orientations) + abs(phase[i] - 180))
-            hist[upper, cell_i, cell_j] += mag[i]*(abs(phase[i] - 180))/(abs(phase[i] - (lower-1)*180/orientations) + abs(phase[i] - 180))
+            θ1 = (bin_θ1-1)*180/orientations
+            θ2 = 180;
         end
+
+        x1 = (bin_x1-1)*cell_size+cell_size/2
+        x2 = (bin_x2-1)*cell_size+cell_size/2
+        b_x = abs(i[1]-x1)+abs(x2-i[1])
+
+        y1 = (bin_y1-1)*cell_size+cell_size/2
+        y2 = (bin_y2-1)*cell_size+cell_size/2
+        b_y = abs(i[2]-y1)+abs(y2-i[2])
+
+        hist[bin_θ1, bin_x1, bin_y1] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(i[2]-y1)/b_y)
+        hist[bin_θ1, bin_x1, bin_y2] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(y2-i[2])/b_y)
+        hist[bin_θ1, bin_x2, bin_y1] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(i[2]-y1)/b_y)
+        hist[bin_θ1, bin_x2, bin_y2] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(y2-i[2])/b_y)
+        hist[bin_θ2, bin_x1, bin_y1] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(i[2]-y1)/b_y)
+        hist[bin_θ2, bin_x1, bin_y2] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(y2-i[2])/b_y)
+        hist[bin_θ2, bin_x2, bin_y1] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(i[2]-y1)/b_y)
+        hist[bin_θ2, bin_x2, bin_y2] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(y2-i[2])/b_y)
     end
 
     function normalize(v, method)
