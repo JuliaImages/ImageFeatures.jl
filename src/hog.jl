@@ -24,14 +24,45 @@ function HOG(; orientations::Int = 9, cell_size::Int = 8, block_size::Int = 2, b
     HOG(orientations, cell_size, block_size, block_stride, norm_method)
 end
 
-function create_descriptor{T<:Images.NumberLike}(img::AbstractArray{T, 2}, params::HOG)
+function create_descriptor{CT<:Images.NumberLike}(img::AbstractArray{CT, 2}, params::HOG)
+    #compute gradient
+    gx = imfilter(img, centered([-1 0 1]))
+    gy = imfilter(img, centered([-1 0 1]'))
+    mag = hypot.(gx, gy)
+    phase = orientation.(gx, gy)
 
+    create_hog_descriptor(mag, phase, params)
+end
+
+function create_descriptor{CT<:Images.Color{T, N} where T where N}(img::AbstractArray{CT, 2}, params::HOG)
+    #for color images, compute seperate gradient for each color channel and take one with largest norm as pixel's gradient vector
+    rows, cols = size(img)
+    gx = channelview(imfilter(img, centered([-1 0 1])))
+    gy = channelview(imfilter(img, centered([-1 0 1]')))
+    mag = hypot.(gx, gy)
+    phase = orientation.(gx, gy)
+
+    max_mag = zeros(rows, cols)
+    max_phase = zeros(rows, cols)
+
+    for j in indices(mag, 3)
+        for i in indices(mag, 2)
+            ind = indmax(mag[:, i, j])
+            max_mag[i, j] = mag[ind, i, j]
+            max_phase[i, j] = phase[ind, i, j]
+        end
+    end
+
+    create_hog_descriptor(max_mag, max_phase, params)
+end
+
+function create_hog_descriptor{T<:Images.NumberLike}(mag::AbstractArray{T, 2}, phase::AbstractArray{T, 2}, params::HOG)
     orientations = params.orientations
     cell_size = params.cell_size
     block_size = params.block_size
     block_stride = params.block_stride
 
-    rows, cols = size(img)
+    rows, cols = size(mag)
     if rows%cell_size!=0 || cols%cell_size!=0
         error("Height and Width of the image must be a multiple of cell_size.")
     end
@@ -42,38 +73,20 @@ function create_descriptor{T<:Images.NumberLike}(img::AbstractArray{T, 2}, param
         error("Block size and block stride don't match.")
     end
 
-    #gradient computation
-    gx = imfilter(img, centered([-1 0 1]))
-    gy = imfilter(img, centered([-1 0 1]'))
-
-    mag = hypot.(gx, gy)
-    phase = orientation.(gx, gy)
     phase = abs.(phase*180/pi)
 
     #orientation binning for each cell
     hist = zeros(Float64, (orientations, cell_rows, cell_cols))
-    R = CartesianRange(indices(img))
+    R = CartesianRange(indices(mag))
 
     for i in R
         #votes are weighted by gradient magnitude and trilinearly interpolated between neighboring bin centers (in space and orientation)
         #For notation and details, see Appendix-D of "Finding People in Images and Videos"-Navneet Dalal
         w = mag[i]
 
-        b_θ = 180/orientations
         bin_θ1 = floor(Int, phase[i]*orientations/180) + 1
         bin_θ2 = bin_θ1%orientations + 1
-
-        bin_x1 = floor(Int, (i[1]+cell_size/2)/cell_size)
-        bin_x2 = bin_x1 + 1
-
-        bin_y1 = floor(Int, (i[2]+cell_size/2)/cell_size)
-        bin_y2 = bin_y1 + 1
-
-        #At edges/corners, bin_x1=bin_x2 or bin_y1=bin_y2 and effectively bilinear/linear interpolation takes place
-        bin_x1 = max(1, bin_x1)
-        bin_x2 = min(cell_rows, bin_x2)
-        bin_y1 = max(1, bin_y1)
-        bin_y2 = min(cell_cols, bin_y2)
+        b_θ = 180/orientations
 
         if bin_θ1 != orientations
             θ1 = (bin_θ1-1)*180/orientations
@@ -83,22 +96,67 @@ function create_descriptor{T<:Images.NumberLike}(img::AbstractArray{T, 2}, param
             θ2 = 180;
         end
 
-        x1 = (bin_x1-1)*cell_size+cell_size/2
-        x2 = (bin_x2-1)*cell_size+cell_size/2
-        b_x = abs(i[1]-x1)+abs(x2-i[1])
+        if (i[1]<=cell_size/2 || i[1]>=rows-cell_size/2) && (i[2]<=cell_size/2 || i[2]>=cols-cell_size/2)
+            #linear interpolation for corner points
+            bin_x = i[1] < cell_size/2 ? 1 : cell_rows
+            bin_y = i[2] < cell_size/2 ? 1 : cell_cols
 
-        y1 = (bin_y1-1)*cell_size+cell_size/2
-        y2 = (bin_y2-1)*cell_size+cell_size/2
-        b_y = abs(i[2]-y1)+abs(y2-i[2])
+            hist[bin_θ1, bin_x, bin_y] += w*(1-(phase[i]-θ1)/b_θ)
+            hist[bin_θ2, bin_x, bin_y] += w*(1-(θ2-phase[i])/b_θ)
 
-        hist[bin_θ1, bin_x1, bin_y1] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(i[2]-y1)/b_y)
-        hist[bin_θ1, bin_x1, bin_y2] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(y2-i[2])/b_y)
-        hist[bin_θ1, bin_x2, bin_y1] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(i[2]-y1)/b_y)
-        hist[bin_θ1, bin_x2, bin_y2] += w*(1-abs(phase[i]-θ1)/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(y2-i[2])/b_y)
-        hist[bin_θ2, bin_x1, bin_y1] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(i[2]-y1)/b_y)
-        hist[bin_θ2, bin_x1, bin_y2] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(i[1]-x1)/b_x)*(1-abs(y2-i[2])/b_y)
-        hist[bin_θ2, bin_x2, bin_y1] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(i[2]-y1)/b_y)
-        hist[bin_θ2, bin_x2, bin_y2] += w*(1-abs(θ2-phase[i])/b_θ)*(1-abs(x2-i[1])/b_x)*(1-abs(y2-i[2])/b_y)
+        elseif i[1]<=cell_size/2 || i[1]>=rows-cell_size/2
+            #bilinear interpolation for (top/bottom) edge points
+            bin_x = i[1] < cell_size/2 ? 1 : cell_rows
+            bin_y1 = floor(Int, (i[2]+cell_size/2)/cell_size)
+            bin_y2 = bin_y1 + 1
+
+            y1 = (bin_y1-1)*cell_size+cell_size/2
+            y2 = (bin_y2-1)*cell_size+cell_size/2
+            b_y = abs(i[2]-y1)+abs(y2-i[2])
+
+            hist[bin_θ1, bin_x, bin_y1] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[2]-y1)/b_y)
+            hist[bin_θ1, bin_x, bin_y2] += w*(1-(phase[i]-θ1)/b_θ)*(1-(y2-i[2])/b_y)
+            hist[bin_θ2, bin_x, bin_y1] += w*(1-(θ2-phase[i])/b_θ)*(1-(i[2]-y1)/b_y)
+            hist[bin_θ2, bin_x, bin_y2] += w*(1-(θ2-phase[i])/b_θ)*(1-(y2-i[2])/b_y)
+
+        elseif  i[2]<=cell_size/2 || i[2]>=cols-cell_size/2
+            #bilinear interpolation for (left/right) edge points
+            bin_x1 = floor(Int, (i[1]+cell_size/2)/cell_size)
+            bin_x2 = bin_x1 + 1
+            bin_y = i[2] < cell_size/2 ? 1 : cell_cols
+
+            x1 = (bin_x1-1)*cell_size+cell_size/2
+            x2 = (bin_x2-1)*cell_size+cell_size/2
+            b_x = abs(i[1]-x1)+abs(x2-i[1])
+
+            hist[bin_θ1, bin_x1, bin_y] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[1]-x1)/b_x)
+            hist[bin_θ1, bin_x2, bin_y] += w*(1-(phase[i]-θ1)/b_θ)*(1-(x2-i[1])/b_x)
+            hist[bin_θ2, bin_x1, bin_y] += w*(1-(θ2-phase[i])/b_θ)*(1-(i[1]-x1)/b_x)
+            hist[bin_θ2, bin_x2, bin_y] += w*(1-(θ2-phase[i])/b_θ)*(1-(x2-i[1])/b_x)
+        else
+            #trilinear interpolation
+            bin_x1 = floor(Int, (i[1]+cell_size/2)/cell_size)
+            bin_x2 = bin_x1 + 1
+            bin_y1 = floor(Int, (i[2]+cell_size/2)/cell_size)
+            bin_y2 = bin_y1 + 1
+
+            x1 = (bin_x1-1)*cell_size+cell_size/2
+            x2 = (bin_x2-1)*cell_size+cell_size/2
+            b_x = max(1, abs(i[1]-x1)+abs(x2-i[1]))
+
+            y1 = (bin_y1-1)*cell_size+cell_size/2
+            y2 = (bin_y2-1)*cell_size+cell_size/2
+            b_y = max(1, abs(i[2]-y1)+abs(y2-i[2]))
+
+            hist[bin_θ1, bin_x1, bin_y1] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[1]-x1)/b_x)*(1-(i[2]-y1)/b_y)
+            hist[bin_θ1, bin_x1, bin_y2] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[1]-x1)/b_x)*(1-(y2-i[2])/b_y)
+            hist[bin_θ1, bin_x2, bin_y1] += w*(1-(phase[i]-θ1)/b_θ)*(1-(x2-i[1])/b_x)*(1-(i[2]-y1)/b_y)
+            hist[bin_θ1, bin_x2, bin_y2] += w*(1-(phase[i]-θ1)/b_θ)*(1-(x2-i[1])/b_x)*(1-(y2-i[2])/b_y)
+            hist[bin_θ2, bin_x1, bin_y1] += w*(1-(θ2-phase[i])/b_θ)*(1-(i[1]-x1)/b_x)*(1-(i[2]-y1)/b_y)
+            hist[bin_θ2, bin_x1, bin_y2] += w*(1-(θ2-phase[i])/b_θ)*(1-(i[1]-x1)/b_x)*(1-(y2-i[2])/b_y)
+            hist[bin_θ2, bin_x2, bin_y1] += w*(1-(θ2-phase[i])/b_θ)*(1-(x2-i[1])/b_x)*(1-(i[2]-y1)/b_y)
+            hist[bin_θ2, bin_x2, bin_y2] += w*(1-(θ2-phase[i])/b_θ)*(1-(x2-i[1])/b_x)*(1-(y2-i[2])/b_y)
+        end
     end
 
     function normalize(v, method)
