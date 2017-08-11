@@ -112,7 +112,7 @@ function create_hog_descriptor{T<:Images.NumberLike}(mag::AbstractArray{T, 2}, p
 
             y1 = (bin_y1-1)*cell_size+cell_size/2
             y2 = (bin_y2-1)*cell_size+cell_size/2
-            b_y = abs(i[2]-y1)+abs(y2-i[2])
+            b_y = cell_size
 
             hist[bin_θ1, bin_x, bin_y1] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[2]-y1)/b_y)
             hist[bin_θ1, bin_x, bin_y2] += w*(1-(phase[i]-θ1)/b_θ)*(1-(y2-i[2])/b_y)
@@ -127,7 +127,7 @@ function create_hog_descriptor{T<:Images.NumberLike}(mag::AbstractArray{T, 2}, p
 
             x1 = (bin_x1-1)*cell_size+cell_size/2
             x2 = (bin_x2-1)*cell_size+cell_size/2
-            b_x = abs(i[1]-x1)+abs(x2-i[1])
+            b_x = cell_size
 
             hist[bin_θ1, bin_x1, bin_y] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[1]-x1)/b_x)
             hist[bin_θ1, bin_x2, bin_y] += w*(1-(phase[i]-θ1)/b_θ)*(1-(x2-i[1])/b_x)
@@ -142,11 +142,11 @@ function create_hog_descriptor{T<:Images.NumberLike}(mag::AbstractArray{T, 2}, p
 
             x1 = (bin_x1-1)*cell_size+cell_size/2
             x2 = (bin_x2-1)*cell_size+cell_size/2
-            b_x = max(1, abs(i[1]-x1)+abs(x2-i[1]))
+            b_x = cell_size
 
             y1 = (bin_y1-1)*cell_size+cell_size/2
             y2 = (bin_y2-1)*cell_size+cell_size/2
-            b_y = max(1, abs(i[2]-y1)+abs(y2-i[2]))
+            b_y = cell_size
 
             hist[bin_θ1, bin_x1, bin_y1] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[1]-x1)/b_x)*(1-(i[2]-y1)/b_y)
             hist[bin_θ1, bin_x1, bin_y2] += w*(1-(phase[i]-θ1)/b_θ)*(1-(i[1]-x1)/b_x)*(1-(y2-i[2])/b_y)
