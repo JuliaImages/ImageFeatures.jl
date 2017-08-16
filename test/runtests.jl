@@ -47,15 +47,15 @@ function _reverserotate(p, angle, center)
 end
 
 tests = [
-    # "core.jl",
-    # "brief.jl",
-    # "glcm.jl",
-    # "lbp.jl",
-    # "corner.jl",
-    # "orb.jl",
-    # "freak.jl",
-    # "brisk.jl",
-    # "houghtransform.jl",
+    "core.jl",
+    "brief.jl",
+    "glcm.jl",
+    "lbp.jl",
+    "corner.jl",
+    "orb.jl",
+    "freak.jl",
+    "brisk.jl",
+    "houghtransform.jl",
     "hog.jl"
 ]
 
