@@ -1,4 +1,4 @@
-@compat abstract type Params end
+abstract type Params end
 
 """
 ```
@@ -27,7 +27,7 @@ feature = Feature(keypoint, orientation = 0.0, scale = 0.0)
 
 The `Feature` type has the keypoint, its orientation and its scale.
 """
-immutable Feature
+struct Feature
     keypoint::Keypoint
     orientation::Float64
     scale::Float64

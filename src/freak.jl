@@ -7,7 +7,7 @@ freak_params = FREAK([pattern_scale = 22.0])
 |----------|------|-------------|
 | **pattern_scale** | Float64 | Scaling factor for the sampling window |
 """
-type FREAK <: Params
+mutable struct FREAK <: Params
     pattern_scale::Float64
     pattern_table::Vector{Vector{SamplePair}}
     smoothing_table::Vector{Vector{Float16}}
@@ -28,7 +28,7 @@ function FREAK(; pattern_scale::Float64 = 22.0)
     FREAK(pattern_scale, pattern_table, smoothing_table, orientation_weights)
 end
 
-function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float16)
+function _freak_mean_intensity(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float16) where T<:Gray
     y = keypoint[1] + offset[1]
     x = keypoint[2] + offset[2]
     if sigma < 0.5
@@ -42,8 +42,8 @@ function _freak_mean_intensity{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::
     intensity / ((xst - xs + 1) * (yst - ys + 1))
 end
 
-function _freak_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
-                                        orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16})
+function _freak_orientation(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
+                               orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16}) where T<:Gray
     direction_sum_y = 0.0
     direction_sum_x = 0.0
     for (i, o) in enumerate(freak_orientation_sampling_pattern)
@@ -81,7 +81,7 @@ function _freak_tables(pattern_scale::Float64)
     pattern_table, smoothing_table
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK)
+function create_descriptor(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK) where T<:Gray
     int_img = integral_image(img)
     descriptors = BitArray{1}[]
     ret_keypoints = Keypoint[]

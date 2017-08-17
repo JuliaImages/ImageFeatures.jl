@@ -12,7 +12,7 @@ brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_ty
 | **seed** | Int | Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same. |
 
 """
-type BRIEF{F} <: Params
+mutable struct BRIEF{F} <: Params
     size::Int
     window::Int
     sigma::Float64
@@ -147,7 +147,7 @@ function center_sample(size::Int, window::Int, seed::Int)
     zeros(CartesianIndex{2}, size), sample
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, params::BRIEF)
+function create_descriptor(img::AbstractArray{T, 2}, keypoints::Keypoints, params::BRIEF) where T<:Gray
     factkernel = KernelFactors.IIRGaussian([params.sigma, params.sigma])
     img_smoothed = imfilter(Float64, img, factkernel, NA())
     sample_one, sample_two = params.sampling_type(params.size, params.window, params.seed)

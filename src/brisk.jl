@@ -7,7 +7,7 @@ brisk_params = BRISK([pattern_scale = 1.0])
 |----------|------|-------------|
 | `pattern_scale` | `Float64` | Scaling factor for the sampling window |
 """
-type BRISK <: Params
+mutable struct BRISK <: Params
     threshold::Float64
     octaves::Int
     pattern_scale::Float64
@@ -41,8 +41,8 @@ function BRISK(; threshold::Float64 = 0.25, octaves::Int = 4, pattern_scale = 1.
     BRISK(threshold, octaves, pattern_scale, pattern_table, smoothing_table, orientation_weights, short_pairs, long_pairs)
 end
 
-function _brisk_orientation{T<:Gray}(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
-                                        orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16}, long_pairs::Array{OrientationPair})
+function _brisk_orientation(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
+                               orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16}, long_pairs::Array{OrientationPair}) where T<:Gray
     direction_sum_y = 0.0
     direction_sum_x = 0.0
     for (i, o) in enumerate(long_pairs)
@@ -79,7 +79,7 @@ function _brisk_tables(pattern_scale::Float64)
     pattern_table, smoothing_table
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, features::Features, params::BRISK)
+function create_descriptor(img::AbstractArray{T, 2}, features::Features, params::BRISK) where T<:Gray
     int_img = integral_image(img)
     descriptors = BitArray{1}[]
     ret_features = Feature[]
