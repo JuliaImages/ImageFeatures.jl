@@ -16,8 +16,9 @@ include("orb.jl")
 include("freak.jl")
 include("brisk.jl")
 include("houghtransform.jl")
+include("hog.jl")
 
-export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK
+export Keypoint, Keypoints, Feature, Features, Params, BRIEF, ORB, FREAK, BRISK, HOG
 
 export
     #Core
