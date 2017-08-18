@@ -12,7 +12,7 @@ Parameters:
 -    block_stride   = stride of blocks. Controls how much adjacent blocks overlap.
 -    norm_method    = block normalization method. Options: L2-norm, L2-hys, L1-norm, L2-sqrt. 
 """
-type HOG <: Params
+mutable struct HOG <: Params
     orientations::Int 
     cell_size::Int
     block_size::Int
@@ -24,7 +24,7 @@ function HOG(; orientations::Int = 9, cell_size::Int = 8, block_size::Int = 2, b
     HOG(orientations, cell_size, block_size, block_stride, norm_method)
 end
 
-function create_descriptor{CT<:Images.NumberLike}(img::AbstractArray{CT, 2}, params::HOG)
+function create_descriptor(img::AbstractArray{CT, 2}, params::HOG) where CT<:Images.NumberLike
     #compute gradient
     gx = imfilter(img, centered([-1 0 1]))
     gy = imfilter(img, centered([-1 0 1]'))
@@ -34,7 +34,7 @@ function create_descriptor{CT<:Images.NumberLike}(img::AbstractArray{CT, 2}, par
     create_hog_descriptor(mag, phase, params)
 end
 
-function create_descriptor{CT<:Images.Color{T, N} where T where N}(img::AbstractArray{CT, 2}, params::HOG)
+function create_descriptor(img::AbstractArray{CT, 2}, params::HOG) where CT<:Images.Color{T, N} where T where N
     #for color images, compute seperate gradient for each color channel and take one with largest norm as pixel's gradient vector
     rows, cols = size(img)
     gx = channelview(imfilter(img, centered([-1 0 1])))
@@ -56,7 +56,7 @@ function create_descriptor{CT<:Images.Color{T, N} where T where N}(img::Abstract
     create_hog_descriptor(max_mag, max_phase, params)
 end
 
-function create_hog_descriptor{T<:Images.NumberLike}(mag::AbstractArray{T, 2}, phase::AbstractArray{T, 2}, params::HOG)
+function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T, 2}, params::HOG) where T<:Images.NumberLike
     orientations = params.orientations
     cell_size = params.cell_size
     block_size = params.block_size

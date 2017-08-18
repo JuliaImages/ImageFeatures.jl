@@ -37,14 +37,14 @@ julia> lines = hough_transform_standard(img_edges, 1, linspace(0,π,30), 40, 5)
 ```
 """
 
-function hough_transform_standard{T<:Union{Bool,Gray{Bool}}}(
-            img::AbstractArray{T,2},
-            ρ::Real, θ::Range,
-            threshold::Integer, linesMax::Integer)
+function hough_transform_standard(
+img::AbstractArray{T,2},
+ρ::Real, θ::Range,
+threshold::Integer, linesMax::Integer) where T<:Union{Bool,Gray{Bool}}
 
 
     #function to compute local maximum lines with values > threshold and return a vector containing them
-    function findlocalmaxima!{T<:Integer}(validLines::AbstractVector{CartesianIndex{2}}, accumulator_matrix::Array{Int,2}, threshold::T)
+    function findlocalmaxima!(validLines::AbstractVector{CartesianIndex{2}}, accumulator_matrix::Array{Int,2}, threshold::T) where T<:Integer
         for val in CartesianRange(size(accumulator_matrix))
             if  accumulator_matrix[val] >  threshold                             &&
                 accumulator_matrix[val] >  accumulator_matrix[val[1],val[2] - 1] &&
@@ -134,10 +134,10 @@ centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 60, 60, 3:50)
 ```
 """  
 
-function hough_circle_gradient{T<:Number}(
+function hough_circle_gradient(
         img_edges::AbstractArray{Bool,2}, img_phase::AbstractArray{T,2},
         scale::Number, min_dist::Number,
-        vote_thres::Number, radii::AbstractVector{Int})
+        vote_thres::Number, radii::AbstractVector{Int}) where T<:Number
 
     rows,cols=size(img_edges)
 

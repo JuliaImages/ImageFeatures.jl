@@ -13,7 +13,7 @@ The intensity centroid can be calculated as `C = (m01/m00, m10/m00)` where mpq i
 
 The kernel used for the patch can be given through the `kernel` argument. The default kernel used is a gaussian kernel of size `5x5`.
 """
-function corner_orientations{T<:Gray, K<:Real}(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2})
+function corner_orientations(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2}) where {T<:Gray, K<:Real}
     h, w = size(kernel)
     pre_y = ceil(Int, (h - 1) / 2)
     pre_x = ceil(Int, (w - 1) / 2)
@@ -38,9 +38,9 @@ function corner_orientations{T<:Gray, K<:Real}(img::AbstractArray{T, 2}, corners
     orientations
 end
 
-corner_orientations{T, K<:Real}(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2}) = corner_orientations(convert(Array{Gray}, img), corners, kernel)
+corner_orientations(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2}) where {T, K<:Real} = corner_orientations(convert(Array{Gray}, img), corners, kernel)
 
-function corner_orientations{K<:Real}(img::AbstractArray, kernel::Array{K, 2})
+function corner_orientations(img::AbstractArray, kernel::Array{K, 2}) where K<:Real
     corners = imcorner(img)
     corner_indexes = Keypoints(corners)
     corner_orientations(img, corner_indexes, kernel)

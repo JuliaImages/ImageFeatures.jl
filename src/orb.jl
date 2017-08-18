@@ -13,7 +13,7 @@ orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harr
 | **levels** | Int | Number of levels in the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl |
 | **sigma** | Float64 | Used for gaussian smoothing in each level of the gaussian pyramid.  See [`gaussian_pyramid`] in Images.jl |
 """
-type ORB <: Params
+mutable struct ORB <: Params
     num_keypoints::Int
     n_fast::Int
     threshold::Float64
@@ -27,7 +27,7 @@ function ORB(; num_keypoints::Int = 500, n_fast::Int = 12, threshold::Float64 = 
     ORB(num_keypoints, n_fast, threshold, harris_factor, downsample, levels, sigma)
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
+function create_descriptor(img::AbstractArray{T, 2}, params::ORB) where T<:Gray
     pyramid = gaussian_pyramid(img, params.levels, params.downsample, params.sigma)
     keypoints_stack = map(image -> Keypoints(fastcorners(image, params.n_fast, params.threshold)), pyramid)
     patch = ones(31, 31)
@@ -55,7 +55,7 @@ function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, params::ORB)
     descriptors, ret_keypoints, scales
 end
 
-function create_descriptor{T<:Gray}(img::AbstractArray{T, 2}, keypoints::Keypoints, orientations::Array{Float64}, params::ORB)
+function create_descriptor(img::AbstractArray{T, 2}, keypoints::Keypoints, orientations::Array{Float64}, params::ORB) where T<:Gray
     descriptors = BitVector[]
     ret_keypoints = Keypoint[]
     for (i, k) in enumerate(keypoints)
