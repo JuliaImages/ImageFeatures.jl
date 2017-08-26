@@ -10,11 +10,12 @@ notifications:
 script:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
     - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
-    - julia -e 'Pkg.test("ImageFeatures", coverage=false)'
+    # used in tests and Documentation (just install once)
+    - julia -e 'Pkg.add("TestImages")'
+    - julia -e 'if is_linux() Pkg.add("ImageMagick") end'
+    - julia -e 'Pkg.test("ImageFeatures", coverage=true)'
 after_success:
-    # - if [ $TRAVIS_OS_NAME = "linux" ]; then
-    #      julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
-    #   fi
+    - - julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
     - julia -e 'Pkg.add("Documenter")'
-    - julia -e 'Pkg.clone("https://github.com/JuliaImages/ImageDraw.jl")' # Needed for Docs
+    - julia -e 'Pkg.add("ImageDraw.jl")' # Needed for Docs
     - julia -e 'cd(Pkg.dir("ImageFeatures")); include(joinpath("docs", "make.jl"))'
