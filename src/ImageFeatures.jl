@@ -69,4 +69,20 @@ export
 
     #Circles
     hough_circle_gradient
+
+"""
+    desc, keypoints = create_descriptor(img, keypoints, params)
+    desc, keypoints = create_descriptor(img, params)
+
+Create a descriptor for each entry in `keypoints` from the image `img`. `params` specifies the parameters for any of several descriptors:
+ - [`BRIEF`](@ref)
+ - [`ORB`](@ref)
+ - [`BRISK`](@ref)
+ - [`FREAK`](@ref)
+ - [`HOG`](@ref)
+
+Some descriptors support discovery of the `keypoints` from [`fastcorners`](@ref).
+"""
+create_descriptor
+
 end

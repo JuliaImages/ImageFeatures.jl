@@ -1,4 +1,4 @@
-The *ORB* descriptor is a somewhat similar to [BRIEF](brief). It doesn’t have an elaborate sampling pattern as [BRISK](brisk) or [FREAK](freak). 
+The *ORB* descriptor is a somewhat similar to [BRIEF](brief.md). It doesn’t have an elaborate sampling pattern as [BRISK](brisk.md) or [FREAK](freak.md).
 
 However, there are two main differences between ORB and BRIEF:
 
@@ -13,58 +13,24 @@ ORB tries to take sampling pairs which are uncorrelated so that each new pair wi
 
 The descriptor is built using intensity comparisons of the pairs. For each pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor.
 
-## Example 
+## Example
 
-Let us take a look at a simple example where the ORB descriptor is used to match two images where one has been translated by `(50, 40)` pixels and then rotated by an angle of 75 degrees. We will use the `lighthouse` image from the [TestImages](https://github.com/timholy/TestImages.jl) package for this example.
+Let us take a look at a simple example where the ORB descriptor is used to match two images where one has been translated by `(50, 40)` pixels and then rotated by an angle of 75 degrees. We will use the `lighthouse` image from the [TestImages](https://github.com/JuliaImages/TestImages.jl) package for this example.
 
-First, lets define warping functions to transform and rotate the image.
-
-```@example 2
-function _warp(img, transx, transy)
-    res = zeros(eltype(img), size(img))
-    for i in 1:size(img, 1) - transx
-        for j in 1:size(img, 2) - transy
-            res[i + transx, j + transy] = img[i, j]
-        end
-    end
-    res = shareproperties(img, res)
-    res
-end
-
-function _warp(img, angle)
-	cos_angle = cos(angle)
-	sin_angle = sin(angle)
-    res = zeros(eltype(img), size(img))
-    cx = size(img, 1) / 2
-    cy = size(img, 2) / 2
-	for i in 1:size(res, 1)
-		for j in 1:size(res, 2)
-			i_rot = ceil(Int, cos_angle * (i - cx) - sin_angle * (j - cy) + cx)
-			j_rot = ceil(Int, sin_angle * (i - cx) + cos_angle * (j - cy) + cy)
-			if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
-		end
-	end
-    res = shareproperties(img, res)
-	res
-end	
-nothing # hide
-```
-
-Now, let us create the two images we will match using ORB. 
+First, let us create the two images we will match using ORB.
 
 ```@example 2
-
-using ImageFeatures, TestImages, Images, ImageDraw
+using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
 
 img = testimage("lighthouse")
-img_array_1 = convert(Array{Images.Gray}, img)
-img_temp_2 = _warp(img_array_1, 5 * pi / 6)
-img_array_2 = _warp(img_temp_2, 50, 40)
-        
+img1 = Gray.(img)
+rot = recenter(RotMatrix(5pi/6), [size(img1)...] .÷ 2)  # a rotation around the center
+tform = rot ∘ Translation(-50, -40)
+img2 = warp(img1, tform, indices(img1))
 nothing # hide
 ```
 
-The ORB descriptor calculates the keypoints as well as the descriptor, unlike [BRIEF](brief). To create the ORB descriptor, we first need to define the parameters by calling the [`ORB`](@ref) constructor.
+The ORB descriptor calculates the keypoints as well as the descriptor, unlike [BRIEF](brief.md). To create the ORB descriptor, we first need to define the parameters by calling the [`ORB`](@ref) constructor.
 
 ```@example 2
 orb_params = ORB(num_keypoints = 1000)
@@ -74,8 +40,8 @@ nothing # hide
 Now pass the image with the parameters to the [`create_descriptor`](@ref) function.
 
 ```@example 2
-desc_1, ret_keypoints_1 = create_descriptor(img_array_1, orb_params)
-desc_2, ret_keypoints_2 = create_descriptor(img_array_2, orb_params)
+desc_1, ret_keypoints_1 = create_descriptor(img1, orb_params)
+desc_2, ret_keypoints_2 = create_descriptor(img2, orb_params)
 nothing # hide
 ```
 
@@ -90,9 +56,9 @@ We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) packa
 
 ```@example 2
 
-grid = hcat(img_array_1, img_array_2)
-offset = CartesianIndex(0, 768)
-map(m_i -> line!(grid, m_i[1], m_i[2] + offset), matches)
+grid = hcat(img1, img2)
+offset = CartesianIndex(0, size(img1, 2))
+map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
 save("orb_example.jpg", grid); nothing # hide
 
 ```

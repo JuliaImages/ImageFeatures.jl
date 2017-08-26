@@ -12,46 +12,30 @@ In ImageFeatures.jl we have five methods to determine the vectors `X` and `Y` :
 
 As with all the binary descriptors, BRIEF’s distance measure is the number of different bits between two binary strings which can also be computed as the sum of the XOR operation between the strings.
 
-BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see [ORB](orb), [BRISK](brisk) and [FREAK](freak).
+BRIEF is a very simple feature descriptor and does not provide scale or rotation invariance (only translation invariance). To achieve those, see [ORB](orb.md), [BRISK](brisk.md) and [FREAK](freak.md).
 
-## Example 
+## Example
 
 Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by `(100, 200)` pixels. We will use the `lena_gray` image from the [TestImages](https://github.com/timholy/TestImages.jl) package for this example.
 
 
-First, let us define a warping function to transform the image.
-
-```@example 1
-function _warp(img, transx, transy)
-    res = zeros(eltype(img), size(img))
-    for i in 1:size(img, 1) - transx
-        for j in 1:size(img, 2) - transy
-            res[i + transx, j + transy] = img[i, j]
-        end
-    end
-    res = shareproperties(img, res)
-    res
-end
-nothing # hide
-```
-
 Now, let us create the two images we will match using BRIEF.
 
 ```@example 1
+using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
 
-using ImageFeatures, TestImages, Images, ImageDraw
-
-img = testimage("lena_gray_512")
-img_array_1 = convert(Array{Images.Gray}, img)
-img_array_2 = _warp(img_array_1, 100, 200)
+img = testimage("lena_gray_512");
+img1 = Gray.(img);
+trans = Translation(-100, -200)
+img2 = warp(img1, trans, indices(img1));
 nothing # hide
 ```
 
 To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
 
 ```@example 1
-keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))
-keypoints_2 = Keypoints(fastcorners(img_array_2, 12, 0.4))
+keypoints_1 = Keypoints(fastcorners(img1, 12, 0.4))
+keypoints_2 = Keypoints(fastcorners(img2, 12, 0.4))
 nothing # hide
 ```
 
@@ -65,8 +49,8 @@ nothing # hide
 Now pass the image with the keypoints and the parameters to the [`create_descriptor`](@ref) function.
 
 ```@example 1
-desc_1, ret_keypoints_1 = create_descriptor(img_array_1, keypoints_1, brief_params)
-desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
+desc_1, ret_keypoints_1 = create_descriptor(img1, keypoints_1, brief_params);
+desc_2, ret_keypoints_2 = create_descriptor(img2, keypoints_2, brief_params);
 nothing # hide
 ```
 
@@ -81,11 +65,11 @@ We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) packa
 
 ```@example 1
 
-grid = hcat(img_array_1, img_array_2)
-offset = CartesianIndex(0, 512)
-map(m_i -> line!(grid, m_i[1], m_i[2] + offset), matches)
-save("brief_example.jpg", grid); nothing # hide
-
+grid = hcat(img1, img2)
+offset = CartesianIndex(0, size(img1, 2))
+map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
+save("brief_example.jpg", grid) # hide
+nothing # hide
 ```
 
 ![](brief_example.jpg)

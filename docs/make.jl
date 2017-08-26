@@ -1,8 +1,23 @@
 using Documenter, ImageFeatures
 
-makedocs()
+makedocs(format   = :html,
+         sitename = "ImageFeatures",
+         pages    = ["Home" => "index.md",
+                     "Tutorials" => [
+                         "BRIEF" => "tutorials/brief.md",
+                         "ORB" => "tutorials/orb.md",
+                         "BRISK" => "tutorials/brisk.md",
+                         "FREAK" => "tutorials/freak.md",
+                         "Gray level co-occurence matrix" => "tutorials/glcm.md",
+                         "Local binary patterns" => "tutorials/lbp.md",
+                     ],
+                     "Function reference" => "function_reference.md",
+                     ],
+         )
 
-deploydocs(deps=Deps.pip("mkdocs", "mkdocs-material"),
-           repo="github.com/JuliaImages/ImageFeatures.jl.git",
-           osname="linux"
+deploydocs(repo   = "github.com/JuliaImages/ImageFeatures.jl.git",
+           julia  = "0.6",
+           target = "build",
+           deps   = nothing,
+           make   = nothing,
            )
