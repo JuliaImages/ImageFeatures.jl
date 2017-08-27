@@ -112,7 +112,7 @@ function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T,
 end
 
 function trilinear_interpolate!(hist, w, θ, orientations, i, cell_size, cell_rows, cell_cols, rows, cols)
-    bin_θ1 = floor(Int, θ*orientations/180) + 1
+    bin_θ1 = min(floor(Int, θ*orientations/180) + 1, orientations)
     bin_θ2 = bin_θ1%orientations + 1
     b_θ = 180/orientations
 
