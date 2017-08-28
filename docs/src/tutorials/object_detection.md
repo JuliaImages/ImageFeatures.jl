@@ -6,16 +6,16 @@ a person classifier and then use this classifier with a sliding window to identi
 The key challenge in creating a classifier is that it needs to work with variations in illumination, pose and occlusions in the image. To achieve this, we will train
 the classifier on an intermediate representation of the image instead of the pixel-based representation. Our ideal representation (commonly called feature vector)
 captures information which is useful for classification but is invariant to small changes in illumination and occlusions. HOG descriptor is a gradient-based
-representation which is invariant to local geometric and photometric changes (i.e. shape and illumination changes) and so is a good choice for our problem. In fact
-HOG descriptors are widely used for object detection.
+representation which is invariant to local geometric and photometric changes (i.e. shape and illumination changes) and so is a good choice for our problem. In fact HOG descriptors are widely used for object detection.
 
-We will use [this data](https://drive.google.com/file/d/0B9V0KF3ZHWtWa0hGNHJDSm1XZnM/view?usp=sharing) for training our classifier. We will start by loading the data and computing HOG features of all the images.
+Run the the script get_data.bash provided [here](https://drive.google.com/open?id=0B9V0KF3ZHWtWR1dBR2VZUDctUGc) (Change the variables `path_to_tutorial` in preprocess.jl and path to julia executable in get_data.bash). This script will download the required datasets. We will start by loading the data and computing HOG features of all the images.
 
 ```julia
 using Images, ImageFeatures
 
-pos_examples = "path_to_data/humans/"
-neg_examples = "path_to_data/not_humans/"
+path_to_tutorial = ""
+pos_examples = "path_to_tutorial/tutorial/humans/"
+neg_examples = "path_to_tutorial/tutorial/not_humans/"
 
 n_pos = length(readdir(pos_examples))   # number of positive training examples
 n_neg = length(readdir(neg_examples))   # number of negative training examples
@@ -37,7 +37,7 @@ Basically we now have an encoded version of images in our training data. This en
 ```julia
 using LIBSVM
 
-#Split the dataset into train and test set. Train set = 2500 images, Test set = 122 images.
+#Split the dataset into train and test set. Train set = 2500 images, Test set = 294 images.
 random_perm = randperm(n)
 train_ind = random_perm[1:2500]
 test_ind = random_perm[2501:end]
@@ -75,7 +75,7 @@ Next we will use our trained classifier with a sliding window to localize person
 ![Original](../img/humans.jpg)
 
 ```julia
-img = load("$pos_examples/../humans.jpg")
+img = load("path_to_tutorial/tutorial/humans.jpg")
 rows, cols = size(img)
 
 scores = Array{Float64}(22, 45)
