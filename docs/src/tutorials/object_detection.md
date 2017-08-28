@@ -8,7 +8,7 @@ the classifier on an intermediate representation of the image instead of the pix
 captures information which is useful for classification but is invariant to small changes in illumination and occlusions. HOG descriptor is a gradient-based
 representation which is invariant to local geometric and photometric changes (i.e. shape and illumination changes) and so is a good choice for our problem. In fact HOG descriptors are widely used for object detection.
 
-Run the the script get_data.bash provided [here](https://drive.google.com/open?id=0B9V0KF3ZHWtWR1dBR2VZUDctUGc) (Change the variables `path_to_tutorial` in preprocess.jl and path to julia executable in get_data.bash). This script will download the required datasets. We will start by loading the data and computing HOG features of all the images.
+Download the script to get the training data [here](https://drive.google.com/open?id=0B9V0KF3ZHWtWR1dBR2VZUDctUGc). Download tutorial.zip, decompress it and run get_data.bash. (Change the variable `path_to_tutorial` in preprocess.jl and path to julia executable in get_data.bash). This script will download the required datasets. We will start by loading the data and computing HOG features of all the images.
 
 ```julia
 using Images, ImageFeatures

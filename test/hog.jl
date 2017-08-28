@@ -8,6 +8,10 @@ import ImageFeatures.trilinear_interpolate!
     img = rand(RGB, 128, 64)
     @test length(create_descriptor(img, HOG())) == 3780
 
+    img = zeros(128, 64)
+    img[64, :] = 1
+    @test length(create_descriptor(img, HOG())) == 3780
+
     #tests for function trilinear_interpolate!
     rows = 12
     cols = 12
