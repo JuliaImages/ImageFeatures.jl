@@ -113,7 +113,7 @@ imshow(img)
 
 ![Original](../img/boxes.jpg)
 
-In our example we were lucky that the persons in our image had roughly the same size (128x64) as examples in our test set. We will generally need to take bounding boxes across multiple scales (and multiple aspect ratios for some object classes).
+In our example we were lucky that the persons in our image had roughly the same size (128x64) as examples in our train set. We will generally need to take bounding boxes across multiple scales (and multiple aspect ratios for some object classes).
 
 
 
