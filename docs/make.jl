@@ -10,6 +10,7 @@ makedocs(format   = :html,
                          "FREAK" => "tutorials/freak.md",
                          "Gray level co-occurence matrix" => "tutorials/glcm.md",
                          "Local binary patterns" => "tutorials/lbp.md",
+                         "Object Detection using HOG" => "tutorials/object_detection.md"
                      ],
                      "Function reference" => "function_reference.md",
                      ],
