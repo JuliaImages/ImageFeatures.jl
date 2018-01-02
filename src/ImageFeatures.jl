@@ -6,7 +6,6 @@ module ImageFeatures
 using Images, ColorTypes, FixedPointNumbers, Distributions
 using Compat
 using FLANN, Distances
-using NearestNeighbors
 
 include("core.jl")
 include("const.jl")
