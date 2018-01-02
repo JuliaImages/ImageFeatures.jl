@@ -121,7 +121,7 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
         tree = flann(data, FLANNParameters(), Cityblock())
         matched = zeros(Bool, n_large)
         for i in 1:n_small
-            idx = inrange(tree, Vector{Float64}(smaller[i]), 0.1)
+            idx = inrange(tree, Vector{Float64}(smaller[i]), threshold*ndims)
             for j in idx[1]
                 if !matched[j]
                     id_min = j
