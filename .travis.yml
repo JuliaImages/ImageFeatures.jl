@@ -9,11 +9,11 @@ notifications:
     email: false
 script:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+    - julia -e 'Pkg.clone("https://github.com/wildart/FLANN.jl"); Pkg.build("FLANN")'
     - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
     # used in tests and Documentation (just install once)
     - julia -e 'Pkg.add("TestImages")'
     - julia -e 'if is_linux() Pkg.add("ImageMagick") end'
-    - julia -e 'Pkg.clone("https://github.com/wildart/FLANN.jl"); Pkg.build("FLANN")'
     - julia -e 'Pkg.test("ImageFeatures", coverage=true)'
 after_success:
     - julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
