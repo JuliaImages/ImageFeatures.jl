@@ -5,7 +5,9 @@ module ImageFeatures
 # package code goes here
 using Images, ColorTypes, FixedPointNumbers, Distributions
 using Compat
-using FLANN, Distances
+if !is_windows() || Sys.WORD_SIZE!=32
+    using FLANN, Distances
+end
 
 include("core.jl")
 include("const.jl")
