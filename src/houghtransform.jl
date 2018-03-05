@@ -103,6 +103,183 @@ threshold::Integer, linesMax::Integer) where T<:Union{Bool,Gray{Bool}}
 
 end
 
+function hough_line_probabilistic(
+img::AbstractArray{T,2},
+ρ::Real, θ::Range,
+threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) where T<:Union{Bool,Gray{Bool}}
+  
+    ρ > 0 || error("Discrete step size must be positive")
+    indsy, indsx = indices(img)
+    ρinv = 1 / ρ
+    numangle = length(θ)
+    numrho = round(Int,(2(length(indsx) + length(indsy)) + 1)*ρinv) 
+    constadd = (numrho-1)/2
+    accumulator_matrix = zeros(Int, numangle + 2, numrho + 2)
+    h, w = size(img)
+    mask = zeros(Bool, h, w)
+
+    #Pre-Computed sines and cosines in tables
+    sinθ, cosθ = sin.(θ).*ρinv, cos.(θ).*ρinv
+    nzloc = Vector{Tuple{Int64,Int64}}(0)
+    lines = Vector{Tuple{Int64, Int64, Int64, Int64}}(0)
+
+    for pix in CartesianRange(size(img))
+        pix1 = (pix[1], pix[2])
+        if(img[pix])
+            push!(nzloc, pix1)
+            mask[pix] = true
+        else
+            mask[pix] = false
+        end
+    end
+
+    count_ = size(nzloc)[1]+1
+    while(count_>1)
+        count_-=1
+        good_line = false
+        idx = rand(1:count_)
+        max_val = threshold-1
+        max_n = 1
+        point = nzloc[idx]
+        line_end = [[0,0],[0,0]]
+        i = point[1]-1    
+        j = point[2]-1
+        x0, y0, dx0, dy0, xflag = 0, 0, 0, 0, 0
+        const shift = 16
+
+        nzloc[idx] = nzloc[count_]
+
+        if(!(mask[point[1], point[2]]))
+            continue
+        end
+        
+        for n in 0:numangle-1
+                dist = round(Int, point[2]*cosθ[n+1] + point[1]*sinθ[n+1])
+                dist += constadd
+                dist = Int64(dist)
+                accumulator_matrix[n+1 , dist + 1] += 1
+                val = accumulator_matrix[n+1 , dist + 1]
+                if(max_val < val)
+                    max_val = val
+                    max_n = n+1
+                end    
+        end
+
+        if(max_val < threshold)
+            continue
+        end
+        
+        a = -sinθ[max_n]
+        b = cosθ[max_n]
+        x0 = j
+        y0 = i
+        good_line = false
+
+        if(abs(a) > abs(b))
+            xflag = 1
+            dx0 = a > 0 ? 1 : -1
+            dy0 = round(b*(1 << shift)/abs(a))
+            y0 = (y0 << shift) + (1 << (shift-1))
+        else
+            xflag = 0
+            dy0 = b > 0 ? 1 : -1
+            dx0 = round( a*(1 << shift)/abs(b) );
+            x0 = (x0 << shift) + (1 << (shift-1));    
+        end   
+
+        for k = 1:2
+            gap = 0
+            x = x0
+            y = y0
+            dx = dx0
+            dy = dy0
+
+            if k>1
+                dx = -dx
+                dy = -dy
+            end
+            
+            while(true)
+                i1 = 0
+                j1 = 0
+                if(xflag==1)
+                    j1 = x
+                    i1 = y>>shift
+                else
+                    j1 = x>>shift
+                    i1 = y
+                end
+                
+                if( j1 < 0 || j1 >= w || i1 < 0 || i1 >= h )
+                    break;
+                end
+                gap+=1
+                if(mask[i1+1, j1+1])
+                    gap = 0
+                    line_end[k][1] = i1+1
+                    line_end[k][2] = j1+1
+                    
+                elseif(gap > lineGap)
+                    break
+                end
+                x = Int64(x+dx)
+                y = Int64(y+dy)
+            end
+        end
+        
+        good_line = abs(line_end[2][1] - line_end[1][1]) >= lineLength || abs(line_end[2][2] - line_end[1][2]) >= lineLength              
+
+        for k = 1:2
+            x = x0
+            y = y0
+            dx = dx0
+            dy = dy0
+
+            if k>1
+                dx = -dx
+                dy = -dy
+            end
+
+            while(true)
+                i1, j1 = 0,0
+
+                if (xflag==1)
+                    j1 = x
+                    i1 = y >> shift
+                else
+                    j1 = x >>shift
+                    i1 = y
+                end
+                if(mask[i1+1, j1+1])
+                    if(good_line)
+                        for n = 0:numangle-1
+                            r = round((j1+1)*cosθ[n+1] + (i1+1)*sinθ[n+1])
+                            r = Int64(r+constadd)
+                            accumulator_matrix[n+1, r+1]-=1
+                            mask[i1+1, j1+1] = false
+                        end
+                    end
+                end
+                
+                if((i1+1) == line_end[k][1] && (j1+1) == line_end[k][2])
+                    break
+                end
+                x = Int64(x+dx)
+                y = Int64(y+dy)              
+            end
+
+        end    
+        if(good_line)
+            push!(lines, (line_end[1][1], line_end[1][2], line_end[2][1], line_end[2][2]))
+
+            if(size(lines)[1] >= linesMax)
+                return lines
+            end
+        end         
+    end
+    return lines        
+end
+
 """
 ```
 circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, scale, min_dist, vote_thres, min_radius:max_radius)  

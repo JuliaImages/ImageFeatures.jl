@@ -66,6 +66,7 @@ export
 
     #Lines
     hough_transform_standard,
+    hough_line_probabilistic,
 
     #Circles
     hough_circle_gradient
