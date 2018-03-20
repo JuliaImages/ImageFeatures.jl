@@ -156,7 +156,7 @@ img::AbstractArray{T,2},
 ρ::Real, θ::Range,
 threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) where T<:Union{Bool,Gray{Bool}}
   
-    ρ > 0 || error("Discrete step size must be positive")
+    ρ > 0 || throw(ArgumentError("Discrete step size must be positive"))
     indsy, indsx = indices(img)
     ρinv = 1 / ρ
     numangle = length(θ)
@@ -165,48 +165,30 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
     accumulator_matrix = zeros(Int, numangle + 2, numrho + 2)
     h, w = size(img)
     mask = zeros(Bool, h, w)
-
+    x0, y0 = 0, 0
     #Pre-Computed sines and cosines in tables
     sinθ, cosθ = sin.(θ).*ρinv, cos.(θ).*ρinv
     nzloc = Vector{Tuple{Int64,Int64}}(0)
     lines = Vector{Tuple{Int64, Int64, Int64, Int64}}(0)
+    const shift = 16
 
-    #collect non-zero image points
-    for pix in CartesianRange(size(img))
-        pix1 = (pix[1], pix[2])
-        if(img[pix])
-            push!(nzloc, pix1)
-            mask[pix] = true
-        else
-            mask[pix] = false
+    #function to mark and collect all non zero points
+    function collect_points()
+        for pix in CartesianRange(size(img))
+            pix1 = (pix[1], pix[2])
+            if(img[pix])
+                push!(nzloc, pix1)
+                mask[pix] = true
+            else
+                mask[pix] = false
+            end
         end
-    end
+    end    
 
-    count_ = size(nzloc)[1]+1
-
-    # stage 2. process all the points in random order
-    while(count_>1)
-        count_-=1
-        good_line = false
-        # choose random point out of the remaining ones
-        idx = rand(1:count_)
-        max_val = threshold-1
+    #function to update the accumulator matrix for every point selected
+    function update_accumulator(point)
         max_n = 1
-        point = nzloc[idx]
-        line_end = [[0,0],[0,0]]
-        i = point[1]-1    
-        j = point[2]-1
-        x0, y0, dx0, dy0, xflag = 0, 0, 0, 0, 0
-        const shift = 16
-
-        # "remove" it by overriding it with the last element
-        nzloc[idx] = nzloc[count_]
-
-        if(!(mask[point[1], point[2]]))
-            continue
-        end
-        
-        # update accumulator, find the most probable line
+        max_val = threshold-1
         for n in 0:numangle-1
                 dist = round(Int, point[2]*cosθ[n+1] + point[1]*sinθ[n+1])
                 dist += constadd
@@ -218,32 +200,12 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
                     max_n = n+1
                 end    
         end
+        return max_n, max_val
+    end    
 
-        # if it is too "weak" candidate, continue with another point
-        if(max_val < threshold)
-            continue
-        end
-        
-        # from the current point walk in each direction along the found line
-        a = -sinθ[max_n]
-        b = cosθ[max_n]
-        x0 = j
-        y0 = i
-        good_line = false
-
-        if(abs(a) > abs(b))
-            xflag = 1
-            dx0 = a > 0 ? 1 : -1
-            dy0 = round(b*(1 << shift)/abs(a))
-            y0 = (y0 << shift) + (1 << (shift-1))
-        else
-            xflag = 0
-            dy0 = b > 0 ? 1 : -1
-            dx0 = round( a*(1 << shift)/abs(b) );
-            x0 = (x0 << shift) + (1 << (shift-1));    
-        end   
-
-        # pass 1: walk the line, merging lines less than specified gap length
+    #function to detect the line segment after merging lines within lineGap
+    function pass_1(xflag, x0, y0, dx0, dy0)
+        line_end = [[0,0],[0,0]]
         for k = 1:2
             gap = 0
             x = x0
@@ -286,10 +248,11 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
                 y = Int64(y+dy)
             end
         end
-        # confirm line length is sufficient
-        good_line = abs(line_end[2][1] - line_end[1][1]) >= lineLength || abs(line_end[2][2] - line_end[1][2]) >= lineLength              
+        return line_end
+    end    
 
-        # pass 2: walk the line again and reset accumulator and mask
+    #function to reset the mask and accumulator_matrix 
+    function pass_2(xflag, x0, y0, dx0, dy0, good_line, line_end)
         for k = 1:2
             x = x0
             y = y0
@@ -331,8 +294,70 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
                 x = Int64(x+dx)
                 y = Int64(y+dy)              
             end
+        end
+    end    
 
-        end    
+    #collect non-zero image points
+    collect_points()
+
+    count_ = size(nzloc)[1]+1
+
+    # stage 2. process all the points in random order
+    while(count_>1)
+        count_-=1
+        good_line = false
+        # choose random point out of the remaining ones
+        idx = rand(1:count_)
+        max_n = 1
+        point = nzloc[idx]
+        i = point[1]-1    
+        j = point[2]-1
+        x0, y0, dx0, dy0, xflag = 0, 0, 0, 0, 0
+        max_n = 1
+
+        # "remove" it by overriding it with the last element
+        nzloc[idx] = nzloc[count_]
+
+        if(!(mask[point[1], point[2]]))
+            continue
+        end
+        
+        # update accumulator, find the most probable line
+        max_n, max_val = update_accumulator(point)
+
+        # if it is too "weak" candidate, continue with another point
+        if(max_val < threshold)
+            continue
+        end
+        
+        # from the current point walk in each direction along the found line
+        a = -sinθ[max_n]
+        b = cosθ[max_n]
+        x0 = j
+        y0 = i
+        good_line = false
+
+        if(abs(a) > abs(b))
+            xflag = 1
+            dx0 = a > 0 ? 1 : -1
+            dy0 = round(b*(1 << shift)/abs(a))
+            y0 = (y0 << shift) + (1 << (shift-1))
+        else
+            xflag = 0
+            dy0 = b > 0 ? 1 : -1
+            dx0 = round( a*(1 << shift)/abs(b) );
+            x0 = (x0 << shift) + (1 << (shift-1));    
+        end   
+
+        # pass 1: walk the line, merging lines less than specified gap length
+        line_end = pass_1(xflag, x0, y0, dx0, dy0)
+
+        # confirm line length is sufficient
+        good_line = abs(line_end[2][1] - line_end[1][1]) >= lineLength || abs(line_end[2][2] - line_end[1][2]) >= lineLength              
+
+        # pass 2: walk the line again and reset accumulator and mask
+        pass_2(xflag, x0, y0, dx0, dy0, good_line, line_end) 
+
         # add line to the result
         if(good_line)
             push!(lines, (line_end[1][1], line_end[1][2], line_end[2][1], line_end[2][2]))
