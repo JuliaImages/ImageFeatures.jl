@@ -150,6 +150,151 @@ References
            Hough transform for line detection", in IEEE Computer Society
            Conference on Computer Vision and Pattern Recognition, 1999.
 """
+type Param
+       numangle::Int64
+       constadd::Float64
+       accumulator_matrix::AbstractArray{Int64, 2}
+       mask::AbstractArray{Bool, 2}
+       nzloc::Vector{Tuple{Int64,Int64}}
+       lines::Vector{Tuple{Int64, Int64, Int64, Int64}}
+       shift::Int64
+       threshold::Int64
+       lineLength::Int64
+       lineGap::Int64
+end
+
+type Sample
+    x0::Int64
+    y0::Int64
+    dx0::Int64
+    dy0::Int64
+end    
+
+#function to mark and collect all non zero points
+function collect_points(params, img)
+    for pix in CartesianRange(size(img))
+        pix1 = (pix[1], pix[2])
+        if(img[pix])
+            push!(params.nzloc, pix1)
+            params.mask[pix] = true
+        else
+            params.mask[pix] = false
+        end
+    end
+end    
+
+#function to update the accumulator matrix for every point selected
+function update_accumulator(params, point, sinθ, cosθ)
+    max_n = 1
+    max_val = params.threshold-1
+    for n in 0:params.numangle-1
+            dist = round(Int, point[2]*cosθ[n+1] + point[1]*sinθ[n+1])
+            dist += params.constadd
+            dist = Int64(dist)
+            params.accumulator_matrix[n+1 , dist + 1] += 1
+            val = params.accumulator_matrix[n+1 , dist + 1]
+            if(max_val < val)
+                max_val = val
+                max_n = n+1
+            end    
+    end
+    return max_n, max_val
+end    
+
+#function to detect the line segment after merging lines within lineGap
+function pass_1(params, sample, xflag)
+    line_end = [[0,0],[0,0]]
+    h, w = size(params.mask)
+    for k = 1:2
+        gap = 0
+        x = sample.x0
+        y = sample.y0
+        dx = sample.dx0
+        dy = sample.dy0
+
+        if k>1
+            dx = -dx
+            dy = -dy
+        end
+        
+        while(true)
+            i1 = 0
+            j1 = 0
+            if(xflag==1)
+                j1 = x
+                i1 = y>>params.shift
+            else
+                j1 = x>>params.shift
+                i1 = y
+            end
+
+            # check when line exits image boundary
+            if( j1 < 0 || j1 >= w || i1 < 0 || i1 >= h )
+                break;
+            end
+            gap+=1
+
+            # if non-zero point found, continue the line
+            if(params.mask[i1+1, j1+1])
+                gap = 0
+                line_end[k][1] = i1+1
+                line_end[k][2] = j1+1
+             # if gap to this point was too large, end the line    
+            elseif(gap > params.lineGap)
+                break
+            end
+            x = Int64(x+dx)
+            y = Int64(y+dy)
+        end
+    end
+    return line_end
+end
+
+#function to reset the mask and accumulator_matrix 
+function pass_2(params, sample, xflag, good_line, line_end, sinθ, cosθ)
+    for k = 1:2
+        x = sample.x0
+        y = sample.y0
+        dx = sample.dx0
+        dy = sample.dy0
+
+        if k>1
+            dx = -dx
+            dy = -dy
+        end
+
+        # walk along the line using fixed-point arithmetics,
+        while(true)
+            i1, j1 = 0,0
+
+            if (xflag==1)
+                j1 = x
+                i1 = y >> params.shift
+            else
+                j1 = x >> params.shift
+                i1 = y
+            end
+
+            # if non-zero point found, continue the line
+            if(params.mask[i1+1, j1+1])
+                if(good_line)
+                    for n = 0:params.numangle-1
+                        r = round((j1+1)*cosθ[n+1] + (i1+1)*sinθ[n+1])
+                        r = Int64(r+params.constadd)
+                        params.accumulator_matrix[n+1, r+1]-=1
+                        params.mask[i1+1, j1+1] = false
+                    end
+                end
+            end
+            # exit when the point is the line end                
+            if((i1+1) == line_end[k][1] && (j1+1) == line_end[k][2])
+                break
+            end
+            x = Int64(x+dx)
+            y = Int64(y+dy)              
+        end
+    end
+end    
 
 function hough_line_probabilistic(
 img::AbstractArray{T,2},
@@ -165,140 +310,15 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
     accumulator_matrix = zeros(Int, numangle + 2, numrho + 2)
     h, w = size(img)
     mask = zeros(Bool, h, w)
-    x0, y0 = 0, 0
     #Pre-Computed sines and cosines in tables
     sinθ, cosθ = sin.(θ).*ρinv, cos.(θ).*ρinv
     nzloc = Vector{Tuple{Int64,Int64}}(0)
     lines = Vector{Tuple{Int64, Int64, Int64, Int64}}(0)
-    const shift = 16
-
-    #function to mark and collect all non zero points
-    function collect_points()
-        for pix in CartesianRange(size(img))
-            pix1 = (pix[1], pix[2])
-            if(img[pix])
-                push!(nzloc, pix1)
-                mask[pix] = true
-            else
-                mask[pix] = false
-            end
-        end
-    end    
-
-    #function to update the accumulator matrix for every point selected
-    function update_accumulator(point)
-        max_n = 1
-        max_val = threshold-1
-        for n in 0:numangle-1
-                dist = round(Int, point[2]*cosθ[n+1] + point[1]*sinθ[n+1])
-                dist += constadd
-                dist = Int64(dist)
-                accumulator_matrix[n+1 , dist + 1] += 1
-                val = accumulator_matrix[n+1 , dist + 1]
-                if(max_val < val)
-                    max_val = val
-                    max_n = n+1
-                end    
-        end
-        return max_n, max_val
-    end    
-
-    #function to detect the line segment after merging lines within lineGap
-    function pass_1(xflag, x0, y0, dx0, dy0)
-        line_end = [[0,0],[0,0]]
-        for k = 1:2
-            gap = 0
-            x = x0
-            y = y0
-            dx = dx0
-            dy = dy0
-
-            if k>1
-                dx = -dx
-                dy = -dy
-            end
-            
-            while(true)
-                i1 = 0
-                j1 = 0
-                if(xflag==1)
-                    j1 = x
-                    i1 = y>>shift
-                else
-                    j1 = x>>shift
-                    i1 = y
-                end
-
-                # check when line exits image boundary
-                if( j1 < 0 || j1 >= w || i1 < 0 || i1 >= h )
-                    break;
-                end
-                gap+=1
-
-                # if non-zero point found, continue the line
-                if(mask[i1+1, j1+1])
-                    gap = 0
-                    line_end[k][1] = i1+1
-                    line_end[k][2] = j1+1
-                 # if gap to this point was too large, end the line    
-                elseif(gap > lineGap)
-                    break
-                end
-                x = Int64(x+dx)
-                y = Int64(y+dy)
-            end
-        end
-        return line_end
-    end    
-
-    #function to reset the mask and accumulator_matrix 
-    function pass_2(xflag, x0, y0, dx0, dy0, good_line, line_end)
-        for k = 1:2
-            x = x0
-            y = y0
-            dx = dx0
-            dy = dy0
-
-            if k>1
-                dx = -dx
-                dy = -dy
-            end
-
-            # walk along the line using fixed-point arithmetics,
-            while(true)
-                i1, j1 = 0,0
-
-                if (xflag==1)
-                    j1 = x
-                    i1 = y >> shift
-                else
-                    j1 = x >>shift
-                    i1 = y
-                end
-
-                # if non-zero point found, continue the line
-                if(mask[i1+1, j1+1])
-                    if(good_line)
-                        for n = 0:numangle-1
-                            r = round((j1+1)*cosθ[n+1] + (i1+1)*sinθ[n+1])
-                            r = Int64(r+constadd)
-                            accumulator_matrix[n+1, r+1]-=1
-                            mask[i1+1, j1+1] = false
-                        end
-                    end
-                end
-                # exit when the point is the line end                
-                if((i1+1) == line_end[k][1] && (j1+1) == line_end[k][2])
-                    break
-                end
-                x = Int64(x+dx)
-                y = Int64(y+dy)              
-            end
-        end
-    end    
+    params = Param(numangle, constadd, accumulator_matrix, mask, nzloc, lines, 16, threshold, lineLength, lineGap)
+    sample = Sample(0,0,0,0)
 
     #collect non-zero image points
-    collect_points()
+    collect_points(params, img)
 
     count_ = size(nzloc)[1]+1
 
@@ -310,53 +330,52 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
         idx = rand(1:count_)
         max_n = 1
         point = nzloc[idx]
-        i = point[1]-1    
-        j = point[2]-1
-        x0, y0, dx0, dy0, xflag = 0, 0, 0, 0, 0
+        i, j = point[1]-1, point[2]-1    
+        sample.x0, sample.y0, sample.dx0, sample.dy0, xflag = 0, 0, 0, 0, 0
         max_n = 1
 
         # "remove" it by overriding it with the last element
-        nzloc[idx] = nzloc[count_]
+        params.nzloc[idx] = params.nzloc[count_]
 
-        if(!(mask[point[1], point[2]]))
+        if(!(params.mask[point[1], point[2]]))
             continue
         end
         
         # update accumulator, find the most probable line
-        max_n, max_val = update_accumulator(point)
+        max_n, max_val = update_accumulator(params, point, sinθ, cosθ)
 
         # if it is too "weak" candidate, continue with another point
-        if(max_val < threshold)
+        if(max_val < params.threshold)
             continue
         end
         
         # from the current point walk in each direction along the found line
         a = -sinθ[max_n]
         b = cosθ[max_n]
-        x0 = j
-        y0 = i
+        sample.x0 = j
+        sample.y0 = i
         good_line = false
 
         if(abs(a) > abs(b))
             xflag = 1
-            dx0 = a > 0 ? 1 : -1
-            dy0 = round(b*(1 << shift)/abs(a))
-            y0 = (y0 << shift) + (1 << (shift-1))
+            sample.dx0 = a > 0 ? 1 : -1
+            sample.dy0 = round(b*(1 << params.shift)/abs(a))
+            sample.y0 = (sample.y0 << params.shift) + (1 << (params.shift-1))
         else
             xflag = 0
-            dy0 = b > 0 ? 1 : -1
-            dx0 = round( a*(1 << shift)/abs(b) );
-            x0 = (x0 << shift) + (1 << (shift-1));    
+            sample.dy0 = b > 0 ? 1 : -1
+            sample.dx0 = round( a*(1 << params.shift)/abs(b) );
+            sample.x0 = (sample.x0 << params.shift) + (1 << (params.shift-1));    
         end   
 
         # pass 1: walk the line, merging lines less than specified gap length
-        line_end = pass_1(xflag, x0, y0, dx0, dy0)
+        line_end = pass_1(params, sample, xflag)
 
         # confirm line length is sufficient
         good_line = abs(line_end[2][1] - line_end[1][1]) >= lineLength || abs(line_end[2][2] - line_end[1][2]) >= lineLength              
 
         # pass 2: walk the line again and reset accumulator and mask
-        pass_2(xflag, x0, y0, dx0, dy0, good_line, line_end) 
+        pass_2(params, sample, xflag, good_line, line_end, sinθ, cosθ) 
 
         # add line to the result
         if(good_line)
