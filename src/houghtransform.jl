@@ -188,9 +188,9 @@ function update_accumulator(params, point, sinθ, cosθ)
     max_n = 1
     max_val = params.threshold-1
     for n in 0:params.numangle-1
-            dist = round(Int, point[2]*cosθ[n+1] + point[1]*sinθ[n+1])
+            dist = point[2]*cosθ[n+1] + point[1]*sinθ[n+1]
             dist += params.constadd
-            dist = Int64(dist)
+            dist = Int64(floor(dist))
             params.accumulator_matrix[n+1 , dist + 1] += 1
             val = params.accumulator_matrix[n+1 , dist + 1]
             if(max_val < val)
@@ -202,9 +202,9 @@ function update_accumulator(params, point, sinθ, cosθ)
 end    
 
 #function to detect the line segment after merging lines within lineGap
-function pass_1(params, sample, xflag)
+function pass_1(img, params, sample, xflag)
     line_end = [[0,0],[0,0]]
-    h, w = size(params.mask)
+    h, w = size(img)
     for k = 1:2
         gap = 0
         x = sample.x0
@@ -279,8 +279,8 @@ function pass_2(params, sample, xflag, good_line, line_end, sinθ, cosθ)
             if(params.mask[i1+1, j1+1])
                 if(good_line)
                     for n = 0:params.numangle-1
-                        r = round((j1+1)*cosθ[n+1] + (i1+1)*sinθ[n+1])
-                        r = Int64(r+params.constadd)
+                        r = ((j1+1)*cosθ[n+1] + (i1+1)*sinθ[n+1])
+                        r = Int64(floor(r+params.constadd))
                         params.accumulator_matrix[n+1, r+1]-=1
                         params.mask[i1+1, j1+1] = false
                     end
@@ -369,7 +369,7 @@ threshold::Integer, lineLength::Integer, lineGap::Integer, linesMax::Integer) wh
         end   
 
         # pass 1: walk the line, merging lines less than specified gap length
-        line_end = pass_1(params, sample, xflag)
+        line_end = pass_1(img, params, sample, xflag)
 
         # confirm line length is sufficient
         good_line = abs(line_end[2][1] - line_end[1][1]) >= lineLength || abs(line_end[2][2] - line_end[1][2]) >= lineLength              
