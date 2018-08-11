@@ -47,7 +47,7 @@ function create_descriptor(img::AbstractArray{CT, 2}, params::HOG) where CT<:Ima
 
     for j in indices(mag, 3)
         for i in indices(mag, 2)
-            ind = indmax(mag[:, i, j])
+            ind = indmax(view(mag, :, i, j))
             max_mag[i, j] = mag[ind, i, j]
             max_phase[i, j] = phase[ind, i, j]
         end
