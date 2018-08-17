@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Installation",
     "category": "section",
-    "text": "Installing the package is extremely easy with julia's package manager -Pkg.add(\"ImageFeatures.jl\")ImageFeatures.jl requires Images.jl."
+    "text": "Installing the package is extremely easy with julia\'s package manager -Pkg.add(\"ImageFeatures.jl\")ImageFeatures.jl requires Images.jl."
 },
 
 {
@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "ORB",
     "title": "ORB",
     "category": "page",
-    "text": "The ORB descriptor is a somewhat similar to BRIEF. It doesn’t have an elaborate sampling pattern as BRISK or FREAK.However, there are two main differences between ORB and BRIEF:ORB uses an orientation compensation mechanism, making it rotation invariant.\nORB learns the optimal sampling pairs, whereas BRIEF uses randomly chosen sampling pairs.The ORB descriptor uses the intensity centroid as a measure of orientation. To calculate the centroid, we first need to find the moment of a patch, which is given by Mpq = x,yxpyqI(x,y). The centroid, or ‘centre of mass' is then given by C=(M10M00, M01M00).The vector from the corner’s center to the centroid gives the orientation of the patch. Now, the patch can be rotated to some predefined canonical orientation before calculating the descriptor, thus achieving rotation invariance.ORB tries to take sampling pairs which are uncorrelated so that each new pair will bring new information to the descriptor, thus maximizing the amount of information the descriptor carries. We also want high variance among the pairs making a feature more discriminative, since it responds differently to inputs. To do this, we consider the sampling pairs over keypoints in standard datasets and then do a greedy evaluation of all the pairs in order of distance from mean till the number of desired pairs are obtained i.e. the size of the descriptor.The descriptor is built using intensity comparisons of the pairs. For each pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor."
+    "text": "The ORB descriptor is a somewhat similar to BRIEF. It doesn’t have an elaborate sampling pattern as BRISK or FREAK.However, there are two main differences between ORB and BRIEF:ORB uses an orientation compensation mechanism, making it rotation invariant.\nORB learns the optimal sampling pairs, whereas BRIEF uses randomly chosen sampling pairs.The ORB descriptor uses the intensity centroid as a measure of orientation. To calculate the centroid, we first need to find the moment of a patch, which is given by Mpq = x,yxpyqI(x,y). The centroid, or ‘centre of mass\' is then given by C=(M10M00, M01M00).The vector from the corner’s center to the centroid gives the orientation of the patch. Now, the patch can be rotated to some predefined canonical orientation before calculating the descriptor, thus achieving rotation invariance.ORB tries to take sampling pairs which are uncorrelated so that each new pair will bring new information to the descriptor, thus maximizing the amount of information the descriptor carries. We also want high variance among the pairs making a feature more discriminative, since it responds differently to inputs. To do this, we consider the sampling pairs over keypoints in standard datasets and then do a greedy evaluation of all the pairs in order of distance from mean till the number of desired pairs are obtained i.e. the size of the descriptor.The descriptor is built using intensity comparisons of the pairs. For each pair if the first point has greater intensity than the second, then 1 is written else 0 is written to the corresponding bit of the descriptor."
 },
 
 {
@@ -197,7 +197,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Local binary patterns",
     "title": "Local binary patterns",
     "category": "page",
-    "text": "Local Binary Pattern (LBP) is a very efficient texture operator which labels the pixels of an image by thresholding the neighborhood of each pixel and considers the result as a binary number. The LBP feature vector, in its simplest form, is created in the following manner :(Image: Local Binary Pattern)Divide the examined window into cells (e.g. 16x16 pixels for each cell).\nFor each pixel in a cell, compare the pixel to each of its 8 neighbors (on its left-top, left-middle, left-bottom, right-top, etc.). Follow the pixels along a circle, i.e. clockwise or counterclockwise.\nIn the above step, the neighbours considered can be changed by varying the radius of the circle around the pixel, R and the quantisation of the angular space P.\nWhere the center pixel's value is greater than the neighbor's value, write \"0\". Otherwise, write \"1\". This gives an 8-digit binary number (which is usually converted to decimal for convenience).\nCompute the histogram, over the cell, of the frequency of each \"number\" occurring (i.e., each combination of which pixels are smaller and which are greater than the center). This histogram can be seen as a 256-dimensional feature vector.\nOptionally normalize the histogram.\nConcatenate (normalized) histograms of all cells. This gives a feature vector for the entire window.The feature vector can now then be processed using some machine-learning algorithm to classify images. Such classifiers are often used for face recognition or texture analysis."
+    "text": "Local Binary Pattern (LBP) is a very efficient texture operator which labels the pixels of an image by thresholding the neighborhood of each pixel and considers the result as a binary number. The LBP feature vector, in its simplest form, is created in the following manner :(Image: Local Binary Pattern)Divide the examined window into cells (e.g. 16x16 pixels for each cell).\nFor each pixel in a cell, compare the pixel to each of its 8 neighbors (on its left-top, left-middle, left-bottom, right-top, etc.). Follow the pixels along a circle, i.e. clockwise or counterclockwise.\nIn the above step, the neighbours considered can be changed by varying the radius of the circle around the pixel, R and the quantisation of the angular space P.\nWhere the center pixel\'s value is greater than the neighbor\'s value, write \"0\". Otherwise, write \"1\". This gives an 8-digit binary number (which is usually converted to decimal for convenience).\nCompute the histogram, over the cell, of the frequency of each \"number\" occurring (i.e., each combination of which pixels are smaller and which are greater than the center). This histogram can be seen as a 256-dimensional feature vector.\nOptionally normalize the histogram.\nConcatenate (normalized) histograms of all cells. This gives a feature vector for the entire window.The feature vector can now then be processed using some machine-learning algorithm to classify images. Such classifiers are often used for face recognition or texture analysis."
 },
 
 {
@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Object Detection using HOG",
     "title": "Object Detection using HOG",
     "category": "section",
-    "text": "In this tutorial, we will use Histogram of Oriented Gradient (HOG) feature descriptor based linear SVM to create a person detector. We will first create a person classifier and then use this classifier with a sliding window to identify and localize people in an image.The key challenge in creating a classifier is that it needs to work with variations in illumination, pose and occlusions in the image. To achieve this, we will train the classifier on an intermediate representation of the image instead of the pixel-based representation. Our ideal representation (commonly called feature vector) captures information which is useful for classification but is invariant to small changes in illumination and occlusions. HOG descriptor is a gradient-based representation which is invariant to local geometric and photometric changes (i.e. shape and illumination changes) and so is a good choice for our problem. In fact HOG descriptors are widely used for object detection.Download the script to get the training data here. Download tutorial.zip, decompress it and run get_data.bash. (Change the variable path_to_tutorial in preprocess.jl and path to julia executable in get_data.bash). This script will download the required datasets. We will start by loading the data and computing HOG features of all the images.using Images, ImageFeatures\n\npath_to_tutorial = \"\"\npos_examples = \"path_to_tutorial/tutorial/humans/\"\nneg_examples = \"path_to_tutorial/tutorial/not_humans/\"\n\nn_pos = length(readdir(pos_examples))   # number of positive training examples\nn_neg = length(readdir(neg_examples))   # number of negative training examples\nn = n_pos + n_neg                       # number of training examples \ndata = Array{Float64}(3780, n)          # Array to store HOG descriptor of each image. Each image in our training data has size 128x64 and so has a 3780 length \nlabels = Vector{Int}(n)                 # Vector to store label (1=human, 0=not human) of each image.\n\nfor (i, file) in enumerate([readdir(pos_examples); readdir(neg_examples)])\n    filename = \"$(i <= n_pos ? pos_examples : neg_examples )/$file\"\n    img = load(filename)\n    data[:, i] = create_descriptor(img, HOG())\n    labels[i] = (i <= n_pos ? 1 : 0)\nendBasically we now have an encoded version of images in our training data. This encoding captures useful information but discards extraneous information  (illumination changes, pose variations etc). We will train a linear SVM on this data.using LIBSVM\n\n#Split the dataset into train and test set. Train set = 2500 images, Test set = 294 images.\nrandom_perm = randperm(n)\ntrain_ind = random_perm[1:2500]\ntest_ind = random_perm[2501:end]\n\nmodel = svmtrain(data[:, train_ind], labels[train_ind]);Now let's test this classifier on some images.img = load(\"$pos_examples/per00003.ppm\")\ndescriptor = Array{Float64}(3780, 1)\ndescriptor[:, 1] = create_descriptor(img, HOG())\n\npredicted_label, _ = svmpredict(model, descriptor);\nprint(predicted_label)                          # 1=human, 0=not human\n\n# Get test accuracy of our model\npredicted_labels, decision_values = svmpredict(model, data[:, test_ind]);\n@printf \"Accuracy: %.2f%%\\n\" mean((predicted_labels .== labels[test_ind]))*100 # test accuracy should be > 98%Try testing our trained model on more images. You can see that it performs quite well.(Image: Original) (Image: Original)\npredicted_label = 1 predicted_label = 1(Image: Original) (Image: Original)\npredicted_label = 1 predicted_label = 0Next we will use our trained classifier with a sliding window to localize persons in an image.(Image: Original)img = load(\"path_to_tutorial/tutorial/humans.jpg\")\nrows, cols = size(img)\n\nscores = Array{Float64}(22, 45)\ndescriptor = Array{Float64}(3780, 1)\n\n#Apply classifier using a sliding window approach and store classification score for not-human at every location in score array\nfor j in 32:10:cols-32\n    for i in 64:10:rows-64\n        box = img[i-63:i+64, j-31:j+32]\n        descriptor[:, 1] = create_descriptor(box, HOG())\n        predicted_label, s = svmpredict(model, descriptor);\n        scores[Int((i-64)/10)+1, Int((j-32)/10)+1] = s[1]\n    end\nend(Image: Original)You can see that classifier gave low score to not-human class (i.e. high score to human class) at positions corresponding to humans in the original image.  Below we threshold the image and supress non-minimal values to get the human locations. We then plot the bounding boxes using ImageDraw.using ImageDraw, ImageView\n\nscores[scores.>0] = 0\nobject_locations = findlocalminima(scores)\n\nrectangles = [[((i[2]-1)*10+1, (i[1]-1)*10+1), ((i[2]-1)*10+64, (i[1]-1)*10+1), ((i[2]-1)*10+64, (i[1]-1)*10+128), ((i[2]-1)*10+1, (i[1]-1)*10+128)] for i in object_locations];\n\nfor rec in rectangles\n    draw!(img, Polygon(rec), RGB{N0f8}(0, 0, 1.0))\nend\nimshow(img)(Image: Original)In our example we were lucky that the persons in our image had roughly the same size (128x64) as examples in our train set. We will generally need to take bounding boxes across multiple scales (and multiple aspect ratios for some object classes)."
+    "text": "In this tutorial, we will use Histogram of Oriented Gradient (HOG) feature descriptor based linear SVM to create a person detector. We will first create a person classifier and then use this classifier with a sliding window to identify and localize people in an image.The key challenge in creating a classifier is that it needs to work with variations in illumination, pose and occlusions in the image. To achieve this, we will train the classifier on an intermediate representation of the image instead of the pixel-based representation. Our ideal representation (commonly called feature vector) captures information which is useful for classification but is invariant to small changes in illumination and occlusions. HOG descriptor is a gradient-based representation which is invariant to local geometric and photometric changes (i.e. shape and illumination changes) and so is a good choice for our problem. In fact HOG descriptors are widely used for object detection.Download the script to get the training data here. Download tutorial.zip, decompress it and run get_data.bash. (Change the variable path_to_tutorial in preprocess.jl and path to julia executable in get_data.bash). This script will download the required datasets. We will start by loading the data and computing HOG features of all the images.using Images, ImageFeatures\n\npath_to_tutorial = \"\"\npos_examples = \"path_to_tutorial/tutorial/humans/\"\nneg_examples = \"path_to_tutorial/tutorial/not_humans/\"\n\nn_pos = length(readdir(pos_examples))   # number of positive training examples\nn_neg = length(readdir(neg_examples))   # number of negative training examples\nn = n_pos + n_neg                       # number of training examples \ndata = Array{Float64}(3780, n)          # Array to store HOG descriptor of each image. Each image in our training data has size 128x64 and so has a 3780 length \nlabels = Vector{Int}(n)                 # Vector to store label (1=human, 0=not human) of each image.\n\nfor (i, file) in enumerate([readdir(pos_examples); readdir(neg_examples)])\n    filename = \"$(i <= n_pos ? pos_examples : neg_examples )/$file\"\n    img = load(filename)\n    data[:, i] = create_descriptor(img, HOG())\n    labels[i] = (i <= n_pos ? 1 : 0)\nendBasically we now have an encoded version of images in our training data. This encoding captures useful information but discards extraneous information  (illumination changes, pose variations etc). We will train a linear SVM on this data.using LIBSVM\n\n#Split the dataset into train and test set. Train set = 2500 images, Test set = 294 images.\nrandom_perm = randperm(n)\ntrain_ind = random_perm[1:2500]\ntest_ind = random_perm[2501:end]\n\nmodel = svmtrain(data[:, train_ind], labels[train_ind]);Now let\'s test this classifier on some images.img = load(\"$pos_examples/per00003.ppm\")\ndescriptor = Array{Float64}(3780, 1)\ndescriptor[:, 1] = create_descriptor(img, HOG())\n\npredicted_label, _ = svmpredict(model, descriptor);\nprint(predicted_label)                          # 1=human, 0=not human\n\n# Get test accuracy of our model\npredicted_labels, decision_values = svmpredict(model, data[:, test_ind]);\n@printf \"Accuracy: %.2f%%\\n\" mean((predicted_labels .== labels[test_ind]))*100 # test accuracy should be > 98%Try testing our trained model on more images. You can see that it performs quite well.(Image: Original) (Image: Original)\npredicted_label = 1 predicted_label = 1(Image: Original) (Image: Original)\npredicted_label = 1 predicted_label = 0Next we will use our trained classifier with a sliding window to localize persons in an image.(Image: Original)img = load(\"path_to_tutorial/tutorial/humans.jpg\")\nrows, cols = size(img)\n\nscores = Array{Float64}(22, 45)\ndescriptor = Array{Float64}(3780, 1)\n\n#Apply classifier using a sliding window approach and store classification score for not-human at every location in score array\nfor j in 32:10:cols-32\n    for i in 64:10:rows-64\n        box = img[i-63:i+64, j-31:j+32]\n        descriptor[:, 1] = create_descriptor(box, HOG())\n        predicted_label, s = svmpredict(model, descriptor);\n        scores[Int((i-64)/10)+1, Int((j-32)/10)+1] = s[1]\n    end\nend(Image: Original)You can see that classifier gave low score to not-human class (i.e. high score to human class) at positions corresponding to humans in the original image.  Below we threshold the image and supress non-minimal values to get the human locations. We then plot the bounding boxes using ImageDraw.using ImageDraw, ImageView\n\nscores[scores.>0] = 0\nobject_locations = findlocalminima(scores)\n\nrectangles = [[((i[2]-1)*10+1, (i[1]-1)*10+1), ((i[2]-1)*10+64, (i[1]-1)*10+1), ((i[2]-1)*10+64, (i[1]-1)*10+128), ((i[2]-1)*10+1, (i[1]-1)*10+128)] for i in object_locations];\n\nfor rec in rectangles\n    draw!(img, Polygon(rec), RGB{N0f8}(0, 0, 1.0))\nend\nimshow(img)(Image: Original)In our example we were lucky that the persons in our image had roughly the same size (128x64) as examples in our train set. We will generally need to take bounding boxes across multiple scales (and multiple aspect ratios for some object classes)."
 },
 
 {
@@ -276,7 +276,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.Feature",
     "page": "Function reference",
     "title": "ImageFeatures.Feature",
-    "category": "Type",
+    "category": "type",
     "text": "feature = Feature(keypoint, orientation = 0.0, scale = 0.0)\n\nThe Feature type has the keypoint, its orientation and its scale.\n\n\n\n"
 },
 
@@ -284,7 +284,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.Features",
     "page": "Function reference",
     "title": "ImageFeatures.Features",
-    "category": "Type",
+    "category": "type",
     "text": "features = Features(boolean_img)\nfeatures = Features(keypoints)\n\nReturns a Vector{Feature} of features generated from the true values in a boolean image or from a list of keypoints.\n\n\n\n"
 },
 
@@ -292,7 +292,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.Keypoint",
     "page": "Function reference",
     "title": "ImageFeatures.Keypoint",
-    "category": "Type",
+    "category": "type",
     "text": "keypoint = Keypoint(y, x)\nkeypoint = Keypoint(feature)\n\nA Keypoint may be created by passing the coordinates of the point or from a feature.\n\n\n\n"
 },
 
@@ -300,7 +300,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.Keypoints",
     "page": "Function reference",
     "title": "ImageFeatures.Keypoints",
-    "category": "Type",
+    "category": "type",
     "text": "keypoints = Keypoints(boolean_img)\nkeypoints = Keypoints(features)\n\nCreates a Vector{Keypoint} of the true values in a boolean image or from a list of features.\n\n\n\n"
 },
 
@@ -308,7 +308,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.BRIEF",
     "page": "Function reference",
     "title": "ImageFeatures.BRIEF",
-    "category": "Type",
+    "category": "type",
     "text": "brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_type = gaussian], [seed = 123])\n\nArgument Type Description\nsize Int Size of the descriptor\nwindow Int Size of sampling window\nsigma Float64 Value of sigma used for inital gaussian smoothing of image\nsampling_type Function Type of sampling used for building the descriptor (See BRIEF Sampling Patterns)\nseed Int Random seed used for generating the sampling pairs. For matching two descriptors, the seed used to build both should be same.\n\n\n\n"
 },
 
@@ -316,7 +316,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.ORB",
     "page": "Function reference",
     "title": "ImageFeatures.ORB",
-    "category": "Type",
+    "category": "type",
     "text": "orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harris_factor = 0.04], [downsample = 1.3], [levels = 8], [sigma = 1.2])\n\nArgument Type Description\nnum_keypoints Int Number of keypoints to extract and size of the descriptor calculated\nn_fast Int Number of consecutive pixels used for finding corners with FAST. See [fastcorners]\nthreshold Float64 Threshold used to find corners in FAST. See [fastcorners]\nharris_factor Float64 Harris factor k used to rank keypoints by harris responses and extract the best ones\ndownsample Float64 Downsampling parameter used while building the gaussian pyramid. See [gaussian_pyramid] in Images.jl\nlevels Int Number of levels in the gaussian pyramid.  See [gaussian_pyramid] in Images.jl\nsigma Float64 Used for gaussian smoothing in each level of the gaussian pyramid.  See [gaussian_pyramid] in Images.jl\n\n\n\n"
 },
 
@@ -324,7 +324,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.FREAK",
     "page": "Function reference",
     "title": "ImageFeatures.FREAK",
-    "category": "Type",
+    "category": "type",
     "text": "freak_params = FREAK([pattern_scale = 22.0])\n\nArgument Type Description\npattern_scale Float64 Scaling factor for the sampling window\n\n\n\n"
 },
 
@@ -332,7 +332,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.BRISK",
     "page": "Function reference",
     "title": "ImageFeatures.BRISK",
-    "category": "Type",
+    "category": "type",
     "text": "brisk_params = BRISK([pattern_scale = 1.0])\n\nArgument Type Description\npattern_scale Float64 Scaling factor for the sampling window\n\n\n\n"
 },
 
@@ -348,7 +348,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.corner_orientations",
     "page": "Function reference",
     "title": "ImageFeatures.corner_orientations",
-    "category": "Function",
+    "category": "function",
     "text": "orientations = corner_orientations(img)\norientations = corner_orientations(img, corners)\norientations = corner_orientations(img, corners, kernel)\n\nReturns the orientations of corner patches in an image. The orientation of a corner patch is denoted by the orientation of the vector between intensity centroid and the corner. The intensity centroid can be calculated as C = (m01/m00, m10/m00) where mpq is defined as -\n\n`mpq = (x^p)(y^q)I(y, x) for each p, q in the corner patch`\n\nThe kernel used for the patch can be given through the kernel argument. The default kernel used is a gaussian kernel of size 5x5.\n\n\n\n"
 },
 
@@ -364,7 +364,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.random_uniform",
     "page": "Function reference",
     "title": "ImageFeatures.random_uniform",
-    "category": "Function",
+    "category": "function",
     "text": "sample_one, sample_two = random_uniform(size, window, seed)\n\nBuilds sampling pairs using random uniform sampling.\n\n\n\n"
 },
 
@@ -372,7 +372,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.random_coarse",
     "page": "Function reference",
     "title": "ImageFeatures.random_coarse",
-    "category": "Function",
+    "category": "function",
     "text": "sample_one, sample_two = random_coarse(size, window, seed)\n\nBuilds sampling pairs using random sampling over a coarse grid.\n\n\n\n"
 },
 
@@ -380,7 +380,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.gaussian",
     "page": "Function reference",
     "title": "ImageFeatures.gaussian",
-    "category": "Function",
+    "category": "function",
     "text": "sample_one, sample_two = gaussian(size, window, seed)\n\nBuilds sampling pairs using gaussian sampling.\n\n\n\n"
 },
 
@@ -388,7 +388,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.gaussian_local",
     "page": "Function reference",
     "title": "ImageFeatures.gaussian_local",
-    "category": "Function",
+    "category": "function",
     "text": "sample_one, sample_two = gaussian_local(size, window, seed)\n\nPairs (Xi, Yi) are randomly sampled using a Gaussian distribution where first X is sampled with a standard deviation of 0.04*S^2 and then the Yi’s are sampled using a Gaussian distribution – Each Yi is sampled with mean Xi and standard deviation of 0.01 * S^2\n\n\n\n"
 },
 
@@ -396,7 +396,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.center_sample",
     "page": "Function reference",
     "title": "ImageFeatures.center_sample",
-    "category": "Function",
+    "category": "function",
     "text": "sample_one, sample_two = center_sample(size, window, seed)\n\nBuilds sampling pairs (Xi, Yi) where Xi is (0, 0) and Yi is sampled uniformly from the window.\n\n\n\n"
 },
 
@@ -420,7 +420,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.create_descriptor",
     "page": "Function reference",
     "title": "ImageFeatures.create_descriptor",
-    "category": "Function",
+    "category": "function",
     "text": "desc, keypoints = create_descriptor(img, keypoints, params)\ndesc, keypoints = create_descriptor(img, params)\n\nCreate a descriptor for each entry in keypoints from the image img. params specifies the parameters for any of several descriptors:\n\nBRIEF\nORB\nBRISK\nFREAK\nHOG\n\nSome descriptors support discovery of the keypoints from fastcorners.\n\n\n\n"
 },
 
@@ -436,7 +436,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.hamming_distance",
     "page": "Function reference",
     "title": "ImageFeatures.hamming_distance",
-    "category": "Function",
+    "category": "function",
     "text": "distance = hamming_distance(desc_1, desc_2)\n\nCalculates the hamming distance between two descriptors.\n\n\n\n"
 },
 
@@ -444,7 +444,7 @@ var documenterSearchIndex = {"docs": [
     "location": "function_reference.html#ImageFeatures.match_keypoints",
     "page": "Function reference",
     "title": "ImageFeatures.match_keypoints",
-    "category": "Function",
+    "category": "function",
     "text": "matches = match_keypoints(keypoints_1, keypoints_2, desc_1, desc_2, threshold = 0.1)\n\nFinds matched keypoints using the hamming_distance function having distance value less than threshold.\n\n\n\n"
 },
 
