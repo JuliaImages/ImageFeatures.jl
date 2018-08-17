@@ -5,18 +5,18 @@ hog_params = HOG([orientations = 9], [cell_size = 8], [block_size = 2], [block_s
 
 Histogram of Oriented Gradient (HOG) is a dense feature desciptor usually used for object detection. See "Histograms of Oriented Gradients for Human Detection" by Dalal and Triggs.
 
-Parameters:  
+Parameters:
 -    orientations   = number of orientation bins
 -    cell_size      = size of a cell is cell_size x cell_size (in pixels)
 -    block_size     = size of a block is block_size x block_size (in terms of cells)
 -    block_stride   = stride of blocks. Controls how much adjacent blocks overlap.
--    norm_method    = block normalization method. Options: L2-norm, L2-hys, L1-norm, L2-sqrt. 
+-    norm_method    = block normalization method. Options: L2-norm, L2-hys, L1-norm, L2-sqrt.
 """
 mutable struct HOG <: Params
-    orientations::Int 
+    orientations::Int
     cell_size::Int
     block_size::Int
-    block_stride::Int 
+    block_stride::Int
     norm_method::String
 end
 
@@ -78,6 +78,7 @@ function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T,
     #orientation binning for each cell
     hist = zeros(Float64, (orientations, cell_rows, cell_cols))
     R = CartesianRange(indices(mag))
+
     for i in R
         trilinear_interpolate!(hist, mag[i], phase[i], orientations, i, cell_size, cell_rows, cell_cols, rows, cols)
     end
@@ -96,6 +97,7 @@ function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T,
         end
     end
 
+
     #contrast normalization for each block
     descriptor_size::Int = ((cell_rows-block_size)/block_stride + 1) * ((cell_cols-block_size)/block_stride + 1) * (block_size*block_size) * orientations
     descriptor = Vector{Float64}(descriptor_size)
@@ -103,7 +105,9 @@ function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T,
     k = 1
     for j in 1:block_stride:cell_cols-block_size+1
         for i in 1:block_stride:cell_rows-block_size+1
-            descriptor[block_vector_size*(k-1)+1 : block_vector_size*k] = normalize(hist[:, i:i+block_size-1, j:j+block_size-1][:], params.norm_method)
+            H = @view hist[:, i:i+block_size-1, j:j+block_size-1]
+            h = @view H[:]
+            descriptor[block_vector_size*(k-1)+1 : block_vector_size*k] = normalize(h, params.norm_method)
             k += 1
         end
     end
@@ -121,7 +125,7 @@ function trilinear_interpolate!(hist, w, θ, orientations, i, cell_size, cell_ro
         θ2 = (bin_θ2-1)*180/orientations
     else
         θ1 = (bin_θ1-1)*180/orientations
-        θ2 = 180;
+        θ2 = 180.0;
     end
 
     if (i[1]<=cell_size/2 || i[1]>=rows-cell_size/2) && (i[2]<=cell_size/2 || i[2]>=cols-cell_size/2)
