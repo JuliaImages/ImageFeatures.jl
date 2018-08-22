@@ -87,6 +87,7 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     s_key = keypoints_1
     l_key = keypoints_2
     order = false
+
     if length(desc_1) > length(desc_2)
         smaller = desc_2
         larger = desc_1
@@ -94,15 +95,44 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
         l_key = keypoints_1
         order = true
     end
-    hamming_distances = [hamming_distance(s, l) for s in smaller, l in larger]
+
     matches = Keypoints[]
-    for i in 1:length(smaller)
-        if any(hamming_distances[i, :] .< threshold)
-            id_min = indmin(hamming_distances[i, :])
-            push!(matches, order ? [l_key[id_min], s_key[i]] : [s_key[i], l_key[id_min]])
-            hamming_distances[:, id_min] = 1.0
+
+    if is_windows() && Sys.WORD_SIZE==32
+        hamming_distances = [hamming_distance(s, l) for s in smaller, l in larger]
+        for i in 1:length(smaller)
+            if any(hamming_distances[i, :] .< threshold)
+                id_min = indmin(hamming_distances[i, :])
+                push!(matches, order ? [l_key[id_min], s_key[i]] : [s_key[i], l_key[id_min]])
+                hamming_distances[:, id_min] = 1.0
+            end
+        end
+    else
+        ndims=length(larger[1])
+        n_large=length(larger)
+        n_small=length(smaller)
+        data=Matrix{Float64}(ndims, n_large);
+        for i in 1:ndims
+            for j in 1:n_large
+                data[i,j]=larger[j][i]?1:0
+            end
+        end 
+
+        tree = flann(data, FLANNParameters(), Cityblock())
+        matched = zeros(Bool, n_large)
+        for i in 1:n_small
+            idx = inrange(tree, Vector{Float64}(smaller[i]), threshold*ndims)
+            for j in idx[1]
+                if !matched[j]
+                    id_min = j
+                    push!(matches, order ? [l_key[id_min], s_key[i]] : [s_key[i], l_key[id_min]])
+                    matched[j] = true
+                    break
+                end
+            end
         end
     end
+    
     matches
 end
 
