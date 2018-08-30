@@ -33,7 +33,7 @@ function corner_orientations(img::AbstractArray{T, 2}, corners::Keypoints, kerne
             end
             m10 += col_sum * (i - pre_x - 1)
         end
-        push!(orientations, atan2(m01, m10))
+        push!(orientations, atan(Float64(m01), Float64(m10)))
     end
     orientations
 end
