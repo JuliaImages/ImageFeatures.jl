@@ -13,7 +13,7 @@ function PatternCache(points::Integer)
 end
 
 function lbp_original(bit_pattern::BitArray{1}, uniform_params::PatternCache)
-    sum(b * 1 << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)), uniform_params
+    sum((b * 1) << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)), uniform_params
 end
 
 function lbp_uniform(bit_pattern::BitArray{1}, uniform_params::PatternCache)
