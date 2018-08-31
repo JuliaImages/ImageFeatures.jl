@@ -1,4 +1,4 @@
-using Base.Test, ImageFeatures, Images
+using Test, ImageFeatures, Images
 import ImageFeatures.trilinear_interpolate!
 
 @testset "HOG Feature" begin
@@ -9,7 +9,7 @@ import ImageFeatures.trilinear_interpolate!
     @test length(create_descriptor(img, HOG())) == 3780
 
     img = zeros(128, 64)
-    img[64, :] = 1
+    img[64, :] .= 1
     @test length(create_descriptor(img, HOG())) == 3780
 
     #tests for function trilinear_interpolate!

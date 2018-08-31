@@ -1,7 +1,9 @@
 module ImageFeatureTests
 
 using ImageFeatures, Images, TestImages, Distributions, ColorTypes
-using Base.Test
+using Test
+using LinearAlgebra
+import Random.seed!
 
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true

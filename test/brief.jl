@@ -1,11 +1,13 @@
-using Base.Test, ImageFeatures, Images, TestImages, Distributions
+using Test, ImageFeatures, Images, TestImages, Distributions
 
-brief_params = BRIEF(size = 8, window = 3, seed = 123)
-@test brief_params.size == 8
-@test brief_params.window == 3
-@test brief_params.seed == 123
-@test brief_params.sampling_type == gaussian
-@test brief_params.sigma == 2 ^ 0.5
+@testset "Generating brief params" begin
+    brief_params = BRIEF(size = 8, window = 3, seed = 123)
+    @test brief_params.size == 8
+    @test brief_params.window == 3
+    @test brief_params.seed == 123
+    @test brief_params.sampling_type == gaussian
+    @test brief_params.sigma == 2 ^ 0.5
+end
 
 @testset "Sampling Patterns" begin
     # Check Bounds
