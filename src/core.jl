@@ -55,7 +55,6 @@ Features(img::AbstractArray) = Features(Keypoints(img))
 Keypoint(feature::Feature) = feature.keypoint
 
 function Keypoints(img::AbstractArray)
-    #r, c, _ = findnz(img)
     I = findall(!iszero, img)
     r = getindex.(I, 1)
     c = getindex.(I, 2)
