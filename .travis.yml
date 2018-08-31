@@ -16,7 +16,7 @@ script:
     - julia -e 'using Pkg; if Sys.islinux() Pkg.add("ImageMagick") end'
     - julia -e 'using Pkg; Pkg.test("ImageFeatures", coverage=true)'
 after_success:
-    - julia -e 'using Pkg; cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+    - julia -e 'using Pkg; import ImageFeatures; cd(joinpath(dirname(pathof(ImageFeatures)), "..")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
     - julia -e 'using Pkg; Pkg.add("Documenter")'
     - julia -e 'using Pkg; Pkg.add("ImageDraw.jl")' # Needed for Docs
-    - julia -e 'using Pkg; cd(Pkg.dir("ImageFeatures")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
+    - julia -e 'using Pkg; import ImageFeatures; cd(joinpath(dirname(pathof(ImageFeatures)), "..")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
