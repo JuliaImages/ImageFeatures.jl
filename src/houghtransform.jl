@@ -7,7 +7,7 @@ lines = hough_transform_standard(image, ρ, θ, threshold, linesMax)
 
 Returns a vector of tuples corresponding to the tuples of (r,t)
 where r and t are parameters for normal form of line:
-    `x \* cos(t) + y \* sin(t) = r`
+    `x * cos(t) + y * sin(t) = r`
 
 -   `r` = length of perpendicular from (1,1) to the line
 -   `t` = angle between perpendicular from (1,1) to the line and x-axis
@@ -35,12 +35,11 @@ julia> lines = hough_transform_standard(img_edges, 1, linspace(0,π,30), 40, 5)
  (209.0,0.649985)
  (-9.0,2.49161) 
 ```
-"""
-
+"""  
 function hough_transform_standard(
-img::AbstractArray{T,2},
-ρ::Real, θ::Range,
-threshold::Integer, linesMax::Integer) where T<:Union{Bool,Gray{Bool}}
+    img::AbstractArray{T,2},
+    ρ::Real, θ::AbstractRange,
+    threshold::Integer, linesMax::Integer) where T<:Union{Bool,Gray{Bool}}
 
 
     #function to compute local maximum lines with values > threshold and return a vector containing them
@@ -133,7 +132,6 @@ img_phase = phase(dx, dy)
 centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 60, 60, 3:50)
 ```
 """  
-
 function hough_circle_gradient(
         img_edges::AbstractArray{Bool,2}, img_phase::AbstractArray{T,2},
         scale::Number, min_dist::Number,

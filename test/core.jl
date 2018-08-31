@@ -1,10 +1,10 @@
-using Base.Test, ImageFeatures, Images
+using Test, ImageFeatures, Images
 
 @testset "Types" begin
     img = zeros(10, 10)
     ids = map(CartesianIndex{2}, [(1, 1), (3, 4), (4, 6), (7, 5), (5, 3)])
 
-    img[ids] = 1
+    img[ids] .= 1
 
     keypoints = Keypoints(img)
     @test sort(keypoints) == sort(ids)
