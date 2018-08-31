@@ -6,6 +6,7 @@ module ImageFeatures
 using Images, ColorTypes, FixedPointNumbers, Distributions
 using Compat
 using SparseArrays
+import Random.seed!
 
 include("core.jl")
 include("const.jl")

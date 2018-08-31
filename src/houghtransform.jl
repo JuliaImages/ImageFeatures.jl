@@ -44,7 +44,7 @@ function hough_transform_standard(
 
     #function to compute local maximum lines with values > threshold and return a vector containing them
     function findlocalmaxima!(validLines::AbstractVector{CartesianIndex{2}}, accumulator_matrix::Array{Int,2}, threshold::T) where T<:Integer
-        for val in CartesianRange(size(accumulator_matrix))
+        for val in CartesianIndices(size(accumulator_matrix))
             if  accumulator_matrix[val] >  threshold                             &&
                 accumulator_matrix[val] >  accumulator_matrix[val[1],val[2] - 1] &&
                 accumulator_matrix[val] >= accumulator_matrix[val[1],val[2] + 1] &&
@@ -57,7 +57,7 @@ function hough_transform_standard(
 
     ρ > 0 || error("Discrete step size must be positive")
 
-    indsy, indsx = indices(img)
+    indsy, indsx = axes(img)
     ρinv = 1 / ρ
     numangle = length(θ)
     numrho = round(Int,(2(length(indsx) + length(indsy)) + 1)*ρinv)
@@ -69,7 +69,7 @@ function hough_transform_standard(
 
     #Hough Transform implementation
     constadd = round(Int,(numrho -1)/2)
-    for pix in CartesianRange(size(img))
+    for pix in CartesianIndices(size(img))
         if img[pix]
             for i in 1:numangle
                 dist = round(Int, pix[1] * sinθ[i] + pix[2] * cosθ[i])
@@ -80,7 +80,7 @@ function hough_transform_standard(
     end
 
     #Finding local maximum lines
-    validLines = Vector{CartesianIndex{2}}(0)
+    validLines = Vector{CartesianIndex{2}}(undef, 0)
     findlocalmaxima!(validLines, accumulator_matrix, threshold)
 
     #Sorting by value in accumulator_matrix
@@ -89,7 +89,7 @@ function hough_transform_standard(
 
     linesMax = min(linesMax, length(validLines))
 
-    lines = Vector{Tuple{Float64,Float64}}(0)
+    lines = Vector{Tuple{Float64,Float64}}(undef, 0)
 
     #Getting lines with Maximum value in accumulator_matrix && size(lines) < linesMax
     for l in 1:linesMax
@@ -158,8 +158,8 @@ function hough_circle_gradient(
         end
     end
 
-    for j in indices(img_edges, 2)
-        for i in indices(img_edges, 1)
+    for j in axes(img_edges, 2)
+        for i in axes(img_edges, 1)
             if img_edges[i,j]
                 sinθ = -cos(img_phase[i,j]);
                 cosθ = sin(img_phase[i,j]);
@@ -190,12 +190,12 @@ function hough_circle_gradient(
 
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
 
-    f = CartesianIndex(map(r->first(r), indices(accumulator_matrix)))
-    l = CartesianIndex(map(r->last(r), indices(accumulator_matrix)))
-    radius_accumulator=Vector{Int}(Int(floor(dist(f,l)/scale)+1))
+    f = CartesianIndex(map(r->first(r), axes(accumulator_matrix)))
+    l = CartesianIndex(map(r->last(r), axes(accumulator_matrix)))
+    radius_accumulator=Vector{Int}(undef, Int(floor(dist(f,l)/scale)+1))
 
     for center in centers
-        center=(center-1)*scale
+        center=(center-1*one(center))*scale
         fill!(radius_accumulator, 0)
 
         too_close=false

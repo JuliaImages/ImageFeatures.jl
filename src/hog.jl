@@ -45,9 +45,9 @@ function create_descriptor(img::AbstractArray{CT, 2}, params::HOG) where CT<:Ima
     max_mag = zeros(rows, cols)
     max_phase = zeros(rows, cols)
 
-    for j in indices(mag, 3)
-        for i in indices(mag, 2)
-            ind = indmax(view(mag, :, i, j))
+    for j in axes(mag, 3)
+        for i in axes(mag, 2)
+            ind = argmax(view(mag, :, i, j))
             max_mag[i, j] = mag[ind, i, j]
             max_phase[i, j] = phase[ind, i, j]
         end
@@ -77,7 +77,7 @@ function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T,
 
     #orientation binning for each cell
     hist = zeros(Float64, (orientations, cell_rows, cell_cols))
-    R = CartesianRange(indices(mag))
+    R = CartesianIndices(axes(mag))
 
     for i in R
         trilinear_interpolate!(hist, mag[i], phase[i], orientations, i, cell_size, cell_rows, cell_cols, rows, cols)
@@ -100,7 +100,7 @@ function create_hog_descriptor(mag::AbstractArray{T, 2}, phase::AbstractArray{T,
 
     #contrast normalization for each block
     descriptor_size::Int = ((cell_rows-block_size)/block_stride + 1) * ((cell_cols-block_size)/block_stride + 1) * (block_size*block_size) * orientations
-    descriptor = Vector{Float64}(descriptor_size)
+    descriptor = Vector{Float64}(undef, descriptor_size)
     block_vector_size = block_size * block_size * orientations
     k = 1
     for j in 1:block_stride:cell_cols-block_size+1

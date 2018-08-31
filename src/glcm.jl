@@ -74,7 +74,7 @@ function glcm_prop(gmat::Array{T, 2}, window_height::Integer, window_width::Inte
     k_h = Int(floor(window_height / 2))
     k_w = Int(floor(window_width / 2))
     glcm_size = size(gmat)
-    R = CartesianRange(glcm_size)
+    R = CartesianIndices(glcm_size)
     prop_mat = zeros(Float64, glcm_size)
     for I in R
         prop_mat[I] = property(gmat[max(1, I[1] - k_h) : min(glcm_size[1], I[1] + k_h), max(1, I[2] - k_w) : min(glcm_size[2], I[2] + k_w)])
@@ -89,11 +89,11 @@ function glcm_prop(gmat::Array{T, 2}, property::Function) where T<:Real
 end
 
 function contrast(glcm_window::Array{T, 2}) where T<:Real
-    sum([(id[1] - id[2]) ^ 2 * glcm_window[id] for id in CartesianRange(size(glcm_window))])
+    sum([(id[1] - id[2]) ^ 2 * glcm_window[id] for id in CartesianIndices(size(glcm_window))])
 end
 
 function dissimilarity(glcm_window::Array{T, 2}) where T<:Real
-    sum([glcm_window[id] * abs(id[1] - id[2]) for id in CartesianRange(size(glcm_window))])
+    sum([glcm_window[id] * abs(id[1] - id[2]) for id in CartesianIndices(size(glcm_window))])
 end
 
 function glcm_entropy(glcm_window::Array{T, 2}) where T<:Real
@@ -105,31 +105,31 @@ function ASM(glcm_window::Array{T, 2}) where T<:Real
 end
 
 function IDM(glcm_window::Array{T, 2}) where T<:Real
-    sum([glcm_window[id] / (1 + (id[1] - id[2]) ^ 2) for id in CartesianRange(size(glcm_window))])
+    sum([glcm_window[id] / (1 + (id[1] - id[2]) ^ 2) for id in CartesianIndices(size(glcm_window))])
 end
 
 function glcm_mean_ref(glcm_window::Array{T, 2}) where T<:Real
-    sumref = sum(glcm_window, 2)
+    sumref = sum(glcm_window, dims=2)
     meanref = sum([id * sumref[id] for id = 1:size(glcm_window)[1]])
     meanref
 end
 
 function glcm_mean_neighbour(glcm_window::Array{T, 2}) where T<:Real
-    sumneighbour = sum(glcm_window, 1)
+    sumneighbour = sum(glcm_window, dims=1)
     meanneighbour = sum([id * sumneighbour[id] for id = 1:size(glcm_window)[2]])
     meanneighbour
 end
 
 function glcm_var_ref(glcm_window::Array{T, 2}) where T<:Real
     mean_ref = glcm_mean_ref(glcm_window)
-    sumref = sum(glcm_window, 2)
+    sumref = sum(glcm_window, dims=2)
     var_ref = sum([((id - mean_ref) ^ 2) * sumref[id] for id = 1:size(glcm_window)[1]])
     var_ref ^ 0.5
 end
 
 function glcm_var_neighbour(glcm_window::Array{T, 2}) where T<:Real
     mean_neighbour = glcm_mean_neighbour(glcm_window)
-    sumneighbour = sum(glcm_window, 1)
+    sumneighbour = sum(glcm_window, dims=1)
     var_neighbour = sum([((id - mean_neighbour) ^ 2) * sumneighbour[id] for id = 1:size(glcm_window)[2]])
     var_neighbour ^ 0.5
 end
