@@ -13,7 +13,7 @@ script:
     - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
     # used in tests and Documentation (just install once)
     - julia -e 'using Pkg; Pkg.add("TestImages")'
-    - julia -e 'using Pkg; if is_linux() Pkg.add("ImageMagick") end'
+    - julia -e 'using Pkg; if Sys.islinux() Pkg.add("ImageMagick") end'
     - julia -e 'using Pkg; Pkg.test("ImageFeatures", coverage=true)'
 after_success:
     - julia -e 'using Pkg; cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
