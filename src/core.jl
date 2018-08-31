@@ -102,7 +102,7 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     matches = Keypoints[]
     for i in 1:length(smaller)
         if any(hamming_distances[i, :] .< threshold)
-            id_min = indmin(hamming_distances[i, :])
+            id_min = argmin(hamming_distances[i, :])
             push!(matches, order ? [l_key[id_min], s_key[i]] : [s_key[i], l_key[id_min]])
             hamming_distances[:, id_min] = 1.0
         end
