@@ -1,7 +1,8 @@
 module ImageFeatureTests
 
 using ImageFeatures, Images, TestImages, Distributions, ColorTypes
-using Base.Test
+using Test
+using LinearAlgebra
 
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true
