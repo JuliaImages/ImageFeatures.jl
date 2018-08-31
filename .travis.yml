@@ -10,13 +10,13 @@ notifications:
     email: false
 script:
     - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-    - julia -e 'Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
+    - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
     # used in tests and Documentation (just install once)
-    - julia -e 'Pkg.add("TestImages")'
-    - julia -e 'if is_linux() Pkg.add("ImageMagick") end'
-    - julia -e 'Pkg.test("ImageFeatures", coverage=true)'
+    - julia -e 'using Pkg; Pkg.add("TestImages")'
+    - julia -e 'using Pkg; if is_linux() Pkg.add("ImageMagick") end'
+    - julia -e 'using Pkg; Pkg.test("ImageFeatures", coverage=true)'
 after_success:
-    - julia -e 'cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-    - julia -e 'Pkg.add("Documenter")'
-    - julia -e 'Pkg.add("ImageDraw.jl")' # Needed for Docs
-    - julia -e 'cd(Pkg.dir("ImageFeatures")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
+    - julia -e 'using Pkg; cd(Pkg.dir("ImageFeatures")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+    - julia -e 'using Pkg; Pkg.add("Documenter")'
+    - julia -e 'using Pkg; Pkg.add("ImageDraw.jl")' # Needed for Docs
+    - julia -e 'using Pkg; cd(Pkg.dir("ImageFeatures")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
