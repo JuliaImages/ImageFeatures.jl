@@ -55,7 +55,10 @@ Features(img::AbstractArray) = Features(Keypoints(img))
 Keypoint(feature::Feature) = feature.keypoint
 
 function Keypoints(img::AbstractArray)
-    r, c, _ = findnz(img)
+    I = findall(!iszero, img)
+    r = getindex.(I, 1)
+    c = getindex.(I, 2)
+
     map((ri, ci) -> Keypoint(ri, ci), r, c)
 end
 
@@ -98,9 +101,9 @@ function match_keypoints(keypoints_1::Keypoints, keypoints_2::Keypoints, desc_1,
     matches = Keypoints[]
     for i in 1:length(smaller)
         if any(hamming_distances[i, :] .< threshold)
-            id_min = indmin(hamming_distances[i, :])
+            id_min = argmin(hamming_distances[i, :])
             push!(matches, order ? [l_key[id_min], s_key[i]] : [s_key[i], l_key[id_min]])
-            hamming_distances[:, id_min] = 1.0
+            hamming_distances[:, id_min] .= 1.0
         end
     end
     matches
@@ -113,7 +116,6 @@ grade = grade_matches(keypoints_1, keypoints_2, limit, difference_method)
 Returns the fraction of keypoint pairs which have
 `difference_method(keypoint_1,keypoint_2)` less than `limit`.
 """
-
 function grade_matches(keypoints_1::Keypoints, keypoints_2::Keypoints, limit::Real, diff::Function = (i,j) -> (sqrt( (i[1]-j[1])^2 + (i[2]-j[2])^2 )))
     @assert length(keypoints_1)==length(keypoints_2) "Keypoint lists are of different lengths."
     @assert length(keypoints_1)!=0 "Keypoint list is of size zero."

@@ -1,11 +1,13 @@
-using Base.Test, ImageFeatures, Images, TestImages, Distributions, ColorTypes
+using Test, ImageFeatures, Images, TestImages, Distributions, ColorTypes
 
-brisk_params = BRISK(pattern_scale = 2.0)
-@test brisk_params.pattern_scale == 2.0
-pt, st = ImageFeatures._brisk_tables(2.0)
-@test brisk_params.pattern_table == pt
-@test brisk_params.smoothing_table == st
-
+@testset "Testing brisk params" begin
+    brisk_params = BRISK(pattern_scale = 2.0)
+    @test brisk_params.pattern_scale == 2.0
+    pt, st = ImageFeatures._brisk_tables(2.0)
+    @test brisk_params.pattern_table == pt
+    @test brisk_params.smoothing_table == st
+end
+    
 @testset "Testing with Standard Images - Lighthouse (Rotation 45)" begin
     img = testimage("lighthouse")
     img_array_1 = convert(Array{Gray}, img)

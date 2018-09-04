@@ -1,13 +1,15 @@
-using Base.Test, ImageFeatures, Images, TestImages, Distributions
+using Test, ImageFeatures, Images, TestImages, Distributions
 
-orb_params = ORB(num_keypoints = 1000, threshold = 0.2)
-@test orb_params.num_keypoints == 1000
-@test orb_params.n_fast == 12
-@test orb_params.threshold == 0.2
-@test orb_params.harris_factor == 0.04
-@test orb_params.downsample == 1.3
-@test orb_params.levels == 8
-@test orb_params.sigma == 1.2
+@testset "Testing ORB params" begin
+    orb_params = ORB(num_keypoints = 1000, threshold = 0.2)
+    @test orb_params.num_keypoints == 1000
+    @test orb_params.n_fast == 12
+    @test orb_params.threshold == 0.2
+    @test orb_params.harris_factor == 0.04
+    @test orb_params.downsample == 1.3
+    @test orb_params.levels == 8
+    @test orb_params.sigma == 1.2
+end
 
 @testset "Testing with Standard Images - Lighthouse (Rotation 45)" begin
     img = testimage("lighthouse")

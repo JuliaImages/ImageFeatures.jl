@@ -1,4 +1,4 @@
-using Base.Test, ImageFeatures, Images
+using Test, ImageFeatures, Images
 
 @testset "GLCM" begin
     img = [ 0 0 1 1

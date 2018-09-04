@@ -9,7 +9,7 @@ using ImageFeatures
             for j in 1:size(img)[2]
                 img[i,j] = true
             end
-            h = hough_transform_standard(img,1,linspace(0,π/2,100),9,2)
+            h = hough_transform_standard(img,1,range(0,step=π/2/99,length=100),9,2)
             @test length(h) == 1
             @test h[1][1] == i
             for j in 1:size(img)[2]
@@ -18,8 +18,8 @@ using ImageFeatures
         end
 
     #For images with diagonal line
-        img = diagm([true, true ,true])
-        h = hough_transform_standard(img,1,linspace(0,π,100),2,3)
+        img = Matrix(Diagonal([true, true ,true]))
+        h = hough_transform_standard(img,1,range(0,step=π/99,length=100),2,3)
         @test length(h) == 1
         @test h[1][1] == 0
 
@@ -28,11 +28,11 @@ using ImageFeatures
         for i in 1:10
             img[2,i] = img[i,2] = img[7,i] = img[i,9] = true
         end
-        h = hough_transform_standard(img,1,linspace(0,π/2,100),9,10)
+        h = hough_transform_standard(img,1,range(0,step=π/2/99,length=100),9,10)
         @test length(h) == 4
-        r = [h[i][1] for i in CartesianRange(size(h))]
+        r = [h[i][1] for i in CartesianIndices(size(h))]
         @test all(r .== [2,2,7,9])
-        theta = [h[i][2] for i in CartesianRange(size(h))]
+        theta = [h[i][2] for i in CartesianIndices(size(h))]
         er = sum(map((t1,t2) -> abs(t1-t2), theta, [0, π/2, π/2, 0]))
         @test er <= 0.1
     end
@@ -42,7 +42,7 @@ using ImageFeatures
     dist(a, b) = sqrt(sum(abs2, (a-b).I))
 
     img=zeros(Int, 300, 300)
-    for i in CartesianRange(size(img))
+    for i in CartesianIndices(size(img))
         if dist(i, CartesianIndex(100, 100))<25 || dist(i, CartesianIndex(200, 200))<50
             img[i]=1
         else
