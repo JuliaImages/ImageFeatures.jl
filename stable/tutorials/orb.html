@@ -13,14 +13,14 @@ Stacktrace:
  [1] depwarn(::String, ::Symbol) at ./deprecated.jl:70
  [2] one(::Type{ColorTypes.Gray{FixedPointNumbers.Normed{UInt8,8}}}) at /home/travis/.julia/v0.6/ColorTypes/src/traits.jl:341
  [3] draw! at /home/travis/.julia/v0.6/ImageDraw/src/line2d.jl:64 [inlined] (repeats 2 times)
- [4] _collect(::Array{Array{CartesianIndex{2},1},1}, ::Base.Generator{Array{Array{CartesianIndex{2},1},1},ex-2.##3#4}, ::Base.EltypeUnknown, ::Base.HasShape) at ./array.jl:488
+ [4] _collect(::Array{Array{CartesianIndex{2},1},1}, ::Base.Generator{Array{Array{CartesianIndex{2},1},1},ex-2.##3#4}, ::Base.EltypeUnknown, ::Base.HasShape) at ./array.jl:483
  [5] map(::Function, ::Array{Array{CartesianIndex{2},1},1}) at ./abstractarray.jl:1868
- [6] eval(::Module, ::Any) at ./boot.jl:235
- [7] cd(::Documenter.Expanders.##8#10, ::String) at ./file.jl:70
- [8] withoutput(::Documenter.Expanders.##7#9{Documenter.Documents.Page}) at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:588
- [9] runner(::Type{Documenter.Expanders.ExampleBlocks}, ::Base.Markdown.Code, ::Documenter.Documents.Page, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:458
+ [6] cd(::Documenter.Expanders.##8#10{Module}, ::String) at ./file.jl:70
+ [7] (::Documenter.Utilities.##19#20{Documenter.Expanders.##7#9{Documenter.Documents.Page,Module},Base.PipeEndpoint,Base.PipeEndpoint,Pipe,Array{UInt8,1}})() at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:591
+ [8] withoutput(::Documenter.Expanders.##7#9{Documenter.Documents.Page,Module}) at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:589
+ [9] runner(::Type{Documenter.Expanders.ExampleBlocks}, ::Base.Markdown.Code, ::Documenter.Documents.Page, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:478
  [10] dispatch(::Type{Documenter.Expanders.ExpanderPipeline}, ::Base.Markdown.Code, ::Vararg{Any,N} where N) at /home/travis/.julia/v0.6/Documenter/src/Selectors.jl:168
- [11] expand(::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:30
+ [11] expand(::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:31
  [12] runner(::Type{Documenter.Builder.ExpandTemplates}, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Builder.jl:178
  [13] dispatch(::Type{Documenter.Builder.DocumentPipeline}, ::Documenter.Documents.Document, ::Vararg{Documenter.Documents.Document,N} where N) at /home/travis/.julia/v0.6/Documenter/src/Selectors.jl:168
  [14] cd(::Documenter.##2#3{Documenter.Documents.Document}, ::String) at ./file.jl:70
