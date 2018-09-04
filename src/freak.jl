@@ -53,7 +53,7 @@ function _freak_orientation(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pa
         direction_sum_y += orientation_weights[i][1] * intensity_diff
         direction_sum_x += orientation_weights[i][2] * intensity_diff
     end
-    angle = atan2(direction_sum_y, direction_sum_x)
+    angle = atan(direction_sum_y, direction_sum_x)
     scaled_angle = ceil(Int, (angle + pi) * freak_orientation_steps / (2 * pi))
     scaled_angle
 end

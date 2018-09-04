@@ -1,10 +1,9 @@
-__precompile__(true)
-
 module ImageFeatures
 
 # package code goes here
 using Images, ColorTypes, FixedPointNumbers, Distributions
-using Compat
+using SparseArrays
+import Random.seed!
 
 include("core.jl")
 include("const.jl")

@@ -6,14 +6,14 @@ end
 
 function PatternCache(points::Integer)
     temp_pattern = zeros(Bool, points)
-    temp_pattern[1:2:points] = true
+    temp_pattern[1:2:points] .= true
     table = Dict{BitArray{1}, Int}()
     table[temp_pattern] = points * (points - 1) + 2
     PatternCache(table, 0, temp_pattern)
 end
 
 function lbp_original(bit_pattern::BitArray{1}, uniform_params::PatternCache)
-    sum(b * 1 << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)), uniform_params
+    sum((b * 1) << (length(bit_pattern) - i) for (i, b) in enumerate(bit_pattern)), uniform_params
 end
 
 function lbp_uniform(bit_pattern::BitArray{1}, uniform_params::PatternCache)
@@ -39,7 +39,7 @@ end
 function _lbp(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original) where T<:Gray
     uniform_params = PatternCache(points)
     lbp_image = zeros(UInt, size(img))
-    R = CartesianRange(size(img))
+    R = CartesianIndices(size(img))
     bit_pattern = falses(length(offsets))
     for I in R
         for (i, o) in enumerate(offsets) bit_pattern[i] = img[I] >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
@@ -52,7 +52,7 @@ const original_offsets = [[- 1, - 1], [- 1, 0], [- 1, 1], [0, 1], [1, 1], [1, 0]
 
 function circular_offsets(points::Integer, radius::Number)
 
-    return [(round(- radius * sin(2 * pi * i / points), 5), round(radius * cos(2 * pi * i / points), 5)) for i = 0:points - 1]
+    return [(round(- radius * sin(2 * pi * i / points), digits=5), round(radius * cos(2 * pi * i / points), digits=5)) for i = 0:points - 1]
 end
 
 lbp(img::AbstractArray{T, 2}, method::Function = lbp_original) where {T<:Gray} = _lbp(img, 8, original_offsets, method)
@@ -62,7 +62,7 @@ lbp(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function 
 function _modified_lbp(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original) where T<:Gray
     uniform_params = PatternCache(points)
     lbp_image = zeros(UInt, size(img))
-    R = CartesianRange(size(img))
+    R = CartesianIndices(size(img))
     bit_pattern = falses(length(offsets))
     for I in R
         avg = (sum(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) for o in offsets) + img[I]) / (points + 1)
@@ -78,7 +78,7 @@ modified_lbp(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::
 
 function _direction_coded_lbp(img::AbstractArray{T, 2}, offsets::Array) where T
     lbp_image = zeros(UInt, size(img))
-    R = CartesianRange(size(img))
+    R = CartesianIndices(size(img))
     p = Int(length(offsets) / 2)
     raw_img = convert(Array{Int}, rawview(channelview(img)))
     neighbours = zeros(Int, length(offsets))

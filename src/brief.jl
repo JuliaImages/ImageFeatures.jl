@@ -32,7 +32,7 @@ sample_one, sample_two = random_uniform(size, window, seed)
 Builds sampling pairs using random uniform sampling.
 """
 function random_uniform(size::Int, window::Int, seed::Int)
-    srand(seed)
+    seed!(seed)
     sample_one = CartesianIndex{2}[]
     sample_two = CartesianIndex{2}[]
     count = 0
@@ -59,7 +59,7 @@ sample_one, sample_two = random_coarse(size, window, seed)
 Builds sampling pairs using random sampling over a coarse grid.
 """
 function random_coarse(size::Int, window::Int, seed::Int)
-    srand(seed)
+    seed!(seed)
     gen = rand(ceil(Int, ceil(-window / 2)): floor(Int, (window - 1) / 2), size * 4)
     sample_one = CartesianIndex{2}[]
     sample_two = CartesianIndex{2}[]
@@ -78,7 +78,7 @@ sample_one, sample_two = gaussian(size, window, seed)
 Builds sampling pairs using gaussian sampling.
 """
 function gaussian(size::Int, window::Int, seed::Int)
-    srand(seed)
+    seed!(seed)
     _gaussian(size, window), _gaussian(size, window)
 end
 
@@ -105,7 +105,7 @@ Pairs `(Xi, Yi)` are randomly sampled using a Gaussian distribution where first 
 then the `Yi’s` are sampled using a Gaussian distribution – Each `Yi` is sampled with mean `Xi` and standard deviation of `0.01 * S^2`
 """
 function gaussian_local(size::Int, window::Int, seed::Int)
-    srand(seed)
+    seed!(seed)
     _gaussian_local(size, window), _gaussian_local(size, window)
 end
 
@@ -133,7 +133,7 @@ sample_one, sample_two = center_sample(size, window, seed)
 Builds sampling pairs `(Xi, Yi)` where `Xi` is `(0, 0)` and `Yi` is sampled uniformly from the window.
 """
 function center_sample(size::Int, window::Int, seed::Int)
-    srand(seed)
+    seed!(seed)
     count = 0
     sample = CartesianIndex{2}[]
     while true

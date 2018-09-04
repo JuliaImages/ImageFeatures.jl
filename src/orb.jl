@@ -48,7 +48,7 @@ function create_descriptor(img::AbstractArray{T, 2}, params::ORB) where T<:Gray
     end
 
     if params.num_keypoints < length(descriptors)
-        first_n_indices = selectperm(harris_responses, 1:params.num_keypoints, rev = true)
+        first_n_indices = partialsortperm(harris_responses, 1:params.num_keypoints, rev = true)
         return descriptors[first_n_indices], ret_keypoints[first_n_indices], scales[first_n_indices]
     end
 
