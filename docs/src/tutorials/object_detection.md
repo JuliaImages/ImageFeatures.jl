@@ -49,7 +49,7 @@ Now let's test this classifier on some images.
 
 ```julia
 img = load("$pos_examples/per00003.ppm")
-descriptor = Array{Float64}(3780, 1)
+descriptor = Array{Float64}(undef, 3780, 1)
 descriptor[:, 1] = create_descriptor(img, HOG())
 
 predicted_label, _ = svmpredict(model, descriptor);
@@ -78,8 +78,8 @@ Next we will use our trained classifier with a sliding window to localize person
 img = load("path_to_tutorial/tutorial/humans.jpg")
 rows, cols = size(img)
 
-scores = Array{Float64}(22, 45)
-descriptor = Array{Float64}(3780, 1)
+scores = Array{Float64}(undef, 22, 45)
+descriptor = Array{Float64}(undef, 3780, 1)
 
 #Apply classifier using a sliding window approach and store classification score for not-human at every location in score array
 for j in 32:10:cols-32

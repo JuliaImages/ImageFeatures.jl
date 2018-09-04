@@ -27,7 +27,7 @@ julia> img = load("line.jpg");
 
 julia> img_edges = canny(img, (Percentile(0.99), Percentile(0.97)), 1);
 
-julia> lines = hough_transform_standard(img_edges, 1, linspace(0,π,30), 40, 5)
+julia> lines = hough_transform_standard(img_edges, 1, range(0, stop=π, length=30), 40, 5)
 5-element Array{Tuple{Float64,Float64},1}:
  (45.0,1.73329)  
  (1.0,1.73329)   
