@@ -104,7 +104,7 @@ end
 
 """
 ```
-circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, scale, min_dist, vote_thres, min_radius:max_radius)  
+circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, radii; scale=1, min_dist=minimum(radii), vote_threshold=minimum(radii))
 ```
 Returns two vectors, corresponding to circle centers and radius.  
   
@@ -116,8 +116,8 @@ Parameters:
 -   `img_phase`    = phase of the gradient image   
 -   `scale`        = relative accumulator resolution factor  
 -   `min_dist`     = minimum distance between detected circle centers  
--   `vote_thres`   = accumulator threshold for circle detection  
--   `min_radius:max_radius`   = circle radius range
+-   `vote_threshold`   = accumulator threshold for circle detection
+-   `radii`        = circle radius range
 
 [`canny`](@ref) and [`phase`](@ref) can be used for obtaining img_edges and img_phase respectively.
 
@@ -125,17 +125,20 @@ Parameters:
 ```julia
 img = load("circle.png")
 
-img_edges = canny(img, 1, 0.99, 0.97)
+img_edges = canny(img, (Percentile(99), Percentile(97)))
 dx, dy=imgradients(img, KernelFactors.ando5)
 img_phase = phase(dx, dy)
 
-centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 60, 60, 3:50)
+centers, radii=hough_circle_gradient(img_edges, img_phase, 3:50)
 ```
 """  
 function hough_circle_gradient(
-        img_edges::AbstractArray{Bool,2}, img_phase::AbstractArray{T,2},
-        scale::Number, min_dist::Number,
-        vote_thres::Number, radii::AbstractVector{Int}) where T<:Number
+        img_edges::AbstractArray{Bool,2},
+        img_phase::AbstractArray{<:Number,2},
+        radii::AbstractVector{<:Integer};
+        scale=1::Number,
+        min_dist=minimum(radii)::Number,
+        vote_threshold=minimum(radii)::Number)
 
     rows,cols=size(img_edges)
 
@@ -179,7 +182,7 @@ function hough_circle_gradient(
     end
 
     for i in findlocalmaxima(accumulator_matrix)
-        if accumulator_matrix[i]>vote_thres
+        if accumulator_matrix[i]>vote_threshold
             push!(centers, i);
         end
     end
@@ -219,7 +222,7 @@ function hough_circle_gradient(
         voters, radius = findmax(radius_accumulator)
         radius=(radius-1)*scale;
 
-        if voters>vote_thres
+        if voters>vote_threshold
             push!(circle_centers, center)
             push!(circle_radius, radius)
         end
@@ -227,3 +230,7 @@ function hough_circle_gradient(
     return circle_centers, circle_radius
 end
 
+@deprecate hough_circle_gradient(
+        img_edges, img_phase,
+        scale, min_dist,
+        vote_threshold, radii) hough_circle_gradient(img_edges, img_phase, radii; scale=scale, min_dist=min_dist, vote_threshold=vote_threshold)

@@ -1,5 +1,20 @@
 using ImageFeatures
 
+function random_circle_example()
+    dims = rand(100:200,2)
+    img = zeros(dims...)
+    r = rand(10:20)
+    x,y = rand(20:80,2)
+    for i in axes(img)[1]
+        for j in axes(img)[2]
+            if (x-i)^2 + (y-j)^2 <= r^2
+                img[i,j] = 1
+            end
+        end
+    end
+    img, [x,y], r
+end
+
 @testset "Hough_Transform" begin
     @testset "Hough Line Transform" begin
 
@@ -38,28 +53,18 @@ using ImageFeatures
     end
 
     @testset "Hough Circle Gradient" begin
-
-    dist(a, b) = sqrt(sum(abs2, (a-b).I))
-
-    img=zeros(Int, 300, 300)
-    for i in CartesianIndices(size(img))
-        if dist(i, CartesianIndex(100, 100))<25 || dist(i, CartesianIndex(200, 200))<50
-            img[i]=1
-        else
-            img[i]=0
+        for _ in 1:10
+            img, c_truth, r_truth = random_circle_example()
+            img_edges = canny(img, (Percentile(80), Percentile(20)))
+            dx, dy=imgradients(img, KernelFactors.ando5)
+            img_phase = phase(dx, dy)
+            radii = 10:20
+            centers, rs = hough_circle_gradient(img_edges, img_phase, radii)
+            @test length(centers) == length(rs) == 1
+            c_hough = [Tuple(first(centers))...]
+            r_hough = first(rs)
+            @test r_hough ≈ r_truth atol=4
+            @test c_hough ≈ c_truth atol=4
         end
-    end
-
-    img_edges = canny(img, (0.2, 0.1) ,1)
-    dx, dy=imgradients(img, KernelFactors.ando3)
-    img_phase = phase(dx, dy)
-
-    centers, radii=hough_circle_gradient(img_edges, img_phase, 1, 40, 40, 5:75)
-
-    @test dist(centers[1], CartesianIndex(200,200))<5
-    @test dist(centers[2], CartesianIndex(100,100))<5
-    @test abs(radii[1]-50)<5
-    @test abs(radii[2]-25)<5
-
     end
 end
