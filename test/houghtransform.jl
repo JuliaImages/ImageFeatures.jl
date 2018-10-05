@@ -19,22 +19,18 @@ end
     @testset "Hough Line Transform" begin
 
     #For images containing a straight line parallel to axes
-        img = zeros(Bool,10,10)
-        for i in 1:size(img)[1]
-            for j in 1:size(img)[2]
-                img[i,j] = true
-            end
-            h = hough_transform_standard(img,1,range(0,step=π/2/99,length=100),9,2)
+        for i in 1:9
+            img = zeros(Bool,9,9)
+            img[i,:] = true
+            h = hough_transform_standard(img)
             @test length(h) == 1
-            @test h[1][1] == i
-            for j in 1:size(img)[2]
-                img[i,j] = false
-            end
+            line = first(h)
+            @test line == (i, pi/2)
         end
 
     #For images with diagonal line
         img = Matrix(Diagonal([true, true ,true]))
-        h = hough_transform_standard(img,1,range(0,step=π/99,length=100),2,3)
+        h = hough_transform_standard(img, angles=range(0,stop=pi,length=100))
         @test length(h) == 1
         @test h[1][1] == 0
 
@@ -43,7 +39,8 @@ end
         for i in 1:10
             img[2,i] = img[i,2] = img[7,i] = img[i,9] = true
         end
-        h = hough_transform_standard(img,1,range(0,step=π/2/99,length=100),9,10)
+        # h = hough_transform_standard(img,1,
+        h = hough_transform_standard(img, angles=range(0,stop=π/2,length=100))
         @test length(h) == 4
         r = [h[i][1] for i in CartesianIndices(size(h))]
         @test all(r .== [2,2,7,9])
