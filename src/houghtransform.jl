@@ -130,14 +130,25 @@ Parameters:
 [`canny`](@ref) and [`phase`](@ref) can be used for obtaining img_edges and img_phase respectively.
 
 # Example
+
 ```julia
-img = load("circle.png")
+julia> using Images, ImageFeatures, FileIO, ImageView
 
-img_edges = canny(img, (Percentile(99), Percentile(97)))
-dx, dy=imgradients(img, KernelFactors.ando5)
-img_phase = phase(dx, dy)
+julia> img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
 
-centers, radii=hough_circle_gradient(img_edges, img_phase, 3:50)
+julia> img = Gray.(img);
+
+julia> img_edges = canny(img, (Percentile(99), Percentile(80)));
+
+julia> dx, dy=imgradients(img, KernelFactors.ando5);
+
+julia> img_phase = phase(dx, dy);
+
+julia> centers, radii = hough_circle_gradient(img_edges, img_phase, 20:30);
+
+julia> img_demo = Float64.(img_edges); for c in centers img_demo[c] = 2; end
+
+julia> imshow(img_demo)
 ```
 """  
 function hough_circle_gradient(
