@@ -21,7 +21,7 @@ end
     #For images containing a straight line parallel to axes
         for i in 1:9
             img = zeros(Bool,9,9)
-            img[i,:] = true
+            img[i,:] .= true
             h = hough_transform_standard(img)
             @test length(h) == 1
             line = first(h)
