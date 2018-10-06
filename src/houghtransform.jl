@@ -28,18 +28,19 @@ Parameters:
 
 # Example
 ```julia
-julia> img = load("line.jpg");
+julia> using ImageFeatures
 
-julia> img_edges = canny(img, (Percentile(0.99), Percentile(0.97)), 1);
+julia> img = fill(false,5,5); img[3,:] .= true; img
+5×5 Array{Bool,2}:
+ false  false  false  false  false
+ false  false  false  false  false
+  true   true   true   true   true
+ false  false  false  false  false
+ false  false  false  false  false
 
-julia> lines = hough_transform_standard(img_edges, stepsize=1,
-    angles=range(0,π,30), vote_threshold=40, max_linecount=5)
-5-element Array{Tuple{Float64,Float64},1}:
- (45.0,1.73329)  
- (1.0,1.73329)   
- (32.0,1.73329)  
- (209.0,0.649985)
- (-9.0,2.49161) 
+julia> hough_transform_standard(img)
+1-element Array{Tuple{Float64,Float64},1}:
+ (3.0, 1.5707963267948966)
 ```
 """  
 function hough_transform_standard(
