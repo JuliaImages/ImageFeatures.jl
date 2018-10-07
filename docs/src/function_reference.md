@@ -83,3 +83,10 @@ lbp_uniform
 lbp_rotation_invariant
 multi_block_lbp
 ```
+
+# Misc
+
+```@docs
+hough_transform_standard
+hough_circle_gradient
+```
