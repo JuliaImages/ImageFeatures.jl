@@ -3,20 +3,25 @@ os:
     - linux
     - osx
 julia:
+    - 1.0
+    - 1.1
     - nightly
-    - 0.7
-    - 1.0.0
 notifications:
     email: false
-script:
-    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-    - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
-    # used in tests and Documentation (just install once)
-    - julia -e 'using Pkg; Pkg.add("TestImages")'
-    - julia -e 'using Pkg; if Sys.islinux() Pkg.add("ImageMagick") end'
-    - julia -e 'using Pkg; Pkg.test("ImageFeatures", coverage=true)'
+
+# use default travis script for test
+
+jobs:
+include:
+  - stage: deploy
+    julia: 1.0
+    os: linux
+    script:
+      - julia -e 'import Pkg; Pkg.clone(pwd()); Pkg.build("ImageFeatures")'
+      - julia -e 'import Pkg; Pkg.add("Documenter")'
+      - julia -e 'using Pkg; Pkg.add("ImageDraw.jl")' # Needed for Docs
+      - julia -e 'using Pkg; import ImageFeatures; cd(joinpath(dirname(pathof(ImageFeatures)), "..")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
+
 after_success:
-    - julia -e 'using Pkg; import ImageFeatures; cd(joinpath(dirname(pathof(ImageFeatures)), "..")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-    - julia -e 'using Pkg; Pkg.add("Documenter")'
-    - julia -e 'using Pkg; Pkg.add("ImageDraw.jl")' # Needed for Docs
-    - julia -e 'using Pkg; import ImageFeatures; cd(joinpath(dirname(pathof(ImageFeatures)), "..")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
+  # push coverage results to Codecov
+  - julia -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
