@@ -27,7 +27,7 @@ using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
 img = testimage("lena_gray_512");
 img1 = Gray.(img);
 trans = Translation(-100, -200)
-img2 = warp(img1, trans, indices(img1));
+img2 = warp(img1, trans, axes(img1));
 nothing # hide
 ```
 

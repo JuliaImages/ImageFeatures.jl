@@ -1,7 +1,7 @@
 using Documenter, ImageFeatures
 
-makedocs(format   = :html,
-         sitename = "ImageFeatures",
+makedocs(sitename = "ImageFeatures",
+         format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
          pages    = ["Home" => "index.md",
                      "Tutorials" => [
                          "BRIEF" => "tutorials/brief.md",
@@ -17,8 +17,4 @@ makedocs(format   = :html,
          )
 
 deploydocs(repo   = "github.com/JuliaImages/ImageFeatures.jl.git",
-           julia  = "0.6",
-           target = "build",
-           deps   = nothing,
-           make   = nothing,
            )

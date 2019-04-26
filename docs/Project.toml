@@ -1,0 +1,7 @@
+[deps]
+CoordinateTransformations = "150eb455-5306-5404-9cee-2592286d6298"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+ImageDraw = "4381153b-2b60-58ae-a1ba-fd683676385f"
+ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"

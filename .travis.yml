@@ -17,10 +17,11 @@ jobs:
       julia: 1.0
       os: linux
       script:
-        # - julia -e 'import Pkg; Pkg.clone(pwd()); Pkg.build("ImageCore")'
-        - julia -e 'import Pkg; Pkg.add("Documenter")'
-        - julia -e 'using Pkg; Pkg.add("ImageDraw.jl")' # Needed for Docs
-        - julia -e 'using Pkg; import ImageFeatures; cd(joinpath(dirname(pathof(ImageFeatures)), "..")); ENV["DOCUMENTER_DEBUG"] = "true"; include(joinpath("docs", "make.jl"))'
+        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
+                                               Pkg.instantiate()'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip
+
 after_success:
   # push coverage results to Codecov
   - julia -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
