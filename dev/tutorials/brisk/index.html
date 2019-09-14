@@ -5,7 +5,13 @@ img = testimage(&quot;lighthouse&quot;)
 img1 = Gray.(img)
 rot = recenter(RotMatrix(5pi/6), [size(img1)...] .÷ 2)  # a rotation around the center
 tform = rot ∘ Translation(-50, -40)
-img2 = warp(img1, tform, axes(img1))</code></pre><p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="tutorials/@ref"><code>fastcorners</code></a>.</p><pre><code class="language-julia">features_1 = Features(fastcorners(img1, 12, 0.35))
+img2 = warp(img1, tform, axes(img1))</code></pre><pre><code class="language-none">[ Info: Could not find lighthouse in directory images/ . Checking if it exists in the online repository.
+[ Info: Found lighthouse in the online repository. Downloading to the images directory.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   145    0   145    0     0    446      0 --:--:-- --:--:-- --:--:--   447
+100   156  100   156    0     0    364      0 --:--:-- --:--:-- --:--:--   364
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  622k  100  622k    0     0   753k      0 --:--:-- --:--:-- --:--:-- 3190k</code></pre><p>To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see <a href="tutorials/@ref"><code>fastcorners</code></a>.</p><pre><code class="language-julia">features_1 = Features(fastcorners(img1, 12, 0.35))
 features_2 = Features(fastcorners(img2, 12, 0.35))</code></pre><p>To create the BRISK descriptor, we first need to define the parameters by calling the <a href="../../function_reference/#ImageFeatures.BRISK"><code>BRISK</code></a> constructor.</p><pre><code class="language-julia">brisk_params = BRISK()</code></pre><p>Now pass the image with the keypoints and the parameters to the <a href="../../function_reference/#ImageFeatures.create_descriptor"><code>create_descriptor</code></a> function.</p><pre><code class="language-julia">desc_1, ret_features_1 = create_descriptor(img1, features_1, brisk_params)
 desc_2, ret_features_2 = create_descriptor(img2, features_2, brisk_params)</code></pre><p>The obtained descriptors can be used to find the matches between the two images using the <a href="../../function_reference/#ImageFeatures.match_keypoints"><code>match_keypoints</code></a> function.</p><pre><code class="language-julia">matches = match_keypoints(Keypoints(ret_features_1), Keypoints(ret_features_2), desc_1, desc_2, 0.1)</code></pre><p>We can use the <a href="https://github.com/JuliaImages/ImageDraw.jl">ImageDraw.jl</a> package to view the results.</p><pre><code class="language-julia">grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
