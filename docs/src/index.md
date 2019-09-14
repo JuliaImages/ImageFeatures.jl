@@ -20,7 +20,7 @@ that the same structure can be recognized if encountered.
 Installing the package is extremely easy with julia's package manager -
 
 ```julia
-Pkg.add("ImageFeatures.jl")
+Pkg.add("ImageFeatures")
 ```
 
 ImageFeatures.jl requires [Images.jl](https://github.com/JuliaImages/Images.jl).
