@@ -1,6 +1,6 @@
 module ImageFeatureTests
 
-using ImageFeatures, Images, TestImages, Distributions, ColorTypes
+using ImageFeatures, Images, TestImages, Distributions
 using Test
 using LinearAlgebra
 import Random.seed!

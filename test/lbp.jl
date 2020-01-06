@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images, Colors, FixedPointNumbers
+using Test, ImageFeatures, Images
 
 @testset "circular_offsets" begin
     img = [  0x4c  0x19  0xac  0x2e  0x8c  0xcc  0x96  0x4c  0xdb  0x4f
@@ -12,10 +12,10 @@ using Test, ImageFeatures, Images, Colors, FixedPointNumbers
              0x9a  0x74  0xd8  0x2f  0x38  0x4e  0x4b  0x18  0x4a  0xc7
              0x1a  0xe0  0x52  0x5a  0x6a  0x03  0xe8  0xcb  0x95  0xfc
           ]
-    
+
     global img_gray = map(i -> Images.Gray(reinterpret(N0f8, i)), img)
 end
- 
+
 @test ImageFeatures.circular_offsets(8, 1) == [ (-0.0,1.0), (-0.70711,0.70711), (-1.0,0.0), (-0.70711,-0.70711), (-0.0,-1.0), (0.70711,-0.70711), (1.0,-0.0), (0.70711,0.70711)]
 
 @testset "Original" begin

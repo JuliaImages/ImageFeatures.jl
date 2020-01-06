@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images, TestImages, Distributions, ColorTypes
+using Test, ImageFeatures, Images, TestImages, Distributions
 
 @testset "Test freak params" begin
     freak_params = FREAK(pattern_scale = 20.0)
@@ -7,7 +7,7 @@ using Test, ImageFeatures, Images, TestImages, Distributions, ColorTypes
     @test freak_params.pattern_table == pt
     @test freak_params.smoothing_table == st
 end
-    
+
 @testset "Testing with Standard Images - Lighthouse (Rotation 45)" begin
     img = testimage("lighthouse")
     img_array_1 = convert(Array{Gray}, img)
