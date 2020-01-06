@@ -1,7 +1,7 @@
 module ImageFeatures
 
 # package code goes here
-using Images, ColorTypes, FixedPointNumbers, Distributions
+using Images, Distributions
 using SparseArrays
 import Random.seed!
 
