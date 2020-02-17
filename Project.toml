@@ -10,7 +10,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 Distributions = "0.16, 0.17, 0.18, 0.19, 0.20, 0.21, 0.22"
-Images = "0.18, 0.19, 0.20, 0.21"
+Images = "0.18, 0.19, 0.20, 0.21, 0.22"
 julia = "1"
 
 [extras]
