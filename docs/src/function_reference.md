@@ -15,10 +15,13 @@ FREAK
 BRISK
 ```
 
-## Corners
+## Corners and edges
 
 ```@docs
 corner_orientations
+fastcorners
+canny
+phase
 ```
 
 ## BRIEF Sampling Patterns
@@ -87,6 +90,7 @@ multi_block_lbp
 # Misc
 
 ```@docs
+HOG
 hough_transform_standard
 hough_circle_gradient
 ```

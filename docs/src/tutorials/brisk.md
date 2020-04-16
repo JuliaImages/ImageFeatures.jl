@@ -29,7 +29,7 @@ img2 = warp(img1, tform, axes(img1))
 nothing # hide
 ```
 
-To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
+To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref)).
 
 ```@example 4
 features_1 = Features(fastcorners(img1, 12, 0.35))

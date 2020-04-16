@@ -13,15 +13,15 @@ Download the script to get the training data [here](https://drive.google.com/fil
 ```julia
 using Images, ImageFeatures
 
-path_to_tutorial = ""
-pos_examples = "path_to_tutorial/tutorial/humans/"
-neg_examples = "path_to_tutorial/tutorial/not_humans/"
+path_to_tutorial = ""    # specify this path
+pos_examples = "$path_to_tutorial/tutorial/humans/"
+neg_examples = "$path_to_tutorial/tutorial/not_humans/"
 
 n_pos = length(readdir(pos_examples))   # number of positive training examples
 n_neg = length(readdir(neg_examples))   # number of negative training examples
 n = n_pos + n_neg                       # number of training examples 
-data = Array{Float64}(3780, n)          # Array to store HOG descriptor of each image. Each image in our training data has size 128x64 and so has a 3780 length 
-labels = Vector{Int}(n)                 # Vector to store label (1=human, 0=not human) of each image.
+data = Array{Float64}(undef, 3780, n)   # Array to store HOG descriptor of each image. Each image in our training data has size 128x64 and so has a 3780 length 
+labels = Vector{Int}(undef, n)          # Vector to store label (1=human, 0=not human) of each image.
 
 for (i, file) in enumerate([readdir(pos_examples); readdir(neg_examples)])
     filename = "$(i <= n_pos ? pos_examples : neg_examples )/$file"
