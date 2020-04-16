@@ -1,4 +1,4 @@
-*FREAK* has a defined sampling pattern like [BRISK](brisk.md). It uses a retinal sampling grid with more density of points near the centre
+*FREAK* (Fast REtinA Keypoint) has a defined sampling pattern like [BRISK](brisk.md). It uses a retinal sampling grid with more density of points near the centre
 with the density decreasing exponentially with distance from the centre.
 
 ![FREAK Sampling Pattern](../img/freak_pattern.png)

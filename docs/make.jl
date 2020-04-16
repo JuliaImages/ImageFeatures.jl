@@ -3,6 +3,7 @@ using Documenter, ImageFeatures
 makedocs(sitename = "ImageFeatures",
          format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
          pages    = ["Home" => "index.md",
+                     "Framework" => "framework.md",
                      "Tutorials" => [
                          "BRIEF" => "tutorials/brief.md",
                          "ORB" => "tutorials/orb.md",
