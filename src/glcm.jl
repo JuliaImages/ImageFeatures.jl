@@ -1,3 +1,13 @@
+"""
+    glcm = glcm(img, distance, angle, mat_size=16)
+    glcm = glcm(img, distances, angle, mat_size=16)
+    glcm = glcm(img, distance, angles, mat_size=16)
+    glcm = glcm(img, distances, angles, mat_size=16)
+
+Calculates the GLCM (Gray Level Co-occurence Matrix) of an image. The `distances` and `angles` arguments may be 
+a single integer or a vector of integers if multiple GLCMs need to be calculated. The `mat_size` argument is used
+to define the granularity of the GLCM.
+"""
 function glcm(img::AbstractArray{T, 2}, distance::Integer, angle::Real, mat_size::Integer = 16) where T<:Real
     max_img = maximum(img)
     img_rescaled = map(i -> max(1, Int(ceil(i * mat_size / max_img))), img)
@@ -45,31 +55,58 @@ function _glcm(img::AbstractArray{T, 2}, distance::Integer, angle::Number, mat_s
     co_oc_matrix
 end
 
-function glcm_symmetric(img::AbstractArray, distance::Integer, angle::Real, mat_size)
+"""
+    glcm = glcm_symmetric(img, distance, angle, mat_size=16)
+    glcm = glcm_symmetric(img, distances, angle, mat_size=16)
+    glcm = glcm_symmetric(img, distance, angles, mat_size=16)
+    glcm = glcm_symmetric(img, distances, angles, mat_size=16)
+
+Symmetric version of the [`glcm`](@ref) function.
+"""
+function glcm_symmetric(img::AbstractArray, distance::Integer, angle::Real, mat_size=16)
     co_oc_matrix = glcm(img, distance, angle, mat_size)
     co_oc_matrix_trans = co_oc_matrix'
     co_oc_matrix_symm = co_oc_matrix + co_oc_matrix_trans
     co_oc_matrix_symm
 end
 
-function glcm_symmetric(img::AbstractArray, distances, angles, mat_size)
+function glcm_symmetric(img::AbstractArray, distances, angles, mat_size=16)
     co_oc_matrices = glcm(img, distances, angles, mat_size)
     co_oc_matrices_sym = map(gmat -> gmat + gmat', co_oc_matrices)
     co_oc_matrices_sym
 end
 
-function glcm_norm(img::AbstractArray, distance::Integer, angle::Real, mat_size)
+"""
+    glcm = glcm_norm(img, distance, angle, mat_size)
+    glcm = glcm_norm(img, distances, angle, mat_size)
+    glcm = glcm_norm(img, distance, angles, mat_size)
+    glcm = glcm_norm(img, distances, angles, mat_size)
+
+Normalised version of the [`glcm`](@ref) function.
+"""
+function glcm_norm(img::AbstractArray, distance::Integer, angle::Real, mat_size=16)
     co_oc_matrix = glcm(img, distance, angle, mat_size)
     co_oc_matrix_norm = co_oc_matrix / Float64(sum(co_oc_matrix))
     co_oc_matrix_norm
 end
 
-function glcm_norm(img::AbstractArray, distances, angles, mat_size)
+function glcm_norm(img::AbstractArray, distances, angles, mat_size=16)
     co_oc_matrices = glcm(img, distances, angles, mat_size)
     co_oc_matrices_norm = map(gmat -> gmat /= Float64(sum(gmat)), co_oc_matrices)
     co_oc_matrices_norm
 end
 
+"""
+Multiple properties of the obtained GLCM can be calculated by using the `glcm_prop` function which calculates the 
+property for the entire matrix. If grid dimensions are provided, the matrix is divided into a grid and the property
+is calculated for each cell resulting in a height x width property matrix.
+```julia
+prop = glcm_prop(glcm, property)
+prop = glcm_prop(glcm, height, width, property)
+```
+Various properties can be calculated like `mean`, `variance`, `correlation`, `contrast`, `IDM` (Inverse Difference Moment),
+ `ASM` (Angular Second Moment), `entropy`, `max_prob` (Max Probability), `energy` and `dissimilarity`.
+"""
 function glcm_prop(gmat::Array{T, 2}, window_height::Integer, window_width::Integer, property::Function) where T<:Real
     k_h = Int(floor(window_height / 2))
     k_w = Int(floor(window_width / 2))

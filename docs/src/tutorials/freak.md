@@ -1,4 +1,4 @@
-*FREAK* has a defined sampling pattern like [BRISK](brisk.md). It uses a retinal sampling grid with more density of points near the centre
+*FREAK* (Fast REtinA Keypoint) has a defined sampling pattern like [BRISK](brisk.md). It uses a retinal sampling grid with more density of points near the centre
 with the density decreasing exponentially with distance from the centre.
 
 ![FREAK Sampling Pattern](../img/freak_pattern.png)
@@ -25,7 +25,7 @@ img2 = warp(img1, tform, axes(img1))
 nothing # hide
 ```
 
-To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
+To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref)).
 
 ```@example 3
 keypoints_1 = Keypoints(fastcorners(img1, 12, 0.35))

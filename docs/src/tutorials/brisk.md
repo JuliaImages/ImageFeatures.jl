@@ -1,4 +1,4 @@
-The *BRISK* descriptor has a predefined sampling pattern as compared to [BRIEF](brief.md) or [ORB](orb.md). Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.
+The *BRISK* (Binary Robust Invariant Scalable Keypoints) descriptor has a predefined sampling pattern as compared to [BRIEF](brief.md) or [ORB](orb.md). Pixels are sampled over concentric rings. For each sampling point, a small patch is considered around it. Before starting the algorithm, the patch is smoothed using gaussian smoothing.
 
 ![BRISK Sampling Pattern](../img/brisk_pattern.png)
 
@@ -29,7 +29,7 @@ img2 = warp(img1, tform, axes(img1))
 nothing # hide
 ```
 
-To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref).
+To calculate the descriptors, we first need to get the keypoints. For this tutorial, we will use the FAST corners to generate keypoints (see [`fastcorners`](@ref)).
 
 ```@example 4
 features_1 = Features(fastcorners(img1, 12, 0.35))
