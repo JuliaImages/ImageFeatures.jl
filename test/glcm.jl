@@ -5,7 +5,7 @@ using Test, ImageFeatures, Images
             0 0 1 1
             0 2 2 2
             2 2 3 3 ]
-    img_gray = convert(Array{Gray}, img / 3)
+    img_gray = Gray.(img / 3)
 
     glcm_mat = glcm(img, 1, 0, 4)
     expected_1 = [ 2 2 1 0

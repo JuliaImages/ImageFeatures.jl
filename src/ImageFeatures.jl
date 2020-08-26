@@ -69,6 +69,8 @@ export
     #Circles
     hough_circle_gradient
 
+_oneunit(i::CartesianIndex) = VERSION >= v"1.1" ? oneunit(i) : one(i)
+
 """
     desc, keypoints = create_descriptor(img, keypoints, params)
     desc, keypoints = create_descriptor(img, params)
