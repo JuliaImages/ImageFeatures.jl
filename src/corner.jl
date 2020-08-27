@@ -38,7 +38,7 @@ function corner_orientations(img::AbstractArray{T, 2}, corners::Keypoints, kerne
     orientations
 end
 
-corner_orientations(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2}) where {T, K<:Real} = corner_orientations(convert(Array{Gray}, img), corners, kernel)
+corner_orientations(img::AbstractArray{T, 2}, corners::Keypoints, kernel::Array{K, 2}) where {T, K<:Real} = corner_orientations(Gray.(img), corners, kernel)
 
 function corner_orientations(img::AbstractArray, kernel::Array{K, 2}) where K<:Real
     corners = imcorner(img)

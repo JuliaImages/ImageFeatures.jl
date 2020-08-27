@@ -10,7 +10,7 @@ end
 
 @testset "Testing with Standard Images - Lighthouse (Rotation 45)" begin
     img = testimage("lighthouse")
-    img_array_1 = convert(Array{Gray}, img)
+    img_array_1 = Gray.(img)
     img_array_2 = _warp(img_array_1, pi / 4)
 
     keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.35))
@@ -26,7 +26,7 @@ end
 
 @testset "Testing with Standard Images - Lighthouse (Rotation 45, Translation (50, 40))" begin
     img = testimage("lighthouse")
-    img_array_1 = convert(Array{Gray}, img)
+    img_array_1 = Gray.(img)
     img_temp_2 = _warp(img_array_1, pi / 4)
     img_array_2 = _warp(img_temp_2, 50, 40)
 
@@ -43,7 +43,7 @@ end
 
 @testset "Testing with Standard Images - Lighthouse (Rotation 75, Translation (50, 40))" begin
     img = testimage("lighthouse")
-    img_array_1 = convert(Array{Gray}, img)
+    img_array_1 = Gray.(img)
     img_temp_2 = _warp(img_array_1, 5 * pi / 6)
     img_array_2 = _warp(img_temp_2, 50, 40)
 
@@ -60,7 +60,7 @@ end
 
 @testset "Testing with Standard Images - Lena (Rotation 45, Translation (10, 20))" begin
     img = testimage("lena_gray_512")
-    img_array_1 = convert(Array{Gray}, img)
+    img_array_1 = Gray.(img)
     img_temp_2 = _warp(img_array_1, pi / 4)
     img_array_2 = _warp(img_temp_2, 10, 20)
 

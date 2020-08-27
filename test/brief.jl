@@ -153,7 +153,7 @@ end
 
 @testset "Testing with Standard Images - Lighthouse (Translation (100, 200))" begin
     img = testimage("lighthouse")
-    img_array_1 = convert(Array{Gray}, img)
+    img_array_1 = Gray.(img)
     img_array_2 = _warp(img_array_1, 100, 200)
 
     keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))
@@ -169,7 +169,7 @@ end
 
 @testset "Testing with Standard Images - Lena (Translation (10, 20))" begin
     img = testimage("lena_gray_512")
-    img_array_1 = convert(Array{Gray}, img)
+    img_array_1 = Gray.(img)
     img_array_2 = _warp(img_array_1, 10, 20)
 
     keypoints_1 = Keypoints(fastcorners(img_array_1, 12, 0.4))

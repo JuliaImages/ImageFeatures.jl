@@ -42,7 +42,7 @@ julia> hough_transform_standard(img)
 1-element Array{Tuple{Float64,Float64},1}:
  (3.0, 1.5707963267948966)
 ```
-"""  
+"""
 function hough_transform_standard(
     img_edges::AbstractMatrix{Bool};
     stepsize=1,
@@ -115,17 +115,17 @@ end
 ```
 circle_centers, circle_radius = hough_circle_gradient(img_edges, img_phase, radii; scale=1, min_dist=minimum(radii), vote_threshold)
 ```
-Returns two vectors, corresponding to circle centers and radius.  
-  
-The circles are generated using a hough transform variant in which a non-zero point only votes for circle  
+Returns two vectors, corresponding to circle centers and radius.
+
+The circles are generated using a hough transform variant in which a non-zero point only votes for circle
 centers perpendicular to the local gradient. In case of concentric circles, only the largest circle is detected.
-  
-Parameters:  
--   `img_edges`    = edges of the image  
--   `img_phase`    = phase of the gradient image   
+
+Parameters:
+-   `img_edges`    = edges of the image
+-   `img_phase`    = phase of the gradient image
 -   `radii`        = circle radius range
--   `scale`        = relative accumulator resolution factor  
--   `min_dist`     = minimum distance between detected circle centers  
+-   `scale`        = relative accumulator resolution factor
+-   `min_dist`     = minimum distance between detected circle centers
 -   `vote_threshold`   = accumulator threshold for circle detection
 
 [`canny`](@ref) and [`phase`](@ref) can be used for obtaining img_edges and img_phase respectively.
@@ -151,7 +151,7 @@ julia> img_demo = Float64.(img_edges); for c in centers img_demo[c] = 2; end
 
 julia> imshow(img_demo)
 ```
-"""  
+"""
 function hough_circle_gradient(
         img_edges::AbstractArray{Bool,2},
         img_phase::AbstractArray{<:Number,2},
@@ -218,7 +218,7 @@ function hough_circle_gradient(
     radius_accumulator=Vector{Int}(undef, Int(floor(dist(f,l)/scale)+1))
 
     for center in centers
-        center=(center-1*one(center))*scale
+        center=(center-1*_oneunit(center))*scale
         fill!(radius_accumulator, 0)
 
         too_close=false
