@@ -18,4 +18,5 @@ makedocs(sitename = "ImageFeatures",
          )
 
 deploydocs(repo   = "github.com/JuliaImages/ImageFeatures.jl.git",
+           push_preview = true
            )
