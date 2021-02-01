@@ -67,7 +67,7 @@ We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) packa
 
 grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
-map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
+map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)#it actually returns a vector,so to visualise as distinct image,display any one element from vector
 save("brief_example.jpg", grid) # hide
 nothing # hide
 ```
