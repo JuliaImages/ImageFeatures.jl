@@ -14,8 +14,7 @@ Let us take a look at a simple example where the FREAK descriptor is used to mat
 First, let us create the two images we will match using FREAK.
 
 ```@example 3
-
-using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
+using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations, Rotations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)
@@ -58,12 +57,10 @@ nothing # hide
 We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) package to view the results.
 
 ```@example 3
-
 grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
 map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
 save("freak_example.jpg", grid); nothing # hide
-
 ```
 
 ![](freak_example.jpg)

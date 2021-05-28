@@ -20,7 +20,7 @@ Let us take a look at a simple example where the ORB descriptor is used to match
 First, let us create the two images we will match using ORB.
 
 ```@example 2
-using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
+using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations, Rotations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)
@@ -55,12 +55,10 @@ nothing # hide
 We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) package to view the results.
 
 ```@example 2
-
 grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
 map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)
 save("orb_example.jpg", grid); nothing # hide
-
 ```
 
 ![](orb_example.jpg)
