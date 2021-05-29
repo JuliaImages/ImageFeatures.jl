@@ -4,7 +4,7 @@ brief_params = BRIEF([size = 128], [window = 9], [sigma = 2 ^ 0.5], [sampling_ty
 ```
 
 | Argument | Type | Description |
-|----------|------|-------------|
+| :------- | :--- | :---------- |
 | **size** | Int | Size of the descriptor |
 | **window** | Int | Size of sampling window |
 | **sigma** | Float64 | Value of sigma used for inital gaussian smoothing of image |

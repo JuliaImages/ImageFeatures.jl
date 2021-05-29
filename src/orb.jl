@@ -4,7 +4,7 @@ orb_params = ORB([num_keypoints = 500], [n_fast = 12], [threshold = 0.25], [harr
 ```
 
 | Argument | Type | Description |
-|----------|------|-------------|
+| :--------| :--- | :---------- |
 | **num_keypoints** | Int | Number of keypoints to extract and size of the descriptor calculated |
 | **n_fast** | Int | Number of consecutive pixels used for finding corners with FAST. See [`fastcorners`] |
 | **threshold** | Float64 | Threshold used to find corners in FAST. See [`fastcorners`] |

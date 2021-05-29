@@ -4,7 +4,7 @@ freak_params = FREAK([pattern_scale = 22.0])
 ```
 
 | Argument | Type | Description |
-|----------|------|-------------|
+| :--------| :--- | :---------- |
 | **pattern_scale** | Float64 | Scaling factor for the sampling window |
 """
 mutable struct FREAK <: Params
