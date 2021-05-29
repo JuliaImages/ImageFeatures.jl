@@ -24,10 +24,10 @@ Now, let us create the two images we will match using BRIEF.
 ```@example 1
 using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
 
-img = testimage("lena_gray_512");
-img1 = Gray.(img);
+img = testimage("lighthouse")
+img1 = Gray.(img)
 trans = Translation(-100, -200)
-img2 = warp(img1, trans, axes(img1));
+img2 = warp(img1, trans, axes(img1))
 nothing # hide
 ```
 
@@ -49,8 +49,8 @@ nothing # hide
 Now pass the image with the keypoints and the parameters to the [`create_descriptor`](@ref) function.
 
 ```@example 1
-desc_1, ret_keypoints_1 = create_descriptor(img1, keypoints_1, brief_params);
-desc_2, ret_keypoints_2 = create_descriptor(img2, keypoints_2, brief_params);
+desc_1, ret_keypoints_1 = create_descriptor(img1, keypoints_1, brief_params)
+desc_2, ret_keypoints_2 = create_descriptor(img2, keypoints_2, brief_params)
 nothing # hide
 ```
 
@@ -64,7 +64,6 @@ nothing # hide
 We can use the [ImageDraw.jl](https://github.com/JuliaImages/ImageDraw.jl) package to view the results.
 
 ```@example 1
-
 grid = hcat(img1, img2)
 offset = CartesianIndex(0, size(img1, 2))
 map(m -> draw!(grid, LineSegment(m[1], m[2] + offset)), matches)

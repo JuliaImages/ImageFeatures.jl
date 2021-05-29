@@ -4,7 +4,7 @@ brisk_params = BRISK([pattern_scale = 1.0])
 ```
 
 | Argument | Type | Description |
-|----------|------|-------------|
+| :--------| :--- | :---------- |
 | `pattern_scale` | `Float64` | Scaling factor for the sampling window |
 """
 mutable struct BRISK <: Params
