@@ -1,4 +1,4 @@
-using Documenter, ImageFeatures
+using Documenter, ImageFeatures, Images
 
 makedocs(sitename = "ImageFeatures",
          format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
