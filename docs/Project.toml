@@ -9,4 +9,4 @@ Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [compat]
-Documenter = "0.24"
+Documenter = "0.26"
