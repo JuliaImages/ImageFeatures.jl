@@ -28,7 +28,7 @@ function FREAK(; pattern_scale::Float64 = 22.0)
     FREAK(pattern_scale, pattern_table, smoothing_table, orientation_weights)
 end
 
-function _freak_mean_intensity(int_img::AbstractArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float16) where T<:Gray
+function _freak_mean_intensity(int_img::IntegralArray{T, 2}, keypoint::Keypoint, offset::SamplePair, sigma::Float16) where T<:Gray
     y = keypoint[1] + offset[1]
     x = keypoint[2] + offset[2]
     if sigma < 0.5
@@ -38,11 +38,11 @@ function _freak_mean_intensity(int_img::AbstractArray{T, 2}, keypoint::Keypoint,
     ys = round(Int, y - sigma)
     xst = round(Int, x + sigma)
     yst = round(Int, y + sigma)
-    intensity = boxdiff(int_img, ys:yst, xs:xst)
+    intensity = int_img[ys..yst, xs..xst]
     intensity / ((xst - xs + 1) * (yst - ys + 1))
 end
 
-function _freak_orientation(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
+function _freak_orientation(int_img::IntegralArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
                                orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16}) where T<:Gray
     direction_sum_y = 0.0
     direction_sum_x = 0.0
@@ -82,7 +82,7 @@ function _freak_tables(pattern_scale::Float64)
 end
 
 function create_descriptor(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK) where T<:Gray
-    int_img = integral_image(img)
+    int_img = IntegralArray(img)
     descriptors = BitArray{1}[]
     ret_keypoints = Keypoint[]
     window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.pattern_scale) + 1

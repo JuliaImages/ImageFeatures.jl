@@ -41,7 +41,7 @@ function BRISK(; threshold::Float64 = 0.25, octaves::Int = 4, pattern_scale = 1.
     BRISK(threshold, octaves, pattern_scale, pattern_table, smoothing_table, orientation_weights, short_pairs, long_pairs)
 end
 
-function _brisk_orientation(int_img::AbstractArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
+function _brisk_orientation(int_img::IntegralArray{T, 2}, keypoint::Keypoint, pattern::Array{SamplePair},
                                orientation_weights::Array{OrientationWeights}, sigmas::Array{Float16}, long_pairs::Array{OrientationPair}) where T<:Gray
     direction_sum_y = 0.0
     direction_sum_x = 0.0
@@ -80,7 +80,7 @@ function _brisk_tables(pattern_scale::Float64)
 end
 
 function create_descriptor(img::AbstractArray{T, 2}, features::Features, params::BRISK) where T<:Gray
-    int_img = integral_image(img)
+    int_img = IntegralArray(img)
     descriptors = BitArray{1}[]
     ret_features = Feature[]
     window_size = ceil(Int, (brisk_radii[end] + brisk_sigma[end]) * params.pattern_scale * 0.85) + 1

@@ -94,7 +94,7 @@ end
 
 @testset "Properties" begin
     img = convert(Array{Int}, reshape(1:1:30, 5, 6))
-    @test glcm_prop(img, max_prob) == maxfinite(img)
+    @test glcm_prop(img, max_prob) == maximum_finite(img)
     @test glcm_prop(img, contrast) == 2780
     @test glcm_prop(img, dissimilarity) == 930
     @test glcm_prop(img, ASM) == 9455

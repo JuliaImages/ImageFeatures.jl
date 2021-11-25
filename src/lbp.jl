@@ -41,8 +41,12 @@ function _lbp(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method:
     lbp_image = zeros(UInt, size(img))
     R = CartesianIndices(size(img))
     bit_pattern = falses(length(offsets))
+
+    etp = extrapolate(interpolate(img, BSpline(Linear())), Line())
     for I in R
-        for (i, o) in enumerate(offsets) bit_pattern[i] = img[I] >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
+        for (i, o) in enumerate(offsets)
+            bit_pattern[i] = img[I] >= etp[I[1]+o[1], I[2]+o[2]]
+        end
         lbp_image[I], uniform_params = method(bit_pattern, uniform_params)
     end
     lbp_image
@@ -64,9 +68,12 @@ function _modified_lbp(img::AbstractArray{T, 2}, points::Integer, offsets::Array
     lbp_image = zeros(UInt, size(img))
     R = CartesianIndices(size(img))
     bit_pattern = falses(length(offsets))
+    etp = extrapolate(interpolate(img, BSpline(Linear())), Line())
     for I in R
-        avg = (sum(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) for o in offsets) + img[I]) / (points + 1)
-        for (i, o) in enumerate(offsets) bit_pattern[i] = avg >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
+        avg = (sum(etp(I[1] + o[1], I[2] + o[2]) for o in offsets) + img[I]) / (points + 1)
+        for (i, o) in enumerate(offsets)
+            bit_pattern[i] = avg >= etp(I[1] + o[1], I[2] + o[2])
+        end
         lbp_image[I], uniform_params = method(bit_pattern, uniform_params)
     end
     lbp_image
@@ -82,9 +89,11 @@ function _direction_coded_lbp(img::AbstractArray{T, 2}, offsets::Array) where T
     p = Int(length(offsets) / 2)
     raw_img = convert(Array{Int}, rawview(channelview(img)))
     neighbours = zeros(Int, length(offsets))
+
+    etp = extrapolate(interpolate(img, BSpline(Linear())), Line())
     for I in R
         for (i, o) in enumerate(offsets)
-            neighbours[i] = Int(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]).val.i)
+            neighbours[i] = Int(N0f8(clamp01(etp(I[1] + o[1], I[2] + o[2]).val)).i)
         end
         lbp_image[I] = sum(((neighbours[j] - raw_img[I]) * (neighbours[j + p] - raw_img[I]) >= 0) * (2 ^ (2 * p - 2 * j + 1)) +
                             (abs(neighbours[j] - raw_img[I]) >= abs(neighbours[j + p] - raw_img[I])) * (2 ^ (2 * p - 2 * j)) for j in 1:p)
@@ -100,7 +109,7 @@ function direction_coded_lbp(img::AbstractArray{T, 2}, points::Integer, radius::
 end
 
 function multi_block_lbp(img::AbstractArray{T, 2}, tl_y::Integer, tl_x::Integer, height::Integer, width::Integer) where T<:Gray
-    int_img = integral_image(img)
+    int_img = IntegralArray(img)
     h, w = size(img)
 
     @assert (tl_y + 3 * height - 1 <= h) && (tl_x + 3 * width -1 <= w) "Rectangle Grid exceeds image dimensions."

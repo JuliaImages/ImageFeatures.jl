@@ -50,12 +50,12 @@ function corner_orientations(img::AbstractArray)
     corners = imcorner(img)
     corner_indexes = Keypoints(corners)
     kernel = Kernel.gaussian((2,2), (5, 5))
-    kernel /= maxfinite(kernel)
+    kernel /= maximum_finite(kernel)
     corner_orientations(img, corner_indexes, parent(kernel))
 end
 
 function corner_orientations(img::AbstractArray, corners::Keypoints)
     kernel = Kernel.gaussian((2,2), (5, 5))
-    kernel /= maxfinite(kernel)
+    kernel /= maximum_finite(kernel)
     corner_orientations(img, corners, parent(kernel))
 end

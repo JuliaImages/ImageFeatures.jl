@@ -2,7 +2,9 @@ module ImageFeatures
 
 # package code goes here
 using Images, Distributions
+using ImageTransformations.Interpolations
 using SparseArrays
+using IntegralArrays
 import Random.seed!
 
 include("core.jl")
