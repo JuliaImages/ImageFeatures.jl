@@ -165,8 +165,7 @@ end
     desc_2, ret_keypoints_2 = create_descriptor(img_array_2, keypoints_2, brief_params)
     matches = match_keypoints(ret_keypoints_1, ret_keypoints_2, desc_1, desc_2, 0.1)
     # Julia <=1.6 give a slightly different answer from 1.9
-    @show length(matches) sum(m[1] + CartesianIndex(100, 200) == m[2] for m in matches)
-    @test abs(sum(m[1] + CartesianIndex(100, 200) == m[2] for m in matches) - length(matches)) <= 1
+    @test sum(m[1] + CartesianIndex(100, 200) == m[2] for m in matches) >= length(matches) - 1
 end
 
 @testset "Testing with Standard Images - Lena (Translation (10, 20))" begin
