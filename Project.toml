@@ -1,6 +1,6 @@
 name = "ImageFeatures"
 uuid = "92ff4b2b-8094-53d3-b29d-97f740f06cef"
-version = "0.5.0"
+version = "0.5.1"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -10,7 +10,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 Distributions = "0.16, 0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
-Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
+Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26"
 julia = "1.6"
 
 [extras]
