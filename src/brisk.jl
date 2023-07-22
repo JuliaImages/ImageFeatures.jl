@@ -80,7 +80,7 @@ function _brisk_tables(pattern_scale::Float64)
 end
 
 function create_descriptor(img::AbstractArray{T, 2}, features::Features, params::BRISK) where T<:Gray
-    int_img = integral_image(img)
+    int_img = IntegralArray(img)
     descriptors = BitArray{1}[]
     ret_features = Feature[]
     window_size = ceil(Int, (brisk_radii[end] + brisk_sigma[end]) * params.pattern_scale * 0.85) + 1

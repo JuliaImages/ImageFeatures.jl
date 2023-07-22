@@ -121,3 +121,23 @@ function grade_matches(keypoints_1::Keypoints, keypoints_2::Keypoints, limit::Re
     @assert length(keypoints_1)!=0 "Keypoint list is of size zero."
     mean(map((keypoint_1,keypoint_2)->((diff(keypoint_1,keypoint_2) < limit) ? 1.0 : 0.0), keypoints_1, keypoints_2))
 end
+
+function bilinear_interpolator(img::AbstractMatrix{T}, padding::Tuple{UnitRange,UnitRange}) where T
+    pad_ax = map(axes(img), padding) do ax, x
+        first(ax)+first(x):last(ax)+last(x)
+    end
+    padded_img = PaddedView(zero(T), img, pad_ax)
+    return interpolate(padded_img, BSpline(Linear()))
+end
+bilinear_interpolator(img::AbstractMatrix, offsets) = bilinear_interpolator(img, padding_from_offsets(offsets))
+
+function padding_from_offsets(offsets)
+    padding = [0:0 for _ in first(offsets)]
+    for o in offsets
+        for (i, p) in enumerate(o)
+            pd = padding[i]
+            padding[i] = min(pd.start, floor(Int, p)) : max(pd.stop, ceil(Int, p))
+        end
+    end
+    return (padding...,)
+end

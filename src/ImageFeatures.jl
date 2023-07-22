@@ -4,6 +4,7 @@ module ImageFeatures
 using Images, Distributions
 using SparseArrays
 import Random.seed!
+using Images.ImageTransformations.Interpolations
 
 include("core.jl")
 include("const.jl")

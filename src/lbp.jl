@@ -39,10 +39,11 @@ end
 function _lbp(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original) where T<:Gray
     uniform_params = PatternCache(points)
     lbp_image = zeros(UInt, size(img))
+    imgitp = bilinear_interpolator(img, offsets)
     R = CartesianIndices(size(img))
     bit_pattern = falses(length(offsets))
     for I in R
-        for (i, o) in enumerate(offsets) bit_pattern[i] = img[I] >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
+        for (i, o) in enumerate(offsets) bit_pattern[i] = img[I] >= T(imgitp(I[1] + o[1], I[2] + o[2])) end
         lbp_image[I], uniform_params = method(bit_pattern, uniform_params)
     end
     lbp_image
@@ -62,11 +63,12 @@ lbp(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function 
 function _modified_lbp(img::AbstractArray{T, 2}, points::Integer, offsets::Array, method::Function = lbp_original) where T<:Gray
     uniform_params = PatternCache(points)
     lbp_image = zeros(UInt, size(img))
+    imgitp = bilinear_interpolator(img, offsets)
     R = CartesianIndices(size(img))
     bit_pattern = falses(length(offsets))
     for I in R
-        avg = (sum(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) for o in offsets) + img[I]) / (points + 1)
-        for (i, o) in enumerate(offsets) bit_pattern[i] = avg >= bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]) end
+        avg = (sum(imgitp(I[1] + o[1], I[2] + o[2]) for o in offsets) + img[I]) / (points + 1)
+        for (i, o) in enumerate(offsets) bit_pattern[i] = avg >= imgitp(I[1] + o[1], I[2] + o[2]) end
         lbp_image[I], uniform_params = method(bit_pattern, uniform_params)
     end
     lbp_image
@@ -76,15 +78,16 @@ modified_lbp(img::AbstractArray{T, 2}, method::Function = lbp_original) where {T
 
 modified_lbp(img::AbstractArray{T, 2}, points::Integer, radius::Number, method::Function = lbp_original) where {T<:Gray} = _modified_lbp(img, points, circular_offsets(points, radius), method)
 
-function _direction_coded_lbp(img::AbstractArray{T, 2}, offsets::Array) where T
+function _direction_coded_lbp(img::AbstractArray{T, 2}, offsets::Array) where T<:Union{Normed,AbstractGray{<:Normed}}
     lbp_image = zeros(UInt, size(img))
     R = CartesianIndices(size(img))
     p = Int(length(offsets) / 2)
     raw_img = convert(Array{Int}, rawview(channelview(img)))
+    imgitp = bilinear_interpolator(raw_img, offsets)
     neighbours = zeros(Int, length(offsets))
     for I in R
         for (i, o) in enumerate(offsets)
-            neighbours[i] = Int(bilinear_interpolation(img, I[1] + o[1], I[2] + o[2]).val.i)
+            neighbours[i] = round(Int, imgitp(I[1] + o[1], I[2] + o[2]))
         end
         lbp_image[I] = sum(((neighbours[j] - raw_img[I]) * (neighbours[j + p] - raw_img[I]) >= 0) * (2 ^ (2 * p - 2 * j + 1)) +
                             (abs(neighbours[j] - raw_img[I]) >= abs(neighbours[j + p] - raw_img[I])) * (2 ^ (2 * p - 2 * j)) for j in 1:p)
@@ -100,19 +103,19 @@ function direction_coded_lbp(img::AbstractArray{T, 2}, points::Integer, radius::
 end
 
 function multi_block_lbp(img::AbstractArray{T, 2}, tl_y::Integer, tl_x::Integer, height::Integer, width::Integer) where T<:Gray
-    int_img = integral_image(img)
+    int_img = IntegralArray(img)
     h, w = size(img)
 
     @assert (tl_y + 3 * height - 1 <= h) && (tl_x + 3 * width -1 <= w) "Rectangle Grid exceeds image dimensions."
 
     center = [tl_y + height, tl_x + width]
-    central_sum = boxdiff(int_img, tl_y + height : tl_y + 2 * height - 1, tl_x + width : tl_x + 2 * width - 1)
+    central_sum = int_img[tl_y + height .. tl_y + 2 * height - 1, tl_x + width .. tl_x + 2 * width - 1]
     lbp_code = 0
 
     for (i, o) in enumerate(original_offsets)
         cur_tl_y = center[1] + o[1] * height
         cur_tl_x = center[2] + o[2] * width
-        cur_window_sum = boxdiff(int_img, cur_tl_y : cur_tl_y + height - 1, cur_tl_x : cur_tl_x + height - 1)
+        cur_window_sum = int_img[cur_tl_y .. cur_tl_y + height - 1, cur_tl_x .. cur_tl_x + height - 1]
         lbp_code += (cur_window_sum > central_sum ? 1 : 0) * 2 ^ (8 - i)
     end
     lbp_code
@@ -129,8 +132,8 @@ function _create_descriptor(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4
         for j in 1:yblocks
             lbp_image = lbp_type(img[(j-1)*blockh+1 : j*blockh, (i-1)*blockw+1 : i*blockw], args...)
             lbp_norm = lbp_image
-            _, hist = imhist(lbp_image, edges)
-            append!(descriptor, hist[2 : end - 1])
+            _, hist = build_histogram(lbp_image, edges)
+            append!(descriptor, hist[1 : end - 1])
         end
     end
     descriptor
