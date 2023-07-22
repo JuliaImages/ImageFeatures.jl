@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images, TestImages, Distributions
+using Test, ImageFeatures, ImageCore, TestImages, Distributions
 
 @testset "Testing ORB params" begin
     orb_params = ORB(num_keypoints = 1000, threshold = 0.2)

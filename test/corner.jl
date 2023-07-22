@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images
+using Test, ImageFeatures, ImageCore
 
 @testset "Orientations" begin
     img = zeros(20, 20)

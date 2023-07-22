@@ -1,10 +1,18 @@
 module ImageFeatures
 
 # package code goes here
-using Images, Distributions
+using ImageCore
+using ImageCore: NumberLike
+using ImageBase
+using ImageTransformations  # imresize
+using ImageCorners
+using ImageFiltering
+using ImageContrastAdjustment # build_histogram
+using IntegralArrays
+using Distributions
 using SparseArrays
 import Random.seed!
-using Images.ImageTransformations.Interpolations
+using ImageTransformations.Interpolations
 
 include("core.jl")
 include("const.jl")

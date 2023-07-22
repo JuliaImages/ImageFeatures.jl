@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images, TestImages, Distributions
+using Test, ImageFeatures, ImageCore, TestImages, Distributions
 
 @testset "Generating brief params" begin
     brief_params = BRIEF(size = 8, window = 3, seed = 123)

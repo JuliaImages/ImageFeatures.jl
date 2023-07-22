@@ -20,7 +20,7 @@ Let us take a look at a simple example where the ORB descriptor is used to match
 First, let us create the two images we will match using ORB.
 
 ```@example 2
-using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations, Rotations
+using ImageFeatures, TestImages, ImageCore, ImageDraw, CoordinateTransformations, Rotations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)

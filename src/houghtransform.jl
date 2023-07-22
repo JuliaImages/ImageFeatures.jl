@@ -1,5 +1,3 @@
-using Images
-
 """
 ```
 lines = hough_transform_standard(
@@ -133,7 +131,7 @@ Parameters:
 # Example
 
 ```julia
-julia> using Images, ImageFeatures, FileIO, ImageView
+julia> using ImageCore, ImageFeatures, FileIO, ImageView
 
 julia> img = load(download("http://docs.opencv.org/3.1.0/water_coins.jpg"));
 

@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images
+using Test, ImageFeatures, ImageCore
 
 @testset "Types" begin
     img = zeros(10, 10)
