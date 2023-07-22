@@ -4,7 +4,7 @@
     glcm = glcm(img, distance, angles, mat_size=16)
     glcm = glcm(img, distances, angles, mat_size=16)
 
-Calculates the GLCM (Gray Level Co-occurence Matrix) of an image. The `distances` and `angles` arguments may be 
+Calculates the GLCM (Gray Level Co-occurence Matrix) of an image. The `distances` and `angles` arguments may be
 a single integer or a vector of integers if multiple GLCMs need to be calculated. The `mat_size` argument is used
 to define the granularity of the GLCM.
 """
@@ -97,7 +97,7 @@ function glcm_norm(img::AbstractArray, distances, angles, mat_size=16)
 end
 
 """
-Multiple properties of the obtained GLCM can be calculated by using the `glcm_prop` function which calculates the 
+Multiple properties of the obtained GLCM can be calculated by using the `glcm_prop` function which calculates the
 property for the entire matrix. If grid dimensions are provided, the matrix is divided into a grid and the property
 is calculated for each cell resulting in a height x width property matrix.
 ```julia
@@ -183,7 +183,7 @@ function correlation(glcm_window::Array{T, 2}) where T<:Real
 end
 
 function max_prob(glcm_window::Array{T, 2}) where T<:Real
-    maxfinite(glcm_window)
+    maximum_finite(glcm_window)
 end
 
 function energy(glcm_window::Array{T, 2}) where T<:Real

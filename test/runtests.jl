@@ -4,6 +4,7 @@ using ImageFeatures, Images, TestImages, Distributions
 using Test
 using LinearAlgebra
 import Random.seed!
+using Images.ImageTransformations: imrotate
 
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true
@@ -26,21 +27,7 @@ function _warp(img, transx, transy)
     res
 end
 
-function _warp(img, angle)
-    cos_angle = cos(angle)
-    sin_angle = sin(angle)
-    res = zeros(eltype(img), size(img))
-    cx = size(img, 1) / 2
-    cy = size(img, 2) / 2
-    for i in 1:size(res, 1)
-        for j in 1:size(res, 2)
-            i_rot = ceil(Int, cos_angle * (i - cx) - sin_angle * (j - cy) + cx)
-            j_rot = ceil(Int, sin_angle * (i - cx) + cos_angle * (j - cy) + cy)
-            if checkbounds(Bool, img, i_rot, j_rot) res[i, j] = bilinear_interpolation(img, i_rot, j_rot) end
-        end
-    end
-    res
-end
+_warp(img, angle) = imrotate(img, angle, axes(img))
 
 function _reverserotate(p, angle, center)
     cos_angle = cos(angle)

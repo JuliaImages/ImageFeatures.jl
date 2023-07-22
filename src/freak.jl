@@ -38,7 +38,7 @@ function _freak_mean_intensity(int_img::AbstractArray{T, 2}, keypoint::Keypoint,
     ys = round(Int, y - sigma)
     xst = round(Int, x + sigma)
     yst = round(Int, y + sigma)
-    intensity = boxdiff(int_img, ys:yst, xs:xst)
+    intensity = int_img[ys..yst, xs..xst]
     intensity / ((xst - xs + 1) * (yst - ys + 1))
 end
 
@@ -82,7 +82,7 @@ function _freak_tables(pattern_scale::Float64)
 end
 
 function create_descriptor(img::AbstractArray{T, 2}, keypoints::Keypoints, params::FREAK) where T<:Gray
-    int_img = integral_image(img)
+    int_img = IntegralArray(img)
     descriptors = BitArray{1}[]
     ret_keypoints = Keypoint[]
     window_size = ceil(Int, (freak_radii[1] + freak_sigma[1]) * params.pattern_scale) + 1
