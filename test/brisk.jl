@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images, TestImages, Distributions
+using Test, ImageFeatures, ImageCore, TestImages, Distributions
 
 @testset "Testing brisk params" begin
     brisk_params = BRISK(pattern_scale = 2.0)

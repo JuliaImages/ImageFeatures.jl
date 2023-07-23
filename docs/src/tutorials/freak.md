@@ -9,12 +9,12 @@ The descriptor is built using intensity comparisons of a predetermined set of 51
 
 ## Example
 
-Let us take a look at a simple example where the FREAK descriptor is used to match two images where one has been translated by `(50, 40)` pixels and then rotated by an angle of 75 degrees. We will use the `lighthouse` image from the [TestImages](https://github.com/timholy/TestImages.jl) package for this example.
+Let us take a look at a simple example where the FREAK descriptor is used to match two images where one has been translated by `(50, 40)` pixels and then rotated by an angle of 75 degrees. We will use the `lighthouse` image from the [TestImages](https://github.com/JuliaImages/TestImages.jl) package for this example.
 
 First, let us create the two images we will match using FREAK.
 
 ```@example 3
-using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations, Rotations
+using ImageFeatures, TestImages, ImageCore, ImageDraw, CoordinateTransformations, Rotations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)

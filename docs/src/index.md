@@ -23,4 +23,3 @@ Installing the package is extremely easy with julia's package manager -
 Pkg.add("ImageFeatures")
 ```
 
-ImageFeatures.jl requires [Images.jl](https://github.com/JuliaImages/Images.jl).

@@ -144,6 +144,6 @@ function create_descriptor(img::AbstractArray{Gray{T}, 2}, yblocks::Integer = 4,
     y_padded = ceil(Int, h / (yblocks)) * yblocks
     x_padded = ceil(Int, w / (xblocks)) * xblocks
 
-    img_padded = Images.imresize(img, (y_padded, x_padded))
+    img_padded = imresize(img, (y_padded, x_padded))
     _create_descriptor(img_padded, yblocks, xblocks, lbp_type, args...)
 end

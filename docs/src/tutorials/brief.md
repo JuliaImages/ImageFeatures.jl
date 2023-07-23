@@ -16,13 +16,13 @@ BRIEF is a very simple feature descriptor and does not provide scale or rotation
 
 ## Example
 
-Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by `(100, 200)` pixels. We will use the `lena_gray` image from the [TestImages](https://github.com/timholy/TestImages.jl) package for this example.
+Let us take a look at a simple example where the BRIEF descriptor is used to match two images where one has been translated by `(100, 200)` pixels. We will use the `lena_gray` image from the [TestImages](https://github.com/JuliaImages/TestImages.jl) package for this example.
 
 
 Now, let us create the two images we will match using BRIEF.
 
 ```@example 1
-using ImageFeatures, TestImages, Images, ImageDraw, CoordinateTransformations
+using ImageFeatures, TestImages, ImageCore, ImageDraw, CoordinateTransformations
 
 img = testimage("lighthouse")
 img1 = Gray.(img)

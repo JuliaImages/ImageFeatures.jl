@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images
+using Test, ImageFeatures, ImageCore, ImageBase
 
 @testset "GLCM" begin
     img = [ 0 0 1 1

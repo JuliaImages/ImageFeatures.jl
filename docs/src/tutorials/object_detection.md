@@ -11,7 +11,7 @@ representation which is invariant to local geometric and photometric changes (i.
 Download the script to get the training data [here](https://drive.google.com/file/d/11G_9zh9N-0veQ2EL5WDGsnxRpihsqLX5/view?usp=sharing). Download tutorial.zip, decompress it and run get_data.bash. (Change the variable `path_to_tutorial` in preprocess.jl and path to julia executable in get_data.bash). This script will download the required datasets. We will start by loading the data and computing HOG features of all the images.
 
 ```julia
-using Images, ImageFeatures
+using ImageCore, ImageFeatures
 
 path_to_tutorial = ""    # specify this path
 pos_examples = "$path_to_tutorial/tutorial/humans/"
@@ -19,8 +19,8 @@ neg_examples = "$path_to_tutorial/tutorial/not_humans/"
 
 n_pos = length(readdir(pos_examples))   # number of positive training examples
 n_neg = length(readdir(neg_examples))   # number of negative training examples
-n = n_pos + n_neg                       # number of training examples 
-data = Array{Float64}(undef, 3780, n)   # Array to store HOG descriptor of each image. Each image in our training data has size 128x64 and so has a 3780 length 
+n = n_pos + n_neg                       # number of training examples
+data = Array{Float64}(undef, 3780, n)   # Array to store HOG descriptor of each image. Each image in our training data has size 128x64 and so has a 3780 length
 labels = Vector{Int}(undef, n)          # Vector to store label (1=human, 0=not human) of each image.
 
 for (i, file) in enumerate([readdir(pos_examples); readdir(neg_examples)])
@@ -31,7 +31,7 @@ for (i, file) in enumerate([readdir(pos_examples); readdir(neg_examples)])
 end
 ```
 
-Basically we now have an encoded version of images in our training data. This encoding captures useful information but discards extraneous information 
+Basically we now have an encoded version of images in our training data. This encoding captures useful information but discards extraneous information
 (illumination changes, pose variations etc). We will train a linear SVM on this data.
 
 ```julia
@@ -94,7 +94,7 @@ end
 
 ![Original](../img/scores.png)
 
-You can see that classifier gave low score to not-human class (i.e. high score to human class) at positions corresponding to humans in the original image. 
+You can see that classifier gave low score to not-human class (i.e. high score to human class) at positions corresponding to humans in the original image.
 Below we threshold the image and supress non-minimal values to get the human locations. We then plot the bounding boxes using `ImageDraw`.
 
 ```julia

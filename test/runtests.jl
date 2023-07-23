@@ -1,10 +1,9 @@
 module ImageFeatureTests
 
-using ImageFeatures, Images, TestImages, Distributions
+using ImageFeatures, ImageCore, ImageTransformations, ImageCorners, ImageFiltering, TestImages, Distributions
 using Test
 using LinearAlgebra
 import Random.seed!
-using Images.ImageTransformations: imrotate
 
 function check_samples(sample_one, sample_two, size::Int, window::Int)
     check_bool = true

@@ -4,20 +4,26 @@ version = "0.5.0"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
-Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+ImageBase = "c817782e-172a-44cc-b673-b171935fbb9e"
+ImageContrastAdjustment = "f332f351-ec65-5f6a-b3d1-319c6670881a"
+ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
+ImageCorners = "89d5987c-236e-4e32-acd0-25bd6bd87b70"
+ImageFiltering = "6a3955dd-da59-5b1f-98d4-e7296123deb5"
+ImageTransformations = "02fcd773-0e25-5acc-982a-7f6622650795"
+IntegralArrays = "1d092043-8f09-5a30-832f-7509e371ab51"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 Distributions = "0.16, 0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
-Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
+ImageCore = "0.10"
 julia = "1.6"
 
 [extras]
-ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
+ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestImages = "5e47fb64-e119-507b-a336-dd2b206d9990"
 
 [targets]
-test = ["ImageMagick", "LinearAlgebra", "Test", "TestImages"]
+test = ["ImageIO", "LinearAlgebra", "Test", "TestImages"]

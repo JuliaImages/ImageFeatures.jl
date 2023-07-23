@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images
+using Test, ImageFeatures, ImageCore
 import ImageFeatures.trilinear_interpolate!
 
 @testset "HOG Feature" begin

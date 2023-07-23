@@ -1,4 +1,4 @@
-using Test, ImageFeatures, Images, TestImages, Distributions
+using Test, ImageFeatures, ImageCore, TestImages, Distributions
 
 @testset "Test freak params" begin
     freak_params = FREAK(pattern_scale = 20.0)
