@@ -89,7 +89,7 @@ function create_descriptor(img::AbstractArray{T, 2}, features::Features, params:
         keypoint = Keypoint(feature)
         checkbounds(Bool, img, keypoint - lim) && checkbounds(Bool, img, keypoint + lim) || continue
         orientation = _brisk_orientation(int_img, keypoint, params.pattern_table[1], params.orientation_weights, params.smoothing_table[1], params.long_pairs)
-        sampled_intensities = T[]
+        sampled_intensities = eltype(int_img)[]
         for (i, p) in enumerate(params.pattern_table[orientation])
             push!(sampled_intensities, ImageFeatures._freak_mean_intensity(int_img, keypoint, p, params.smoothing_table[orientation][i]))
         end
