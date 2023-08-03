@@ -95,7 +95,7 @@ end
 ![Original](../img/scores.png)
 
 You can see that classifier gave low score to not-human class (i.e. high score to human class) at positions corresponding to humans in the original image. 
-Below we threshold the image and supress non-minimal values to get the human locations. We then plot the bounding boxes using `ImageDraw`.
+Below we threshold the image and suppress non-minimal values to get the human locations. We then plot the bounding boxes using `ImageDraw`.
 
 ```julia
 using ImageDraw, ImageView
