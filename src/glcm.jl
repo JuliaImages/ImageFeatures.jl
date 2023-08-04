@@ -4,7 +4,7 @@
     glcm = glcm(img, distance, angles, mat_size=16)
     glcm = glcm(img, distances, angles, mat_size=16)
 
-Calculates the GLCM (Gray Level Co-occurence Matrix) of an image. The `distances` and `angles` arguments may be
+Calculates the GLCM (Gray Level Co-occurrence Matrix) of an image. The `distances` and `angles` arguments may be
 a single integer or a vector of integers if multiple GLCMs need to be calculated. The `mat_size` argument is used
 to define the granularity of the GLCM.
 """

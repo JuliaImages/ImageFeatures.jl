@@ -36,7 +36,7 @@ export
     lbp_rotation_invariant,
     multi_block_lbp,
 
-    #Gray Level Co Occurence Matrix
+    #Gray Level Co-Occurrence Matrix
     glcm,
     glcm_symmetric,
     glcm_norm,
