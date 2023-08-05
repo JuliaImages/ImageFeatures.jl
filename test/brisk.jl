@@ -79,6 +79,7 @@ end
 @testset "Testing descriptor creation with an image leading to sampled intensities > 1.0" begin
     img = Gray.(testimage("autumn_leaves"))
     # Number of contiguous pixels parameter in fastcorner needs to be low, to yield enough corners to hit a sample intensity > 1
+    feats = Features(fastcorners(img, 5, 0.3))
     brisk_params = BRISK()
     @test_nowarn create_descriptor(img, feats, brisk_params)
 end
