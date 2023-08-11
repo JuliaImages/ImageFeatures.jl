@@ -1,6 +1,6 @@
 name = "ImageFeatures"
 uuid = "92ff4b2b-8094-53d3-b29d-97f740f06cef"
-version = "0.5.1"
+version = "0.5.2"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
