@@ -74,3 +74,11 @@ end
     reverse_keypoints_1 = [_reverserotate(m[1], pi / 4, (256, 256)) + CartesianIndex(10, 20) for m in matches]
     @test isapprox(sum(isapprox(rk[1], m[2][1], atol = 4) && isapprox(rk[2], m[2][2], atol = 4) for (rk, m) in zip(reverse_keypoints_1, matches)), length(matches), atol = 2)
 end
+
+@testset "Testing descriptor creation with an image leading to sampled intensities > 1.0" begin
+    img = Gray.(testimage("autumn_leaves"))
+    # Number of contiguous pixels parametre in fastcorner needs to be low, to yield enough corners to hit a sample intensity > 1
+    keypoints = Keypoints(fastcorners(img, 5, 0.3))
+    freak_params = FREAK()
+    @test_nowarn create_descriptor(img, keypoints, freak_params)
+end

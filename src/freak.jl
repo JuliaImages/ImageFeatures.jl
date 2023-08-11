@@ -90,7 +90,7 @@ function create_descriptor(img::AbstractArray{T, 2}, keypoints::Keypoints, param
     for k in keypoints
         checkbounds(Bool, img, k - lim) && checkbounds(Bool, img, k + lim) || continue
         orientation = _freak_orientation(int_img, k, params.pattern_table[1], params.orientation_weights, params.smoothing_table[1])
-        sampled_intensities = T[]
+        sampled_intensities = eltype(int_img)[]
         for (i, p) in enumerate(params.pattern_table[orientation])
             push!(sampled_intensities,  _freak_mean_intensity(int_img, k, p, params.smoothing_table[orientation][i]))
         end
