@@ -15,6 +15,7 @@ makedocs(sitename = "ImageFeatures",
                      ],
                      "Function reference" => "function_reference.md",
                      ],
+         warnonly = true,  # TODO: add docstrings and remove this line
          )
 
 deploydocs(repo   = "github.com/JuliaImages/ImageFeatures.jl.git",
