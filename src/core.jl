@@ -75,7 +75,7 @@ distance = hamming_distance(desc_1, desc_2)
 
 Calculates the hamming distance between two descriptors.
 """
-hamming_distance(desc_1, desc_2) = mean(xor.(desc_1, desc_2))
+hamming_distance(desc_1, desc_2) = sum(xor.(desc_1, desc_2)) / length(desc_1)
 
 """
 ```
