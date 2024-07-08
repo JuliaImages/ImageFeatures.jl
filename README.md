@@ -1,6 +1,6 @@
 # ImageFeatures
 
-[![][travis-img]][travis-url]
+[![CI][ci-img]][ci-url]
 [![][pkgeval-img]][pkgeval-url]
 [![][codecov-img]][codecov-url]
 [![][docs-stable-img]][docs-stable-url]
@@ -8,10 +8,10 @@
 
 <!-- URLS -->
 
+[ci-img]: https://github.com/JuliaImages/ImageFeatures.jl/actions/workflows/CI.yml/badge.svg
+[ci-url]: https://github.com/JuliaImages/ImageFeatures.jl/actions/workflows/CI.yml
 [pkgeval-img]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/I/ImageFeatures.svg
 [pkgeval-url]: https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html
-[travis-img]: https://travis-ci.org/JuliaImages/ImageFeatures.jl.svg?branch=master
-[travis-url]: https://travis-ci.org/JuliaImages/ImageFeatures.jl
 [codecov-img]: https://codecov.io/gh/JuliaImages/ImageFeatures.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/JuliaImages/ImageFeatures.jl
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
