@@ -11,7 +11,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 [compat]
 Distributions = "0.16, 0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
 Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25, 0.26"
-julia = "1.6"
+julia = "1.10"
 
 [extras]
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
